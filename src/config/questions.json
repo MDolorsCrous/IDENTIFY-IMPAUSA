@@ -1,0 +1,422 @@
+[
+  {
+    "id": 1,
+    "domain": "extraversion",
+    "facet": "sociability",
+    "reverse": false,
+    "reverseSource": "excel"
+  },
+  {
+    "id": 2,
+    "domain": "agreeableness",
+    "facet": "compassion",
+    "reverse": false,
+    "reverseSource": "excel"
+  },
+  {
+    "id": 3,
+    "domain": "conscientiousness",
+    "facet": "organization",
+    "reverse": true,
+    "reverseSource": "excel"
+  },
+  {
+    "id": 4,
+    "domain": "negative_emotionality",
+    "facet": "anxiety",
+    "reverse": true,
+    "reverseSource": "excel"
+  },
+  {
+    "id": 5,
+    "domain": "open_mindedness",
+    "facet": "aesthetic_sensitivity",
+    "reverse": true,
+    "reverseSource": "excel"
+  },
+  {
+    "id": 6,
+    "domain": "extraversion",
+    "facet": "assertiveness",
+    "reverse": false,
+    "reverseSource": "excel"
+  },
+  {
+    "id": 7,
+    "domain": "agreeableness",
+    "facet": "respectfulness",
+    "reverse": false,
+    "reverseSource": "excel"
+  },
+  {
+    "id": 8,
+    "domain": "conscientiousness",
+    "facet": "productiveness",
+    "reverse": true,
+    "reverseSource": "excel"
+  },
+  {
+    "id": 9,
+    "domain": "negative_emotionality",
+    "facet": "depression",
+    "reverse": true,
+    "reverseSource": "excel"
+  },
+  {
+    "id": 10,
+    "domain": "open_mindedness",
+    "facet": "intellectual_curiosity",
+    "reverse": false,
+    "reverseSource": "excel"
+  },
+  {
+    "id": 11,
+    "domain": "extraversion",
+    "facet": "energy_level",
+    "reverse": true,
+    "reverseSource": "excel"
+  },
+  {
+    "id": 12,
+    "domain": "agreeableness",
+    "facet": "trust",
+    "reverse": true,
+    "reverseSource": "excel"
+  },
+  {
+    "id": 13,
+    "domain": "conscientiousness",
+    "facet": "responsibility",
+    "reverse": false,
+    "reverseSource": "excel"
+  },
+  {
+    "id": 14,
+    "domain": "negative_emotionality",
+    "facet": "emotional_volatility",
+    "reverse": false,
+    "reverseSource": "excel"
+  },
+  {
+    "id": 15,
+    "domain": "open_mindedness",
+    "facet": "creative_imagination",
+    "reverse": false,
+    "reverseSource": "excel"
+  },
+  {
+    "id": 16,
+    "domain": "extraversion",
+    "facet": "sociability",
+    "reverse": true,
+    "reverseSource": "excel"
+  },
+  {
+    "id": 17,
+    "domain": "agreeableness",
+    "facet": "compassion",
+    "reverse": true,
+    "reverseSource": "excel"
+  },
+  {
+    "id": 18,
+    "domain": "conscientiousness",
+    "facet": "organization",
+    "reverse": false,
+    "reverseSource": "excel"
+  },
+  {
+    "id": 19,
+    "domain": "negative_emotionality",
+    "facet": "anxiety",
+    "reverse": false,
+    "reverseSource": "excel"
+  },
+  {
+    "id": 20,
+    "domain": "open_mindedness",
+    "facet": "aesthetic_sensitivity",
+    "reverse": false,
+    "reverseSource": "excel"
+  },
+  {
+    "id": 21,
+    "domain": "extraversion",
+    "facet": "assertiveness",
+    "reverse": false,
+    "reverseSource": "excel"
+  },
+  {
+    "id": 22,
+    "domain": "agreeableness",
+    "facet": "respectfulness",
+    "reverse": true,
+    "reverseSource": "excel"
+  },
+  {
+    "id": 23,
+    "domain": "conscientiousness",
+    "facet": "productiveness",
+    "reverse": true,
+    "reverseSource": "excel"
+  },
+  {
+    "id": 24,
+    "domain": "negative_emotionality",
+    "facet": "depression",
+    "reverse": true,
+    "reverseSource": "excel"
+  },
+  {
+    "id": 25,
+    "domain": "open_mindedness",
+    "facet": "intellectual_curiosity",
+    "reverse": true,
+    "reverseSource": "excel"
+  },
+  {
+    "id": 26,
+    "domain": "extraversion",
+    "facet": "energy_level",
+    "reverse": true,
+    "reverseSource": "excel"
+  },
+  {
+    "id": 27,
+    "domain": "agreeableness",
+    "facet": "trust",
+    "reverse": false,
+    "reverseSource": "excel"
+  },
+  {
+    "id": 28,
+    "domain": "conscientiousness",
+    "facet": "responsibility",
+    "reverse": true,
+    "reverseSource": "excel"
+  },
+  {
+    "id": 29,
+    "domain": "negative_emotionality",
+    "facet": "emotional_volatility",
+    "reverse": true,
+    "reverseSource": "excel"
+  },
+  {
+    "id": 30,
+    "domain": "open_mindedness",
+    "facet": "creative_imagination",
+    "reverse": true,
+    "reverseSource": "excel"
+  },
+  {
+    "id": 31,
+    "domain": "extraversion",
+    "facet": "sociability",
+    "reverse": true,
+    "reverseSource": "excel"
+  },
+  {
+    "id": 32,
+    "domain": "agreeableness",
+    "facet": "compassion",
+    "reverse": false,
+    "reverseSource": "excel"
+  },
+  {
+    "id": 33,
+    "domain": "conscientiousness",
+    "facet": "organization",
+    "reverse": false,
+    "reverseSource": "excel"
+  },
+  {
+    "id": 34,
+    "domain": "negative_emotionality",
+    "facet": "anxiety",
+    "reverse": false,
+    "reverseSource": "clave-estandar-bfi2"
+  },
+  {
+    "id": 35,
+    "domain": "open_mindedness",
+    "facet": "aesthetic_sensitivity",
+    "reverse": false,
+    "reverseSource": "excel"
+  },
+  {
+    "id": 36,
+    "domain": "extraversion",
+    "facet": "assertiveness",
+    "reverse": true,
+    "reverseSource": "excel"
+  },
+  {
+    "id": 37,
+    "domain": "agreeableness",
+    "facet": "respectfulness",
+    "reverse": true,
+    "reverseSource": "excel"
+  },
+  {
+    "id": 38,
+    "domain": "conscientiousness",
+    "facet": "productiveness",
+    "reverse": false,
+    "reverseSource": "excel"
+  },
+  {
+    "id": 39,
+    "domain": "negative_emotionality",
+    "facet": "depression",
+    "reverse": false,
+    "reverseSource": "excel"
+  },
+  {
+    "id": 40,
+    "domain": "open_mindedness",
+    "facet": "intellectual_curiosity",
+    "reverse": false,
+    "reverseSource": "excel"
+  },
+  {
+    "id": 41,
+    "domain": "extraversion",
+    "facet": "energy_level",
+    "reverse": false,
+    "reverseSource": "excel"
+  },
+  {
+    "id": 42,
+    "domain": "agreeableness",
+    "facet": "trust",
+    "reverse": true,
+    "reverseSource": "excel"
+  },
+  {
+    "id": 43,
+    "domain": "conscientiousness",
+    "facet": "responsibility",
+    "reverse": false,
+    "reverseSource": "clave-estandar-bfi2"
+  },
+  {
+    "id": 44,
+    "domain": "negative_emotionality",
+    "facet": "emotional_volatility",
+    "reverse": true,
+    "reverseSource": "excel"
+  },
+  {
+    "id": 45,
+    "domain": "open_mindedness",
+    "facet": "creative_imagination",
+    "reverse": true,
+    "reverseSource": "excel"
+  },
+  {
+    "id": 46,
+    "domain": "extraversion",
+    "facet": "sociability",
+    "reverse": false,
+    "reverseSource": "excel"
+  },
+  {
+    "id": 47,
+    "domain": "agreeableness",
+    "facet": "compassion",
+    "reverse": true,
+    "reverseSource": "excel"
+  },
+  {
+    "id": 48,
+    "domain": "conscientiousness",
+    "facet": "organization",
+    "reverse": true,
+    "reverseSource": "excel"
+  },
+  {
+    "id": 49,
+    "domain": "negative_emotionality",
+    "facet": "anxiety",
+    "reverse": true,
+    "reverseSource": "excel"
+  },
+  {
+    "id": 50,
+    "domain": "open_mindedness",
+    "facet": "aesthetic_sensitivity",
+    "reverse": true,
+    "reverseSource": "excel"
+  },
+  {
+    "id": 51,
+    "domain": "extraversion",
+    "facet": "assertiveness",
+    "reverse": true,
+    "reverseSource": "excel"
+  },
+  {
+    "id": 52,
+    "domain": "agreeableness",
+    "facet": "respectfulness",
+    "reverse": false,
+    "reverseSource": "excel"
+  },
+  {
+    "id": 53,
+    "domain": "conscientiousness",
+    "facet": "productiveness",
+    "reverse": false,
+    "reverseSource": "excel"
+  },
+  {
+    "id": 54,
+    "domain": "negative_emotionality",
+    "facet": "depression",
+    "reverse": false,
+    "reverseSource": "excel"
+  },
+  {
+    "id": 55,
+    "domain": "open_mindedness",
+    "facet": "intellectual_curiosity",
+    "reverse": true,
+    "reverseSource": "clave-estandar-bfi2"
+  },
+  {
+    "id": 56,
+    "domain": "extraversion",
+    "facet": "energy_level",
+    "reverse": false,
+    "reverseSource": "excel"
+  },
+  {
+    "id": 57,
+    "domain": "agreeableness",
+    "facet": "trust",
+    "reverse": false,
+    "reverseSource": "excel"
+  },
+  {
+    "id": 58,
+    "domain": "conscientiousness",
+    "facet": "responsibility",
+    "reverse": true,
+    "reverseSource": "excel"
+  },
+  {
+    "id": 59,
+    "domain": "negative_emotionality",
+    "facet": "emotional_volatility",
+    "reverse": false,
+    "reverseSource": "excel"
+  },
+  {
+    "id": 60,
+    "domain": "open_mindedness",
+    "facet": "creative_imagination",
+    "reverse": false,
+    "reverseSource": "excel"
+  }
+]

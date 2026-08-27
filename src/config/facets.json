@@ -1,0 +1,152 @@
+[
+  {
+    "id": "sociability",
+    "domain": "extraversion",
+    "items": [
+      1,
+      16,
+      31,
+      46
+    ]
+  },
+  {
+    "id": "assertiveness",
+    "domain": "extraversion",
+    "items": [
+      6,
+      21,
+      36,
+      51
+    ]
+  },
+  {
+    "id": "energy_level",
+    "domain": "extraversion",
+    "items": [
+      11,
+      26,
+      41,
+      56
+    ]
+  },
+  {
+    "id": "compassion",
+    "domain": "agreeableness",
+    "items": [
+      2,
+      17,
+      32,
+      47
+    ]
+  },
+  {
+    "id": "respectfulness",
+    "domain": "agreeableness",
+    "items": [
+      7,
+      22,
+      37,
+      52
+    ]
+  },
+  {
+    "id": "trust",
+    "domain": "agreeableness",
+    "items": [
+      12,
+      27,
+      42,
+      57
+    ]
+  },
+  {
+    "id": "organization",
+    "domain": "conscientiousness",
+    "items": [
+      3,
+      18,
+      33,
+      48
+    ]
+  },
+  {
+    "id": "productiveness",
+    "domain": "conscientiousness",
+    "items": [
+      8,
+      23,
+      38,
+      53
+    ]
+  },
+  {
+    "id": "responsibility",
+    "domain": "conscientiousness",
+    "items": [
+      13,
+      28,
+      43,
+      58
+    ]
+  },
+  {
+    "id": "anxiety",
+    "domain": "negative_emotionality",
+    "items": [
+      4,
+      19,
+      34,
+      49
+    ]
+  },
+  {
+    "id": "depression",
+    "domain": "negative_emotionality",
+    "items": [
+      9,
+      24,
+      39,
+      54
+    ]
+  },
+  {
+    "id": "emotional_volatility",
+    "domain": "negative_emotionality",
+    "items": [
+      14,
+      29,
+      44,
+      59
+    ]
+  },
+  {
+    "id": "intellectual_curiosity",
+    "domain": "open_mindedness",
+    "items": [
+      10,
+      25,
+      40,
+      55
+    ]
+  },
+  {
+    "id": "aesthetic_sensitivity",
+    "domain": "open_mindedness",
+    "items": [
+      5,
+      20,
+      35,
+      50
+    ]
+  },
+  {
+    "id": "creative_imagination",
+    "domain": "open_mindedness",
+    "items": [
+      15,
+      30,
+      45,
+      60
+    ]
+  }
+]

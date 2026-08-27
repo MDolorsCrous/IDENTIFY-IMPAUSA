@@ -8,20 +8,22 @@ Test autoadministrable + informe interpretativo del ecosistema **IMPAUSA / LiveP
 | Ruta | Qué es |
 | --- | --- |
 | `Projects\IDENTIFY_TEST` | **Esta carpeta.** Documentación y capa de interpretación del test |
-| `github.com/MDolorsCrous/Identify_Impausa` | Repo que Lovable sincroniza con el código del test |
-| `Projects\IDENTIFY_IMPAUSA` | Reservada para clonar ese repo cuando Lovable haya subido el código |
+| `github.com/MDolorsCrous/impausa-identify-bigfive` | Repo que Lovable sincroniza. Contiene el PRD en el README, no la app |
+| `Projects\IDENTIFY_BIGFIVE` | Clon de ese repo. Hoy contiene solo la plantilla en blanco de Lovable |
+| `Projects\IDENTIFY_IMPAUSA` | Repo vacío creado por error. No se usa |
 | `Projects\LAIA_IMPAUSA` (repo `THINK_IMPAUSA`) | Otra cosa: la app de conversación LAIA del curso. Sin relación |
 
-Cuando el repo de Lovable tenga contenido, esta documentación se mueve dentro de él y
-todo pasa a vivir en un solo sitio. No se sube nada a `Identify_Impausa` hasta
-entonces, para no chocar con el primer push de Lovable.
+Cuando la app de Lovable exista de verdad, `src/` y `docs/` se mueven dentro de ella y
+todo pasa a vivir en un solo sitio. Hasta entonces no se sube nada a ese repo, para no
+chocar con lo que Lovable escriba por su cuenta.
 
 ## Estado
 
 | Pieza | Dónde vive | Estado |
 | --- | --- | --- |
-| Test (ítems, escala, recogida de respuestas) | Lovable → repo `Identify_Impausa` | ✅ Hecho |
-| Cálculo de puntuaciones en bruto | Lovable → repo `Identify_Impausa` | ✅ Hecho |
+| Especificación del BFI-2 (60 ítems, escala, fórmulas) | `docs/01` | ✅ Extraída del Excel oficial |
+| Configuración y motor de puntuación | `src/` | ✅ Hecho, 13 pruebas en verde |
+| Interfaz del test (responder las 60 preguntas) | Lovable | ⬜ **Sin empezar** — la app está en blanco |
 | Modelo de interpretación (bandas, perfiles, reglas) | esta carpeta → `docs/02` | ⬜ **La pieza que falta** |
 | Informe en pantalla (estructura + gráficos) | app | ⬜ Pendiente |
 | Párrafos de coaching redactados por Claude | API de Claude | ⬜ Pendiente |
@@ -42,7 +44,8 @@ sin dejar que el modelo invente puntuaciones.
 
 ## Documentación
 
-- [`docs/01-especificacion-test.md`](docs/01-especificacion-test.md) — constructo, dimensiones, ítems, escala y fórmulas
+- [`docs/01-especificacion-test.md`](docs/01-especificacion-test.md) — los 60 ítems, la escala, las fórmulas y los inversos
+- [`src/README.md`](src/README.md) — cómo usar el motor de puntuación y cómo adaptarlo a otro test
 - [`docs/02-modelo-interpretacion.md`](docs/02-modelo-interpretacion.md) — bandas, perfiles y reglas SI…ENTONCES
 - [`docs/03-estructura-informe.md`](docs/03-estructura-informe.md) — secciones del informe y qué las alimenta
 - [`docs/04-arquitectura-hibrida.md`](docs/04-arquitectura-hibrida.md) — qué calcula el código y qué redacta Claude

@@ -1,0 +1,29 @@
+{
+  "scale": {
+    "min": 1,
+    "max": 5,
+    "points": [
+      1,
+      2,
+      3,
+      4,
+      5
+    ]
+  },
+  "reverse": {
+    "formula": "6 - response",
+    "constant": 6
+  },
+  "facet": {
+    "method": "mean",
+    "of": "recoded items"
+  },
+  "domain": {
+    "method": "mean",
+    "of": "recoded items"
+  },
+  "range": {
+    "min": 1,
+    "max": 5
+  }
+}
