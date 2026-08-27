@@ -4,7 +4,7 @@ Cada sección declara **qué la alimenta**: `código` (determinista) o `Claude` 
 
 | # | Sección | Fuente | Contenido |
 | --- | --- | --- | --- |
-| 0 | Portada — rótulo *Think by Impausa* | código | Nombre, fecha, marca LivePausa |
+| 0 | Portada — rótulo *Identify by Impausa* | código | Nombre, fecha, marca LivePausa |
 | 1 | Cómo leer este informe | código | Texto fijo: qué es, qué no es, límites |
 | 2 | Tu perfil en una frase | código + Claude | Titular del perfil + 1 párrafo personalizado |
 | 3 | Mapa de puntuaciones | código | Gráfico por dimensión con bandas |

@@ -1,22 +1,32 @@
-# Think by Impausa
+# Identify by Impausa
 
 Test autoadministrable + informe interpretativo del ecosistema **IMPAUSA / LivePausa**.
 
-> **No confundir con el repo `THINK_IMPAUSA`.** Ese contiene la app de conversación
-> **LAIA** del curso (clonada en `Projects/LAIA_IMPAUSA`) y no tiene ninguna relación
-> con este test, más allá del nombre.
+
+## Dónde está cada cosa
+
+| Ruta | Qué es |
+| --- | --- |
+| `Projects\IDENTIFY_TEST` | **Esta carpeta.** Documentación y capa de interpretación del test |
+| `github.com/MDolorsCrous/Identify_Impausa` | Repo que Lovable sincroniza con el código del test |
+| `Projects\IDENTIFY_IMPAUSA` | Reservada para clonar ese repo cuando Lovable haya subido el código |
+| `Projects\LAIA_IMPAUSA` (repo `THINK_IMPAUSA`) | Otra cosa: la app de conversación LAIA del curso. Sin relación |
+
+Cuando el repo de Lovable tenga contenido, esta documentación se mueve dentro de él y
+todo pasa a vivir en un solo sitio. No se sube nada a `Identify_Impausa` hasta
+entonces, para no chocar con el primer push de Lovable.
 
 ## Estado
 
 | Pieza | Dónde vive | Estado |
 | --- | --- | --- |
-| Test (ítems, escala, recogida de respuestas) | Lovable | ✅ Hecho |
-| Cálculo de puntuaciones en bruto | Lovable | ✅ Hecho |
-| Modelo de interpretación (bandas, perfiles, reglas) | este repo → `docs/02` | ⬜ Pendiente |
+| Test (ítems, escala, recogida de respuestas) | Lovable → repo `Identify_Impausa` | ✅ Hecho |
+| Cálculo de puntuaciones en bruto | Lovable → repo `Identify_Impausa` | ✅ Hecho |
+| Modelo de interpretación (bandas, perfiles, reglas) | esta carpeta → `docs/02` | ⬜ **La pieza que falta** |
 | Informe en pantalla (estructura + gráficos) | app | ⬜ Pendiente |
 | Párrafos de coaching redactados por Claude | API de Claude | ⬜ Pendiente |
 | Exportación PDF / Word con marca LivePausa | app | ⬜ Pendiente |
-| Skill de Claude Code (`think-impausa`) | `.claude/skills/` | ⬜ Pendiente |
+| Skill de Claude Code (`identify-impausa`) | `.claude/skills/` | ⬜ Pendiente |
 
 ## Arquitectura: híbrida
 
@@ -41,4 +51,4 @@ sin dejar que el modelo invente puntuaciones.
 
 Rótulo inicial, paleta y tipografía: skill `retol-test-impausa`.
 Fondo crema `#FBF5E9`, tinta `#241910`, gradiente naranja→verde `#EF8A4D → #7FAE79`,
-Cormorant Garamond. El titular es siempre **Think**; debajo, pequeño, *by Impausa*.
+Cormorant Garamond. El titular es siempre **Identify**; debajo, pequeño, *by Impausa*.

@@ -1,11 +1,11 @@
-# 01 — Especificación del test Think
+# 01 — Especificación del test Identify
 
 > Estado: **pendiente de volcar desde la app de Lovable.**
 > Se rellena leyendo el test publicado (ítem a ítem) o exportando el código.
 
 ## Constructo
 
-_Qué mide Think exactamente. Una frase que se pueda defender._
+_Qué mide Identify exactamente. Una frase que se pueda defender._
 
 - Constructo:
 - Qué NO mide (límites explícitos):
