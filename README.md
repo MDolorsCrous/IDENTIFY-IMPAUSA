@@ -2,6 +2,10 @@
 
 Test autoadministrable + informe interpretativo del ecosistema **IMPAUSA / LivePausa**.
 
+> **No confundir con el repo `THINK_IMPAUSA`.** Ese contiene la app de conversación
+> **LAIA** del curso (clonada en `Projects/LAIA_IMPAUSA`) y no tiene ninguna relación
+> con este test, más allá del nombre.
+
 ## Estado
 
 | Pieza | Dónde vive | Estado |
