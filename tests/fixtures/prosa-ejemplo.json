@@ -1,0 +1,39 @@
+{
+  "_nota": "Ejemplo de lo que devuelve Claude. La forma de este objeto ES el esquema de salida: una clave por sección, sin prosa libre. Estos textos están escritos a mano para la maqueta.",
+  "titular": "Empuje sin sistema, y un radar que no se apaga",
+  "perfilEnUnaFrase": "Tu perfil dibuja a alguien con motor: nivel de energía y productividad claramente por encima del resto, y una curiosidad que va por delante. Pero ese empuje no se apoya en ninguna estructura — la organización es lo más bajo de todo el perfil — y convive con un radar de preocupación muy activo. La combinación tiene una lógica interna: sacas las cosas adelante a base de tirón, y el radar te avisa pronto de lo que puede salir mal. Funciona. El coste es que rara vez descansa.",
+  "dominios": {
+    "extraversion": "Tu extraversión se sostiene casi entera sobre la energía. Tienes empuje y ritmo, pero no buscas especialmente la compañía ni te impones en el grupo. Es un perfil de motor propio más que de motor social: rindes por impulso interno, no porque te arrastre la gente.",
+    "agreeableness": "Aquí la nota está en la confianza, que es lo más bajo del bloque. Sí tienes registro empático —la compasión aguanta por encima del resto—, pero partes de la reserva: das el beneficio de la duda tarde. Eso protege, y también hace que cueste más apoyarse en un equipo.",
+    "conscientiousness": "El contraste más marcado de todo tu perfil está aquí. Productividad claramente alta, organización en el extremo bajo. Es decir: consigues terminar cosas, pero no gracias a un sistema, sino a pesar de no tenerlo. Funciona mientras la carga sea asumible.",
+    "negative_emotionality": "Tu sensibilidad a la preocupación es lo más pronunciado del perfil entero. No aparece acompañada de un tono anímico bajo ni de reactividad: no es malestar general, es anticipación. Ves antes lo que puede fallar. Es una ventaja real en gestión de riesgo, y un impuesto silencioso en descanso.",
+    "open_mindedness": "Curiosidad intelectual alta y sensibilidad estética alta, pero imaginación creativa en el extremo contrario. Tu apertura es de las que absorben, analizan y disfrutan lo que ya existe, más que de las que generan alternativas nuevas desde cero."
+  },
+  "senales": "Ninguna de estas se cumple, pero a cada una le falta una sola condición. Te las señalo porque marcan por dónde se mueve tu perfil, no porque te describan.",
+  "enElTrabajo": "Con esta combinación, tu rendimiento depende mucho más del entorno de lo que probablemente crees. Donde el trabajo llega ordenado y la carga es previsible, tu productividad y tu curiosidad hacen el resto y no se nota la falta de sistema. Donde la carga es alta, cambiante o depende de coordinarte con gente en la que aún no confías, la ausencia de estructura deja de ser un detalle y el radar de preocupación empieza a trabajar horas extra. La palanca no es \"organizarte más\" en abstracto: es que el sistema lo ponga el entorno cuando tú no lo pones.",
+  "preguntas": [
+    "Cuando algo sale bien, ¿es por el empuje o porque esa vez había estructura?",
+    "¿Qué te cuesta más: organizarte, o admitir que necesitas hacerlo?",
+    "Tu radar de preocupación, ¿cuántas veces al año acierta de verdad?",
+    "¿Con quién bajas la reserva, y qué hizo esa persona para que ocurriera?",
+    "Si mañana tuvieras un sistema que funcionara solo, ¿qué harías con la energía que ahora gastas en compensar?",
+    "¿Qué señal te avisaría de que el empuje ya no está cubriendo la falta de estructura?"
+  ],
+  "experimentos": [
+    {
+      "titulo": "Una sola lista, dos semanas",
+      "texto": "No un sistema: una lista, en un sitio fijo, revisada a la misma hora cada día. El objetivo no es ordenarte la vida, es comprobar cuánta energía estabas gastando en recordar.",
+      "indicador": "Al cabo de dos semanas: ¿cuántas veces te salvó de un olvido?"
+    },
+    {
+      "titulo": "Escribir el aviso del radar",
+      "texto": "Cada vez que la preocupación se dispare, apúntala en una línea y qué temías. Sin analizarla. Al mes, míralas todas de golpe.",
+      "indicador": "Cuántas se cumplieron. Si acierta mucho, es criterio. Si no, es ruido caro."
+    },
+    {
+      "titulo": "Un préstamo de confianza",
+      "texto": "Elige una tarea que harías tú por no depender de nadie y delégala entera, sin supervisar el proceso. Una sola, y de riesgo bajo.",
+      "indicador": "Qué pasó de verdad, comparado con lo que habías anticipado."
+    }
+  ]
+}
