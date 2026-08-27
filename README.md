@@ -28,7 +28,7 @@ chocar con lo que Lovable escriba por su cuenta.
 | Modelo de interpretación (bandas, reglas, seguridad) | `docs/02` | ✅ Diseñado |
 | Reglas de combinación (26, con cita) | `src/config/interpretation/` | ✅ Transcritas |
 | Motor de bandas e interpretación | `src/services/interpretation.ts` | ✅ Hecho, 36 pruebas en verde |
-| Baremos españoles (medias y DT) | `src/config/baremos.json` | ⬜ **Falta el dato** |
+| Baremos españoles (medias y DT) | `docs/baremos-propuesta.md` | 🟡 Encontrados, **en espera de validación** |
 | Informe en pantalla (estructura + gráficos) | app | ⬜ Pendiente |
 | Párrafos de coaching redactados por Claude | API de Claude | ⬜ Pendiente |
 | Exportación PDF / Word con marca LivePausa | app | ⬜ Pendiente |
@@ -50,7 +50,9 @@ sin dejar que el modelo invente puntuaciones.
 
 - [`docs/01-especificacion-test.md`](docs/01-especificacion-test.md) — los 60 ítems, la escala, las fórmulas y los inversos
 - [`src/README.md`](src/README.md) — cómo usar el motor de puntuación y cómo adaptarlo a otro test
-- [`docs/02-modelo-interpretacion.md`](docs/02-modelo-interpretacion.md) — bandas, perfiles y reglas SI…ENTONCES
+- [`docs/02-modelo-interpretacion.md`](docs/02-modelo-interpretacion.md) — bandas, reglas de combinación, evidencia y seguridad
+- [`docs/baremos-propuesta.md`](docs/baremos-propuesta.md) — los baremos publicados y sus problemas, a validar con Elisenda
+- [`docs/base-conocimiento-bfi2.md`](docs/base-conocimiento-bfi2.md) — el material de interpretación, por faceta
 - [`docs/03-estructura-informe.md`](docs/03-estructura-informe.md) — secciones del informe y qué las alimenta
 - [`docs/04-arquitectura-hibrida.md`](docs/04-arquitectura-hibrida.md) — qué calcula el código y qué redacta Claude
 
