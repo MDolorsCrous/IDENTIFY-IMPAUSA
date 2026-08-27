@@ -1,0 +1,21 @@
+# dependencias
+node_modules/
+
+# secretos — nunca subir
+.env
+.env.local
+*.key
+
+# build
+dist/
+build/
+.netlify/
+
+# sistema
+.DS_Store
+Thumbs.db
+
+# informes generados con datos reales de personas
+salidas/
+*.pdf
+!docs/**/*.pdf
