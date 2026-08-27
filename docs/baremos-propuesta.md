@@ -102,3 +102,18 @@ uso que le vais a dar.
    prudencia recomienda al interpretarlas?
 5. Las tres reglas marcadas `revision` en `combinations.json`: cuando el material dice
    «responsabilidad», ¿se refiere a la faceta de responsabilidad moral o al dominio?
+
+---
+
+## Pregunta añadida (6)
+
+Al implementar el motor apareció una decisión de calibración que también le toca a ella:
+
+**Cuando una regla del material dice «Alta Sociabilidad», ¿qué debería contar como
+alta?** Solo el cuartil superior, o también quien está algo por encima de la media.
+
+Con el caso de ejemplo, el criterio amplio activa 16 de las 26 reglas —entre disparadas
+y a falta de una— y el estricto no dispara ninguna. La diferencia entre un informe que
+dice demasiado y uno que no dice nada está justo en ese corte.
+
+Ver la sección «La calibración» de [`02-modelo-interpretacion.md`](02-modelo-interpretacion.md).

@@ -152,3 +152,48 @@ test("el caso de ejemplo del Excel se puede interpretar de punta a punta", () =>
   // No se comprueba cuántas disparan: depende de los cortes, que son provisionales.
   assert.ok(fired.length + nearMisses.length > 0, "el perfil no activa nada, algo va mal");
 });
+
+test("la calibración cambia cuánto dispara, y por eso es un parámetro", async () => {
+  const { AMPLIO, ESTRICTO } = await import("../src/services/interpretation.ts");
+  const respuestas = Object.fromEntries(
+    Object.entries(fixture.responses).map(([k, v]) => [Number(k), v]),
+  ) as Responses;
+  const b = bands(score(respuestas, config)).facets;
+
+  const estricto = interpret(b, reglas, ESTRICTO);
+  const amplio = interpret(b, reglas, AMPLIO);
+
+  // Con el mismo perfil, lo amplio activa bastante más que lo estricto
+  const totalEstricto = estricto.fired.length + estricto.nearMisses.length;
+  const totalAmplio = amplio.fired.length + amplio.nearMisses.length;
+  assert.ok(totalAmplio > totalEstricto, `amplio ${totalAmplio} debería superar a estricto ${totalEstricto}`);
+
+  // Y lo estricto nunca dispara nada que lo amplio no dispare también
+  const disparaAmplio = new Set(amplio.fired.map((m) => m.rule.id));
+  for (const m of estricto.fired) {
+    assert.ok(disparaAmplio.has(m.rule.id), `${m.rule.id} dispara estricto pero no amplio`);
+  }
+});
+
+test("por defecto es estricto", async () => {
+  const { ESTRICTO } = await import("../src/services/interpretation.ts");
+  const b = { sociability: band(3.2), assertiveness: band(3.2) }; // ambas media-alta
+  const regla: Rule[] = [
+    {
+      id: "p",
+      effect: "x",
+      conditions: [
+        { facet: "sociability", level: "high" },
+        { facet: "assertiveness", level: "high" },
+      ],
+      summary: "s",
+      scope: "laboral",
+      evidence: "E2",
+      references: ["r"],
+      sourceSlides: [1],
+      appearsIn: ["sociability"],
+    },
+  ];
+  assert.equal(interpret(b, regla).fired.length, 0);
+  assert.equal(interpret(b, regla, ESTRICTO).fired.length, 0);
+});

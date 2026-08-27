@@ -119,6 +119,34 @@ información, no ruido — pero no es lo mismo. Propuesta: disparar solo con **t
 condiciones, y guardar las que se quedan a una como *señales de atención* que Claude
 puede mencionar en condicional («si además…»), nunca como afirmación.
 
+### La calibración, que no tiene respuesta obvia
+
+Al probar el motor con el caso de ejemplo apareció un problema que conviene decidir a
+conciencia. Cuando una regla dice «Alta Sociabilidad», ¿qué banda la cumple?
+
+| Criterio | Qué cumple | Resultado con el caso de ejemplo |
+| --- | --- | --- |
+| Amplio | «alta» y «media-alta» | 2 reglas disparadas y **14 señales** de 26 |
+| Estricto | solo «alta» | **0 disparadas** y 6 señales |
+
+Ninguno de los dos sirve tal cual. Con el amplio, la sección de señales es un muro de
+«si además…» y el informe pierde credibilidad: media España roza media literatura. Con
+el estricto, una regla de tres condiciones exige tres extremos simultáneos y casi nadie
+los tiene, así que la sección principal se queda vacía.
+
+**Está implementado como parámetro** (`ESTRICTO` por defecto, `AMPLIO` disponible) en
+lugar de escondido en una constante, porque la respuesta correcta depende de dos cosas
+que aún no tenemos:
+
+1. **Los baremos.** Con percentiles, «alta» pasa a ser el cuartil superior, y eso cambia
+   la frecuencia con la que dispara cada regla.
+2. **Casos reales.** Con veinte o treinta perfiles de verdad se puede medir cuántas
+   reglas dispara cada criterio y elegir con datos, en vez de a ojo.
+
+Mientras tanto, el informe tiene que funcionar también cuando **no dispara nada**: la
+sección lo dice con naturalidad y el peso recae en el recorrido dominio a dominio. Un
+informe honesto que dice poco es mejor que uno que fuerza las reglas para tener relleno.
+
 ---
 
 ## Niveles de evidencia

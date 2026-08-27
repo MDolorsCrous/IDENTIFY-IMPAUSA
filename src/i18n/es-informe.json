@@ -1,0 +1,35 @@
+{
+  "_nota": "Nombres que ve la persona en el informe. Se mantiene a mano: no lo genera tools/gen-config.js. Los nombres técnicos siguen en es.json y aparecen en la leyenda.",
+  "domains": {
+    "extraversion": "Extraversión",
+    "agreeableness": "Cordialidad",
+    "conscientiousness": "Responsabilidad",
+    "negative_emotionality": "Sensibilidad emocional",
+    "open_mindedness": "Apertura de mente"
+  },
+  "facets": {
+    "sociability": "Sociabilidad",
+    "assertiveness": "Asertividad",
+    "energy_level": "Nivel de energía",
+    "compassion": "Compasión",
+    "respectfulness": "Respeto",
+    "trust": "Confianza",
+    "organization": "Organización",
+    "productiveness": "Productividad",
+    "responsibility": "Sentido del deber",
+    "anxiety": "Sensibilidad a la preocupación",
+    "depression": "Tono anímico",
+    "emotional_volatility": "Reactividad emocional",
+    "intellectual_curiosity": "Curiosidad intelectual",
+    "aesthetic_sensitivity": "Sensibilidad estética",
+    "creative_imagination": "Imaginación creativa"
+  },
+  "renombradas": {
+    "_nota": "Las que cambian respecto al nombre técnico. La leyenda del informe muestra ambos.",
+    "negative_emotionality": "Emocionalidad negativa",
+    "anxiety": "Ansiedad",
+    "depression": "Depresión",
+    "emotional_volatility": "Volatilidad emocional",
+    "responsibility": "Responsabilidad (faceta)"
+  }
+}

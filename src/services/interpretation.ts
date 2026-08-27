@@ -98,9 +98,33 @@ export function bands(
   return { facets: mapear(scores.facets), domains: mapear(scores.domains) };
 }
 
-/** «alta» y «media-alta» cuentan como nivel alto; «baja» y «media-baja», como bajo. */
-function cumple(banda: Band, level: Level): boolean {
-  return level === "high" ? banda === "alta" || banda === "media-alta" : banda === "baja" || banda === "media-baja";
+/**
+ * Qué bandas cumplen una condición de la regla.
+ *
+ * **Esto es la perilla que calibra todo el informe y no tiene una respuesta
+ * obvia.** Las reglas del material dicen «Alta Sociabilidad», no «sociabilidad
+ * algo por encima de la media»:
+ *
+ * - Contando las bandas centrales, el caso de ejemplo rozaba 14 de las 26 reglas.
+ *   Eso en el informe es ruido, no información.
+ * - Sin contarlas —lo estricto, que es el valor por defecto— ese mismo caso no
+ *   dispara ninguna. Una regla de tres condiciones exige tres extremos a la vez.
+ *
+ * Cuál es el punto correcto depende de los baremos, que aún no están: con
+ * percentiles, «alta» pasa a ser el cuartil superior y la frecuencia cambia.
+ * Hasta entonces se deja estricto y **configurable**, para poder medirlo con
+ * casos reales en vez de decidirlo a ojo.
+ */
+export interface Strictness {
+  high: readonly Band[];
+  low: readonly Band[];
+}
+
+export const ESTRICTO: Strictness = { high: ["alta"], low: ["baja"] };
+export const AMPLIO: Strictness = { high: ["alta", "media-alta"], low: ["baja", "media-baja"] };
+
+function cumple(banda: Band, level: Level, strictness: Strictness): boolean {
+  return (level === "high" ? strictness.high : strictness.low).includes(banda);
 }
 
 export interface RuleMatch {
@@ -125,7 +149,11 @@ export interface Interpretation {
  * quedan a una condición se devuelven aparte como señales de atención: son
  * información, pero no son lo mismo y no pueden redactarse igual.
  */
-export function interpret(facetBands: Record<string, BandResult>, rules: readonly Rule[]): Interpretation {
+export function interpret(
+  facetBands: Record<string, BandResult>,
+  rules: readonly Rule[],
+  strictness: Strictness = ESTRICTO,
+): Interpretation {
   const fired: RuleMatch[] = [];
   const nearMisses: RuleMatch[] = [];
 
@@ -139,7 +167,7 @@ export function interpret(facetBands: Record<string, BandResult>, rules: readonl
         unmet.push({ condition, band: "media-baja" });
         continue;
       }
-      (cumple(resultado.band, condition.level) ? met : unmet).push({
+      (cumple(resultado.band, condition.level, strictness) ? met : unmet).push({
         condition,
         band: resultado.band,
       });

@@ -27,7 +27,10 @@ chocar con lo que Lovable escriba por su cuenta.
 | Base de conocimiento (15 facetas, ~60 combinaciones) | `docs/base-conocimiento-bfi2.md` | ✅ Extraída del material |
 | Modelo de interpretación (bandas, reglas, seguridad) | `docs/02` | ✅ Diseñado |
 | Reglas de combinación (26, con cita) | `src/config/interpretation/` | ✅ Transcritas |
-| Motor de bandas e interpretación | `src/services/interpretation.ts` | ✅ Hecho, 36 pruebas en verde |
+| Motor de bandas e interpretación | `src/services/interpretation.ts` | ✅ Hecho |
+| Estructura del informe | `docs/03` | ✅ Diseñada |
+| Ensamblador del informe | `src/services/report.ts` | ✅ Hecho, 48 pruebas en verde |
+| Calibración de las reglas | `docs/02` | 🟡 Parametrizada, **a decidir con datos** |
 | Baremos españoles (medias y DT) | `docs/baremos-propuesta.md` | 🟡 Encontrados, **en espera de validación** |
 | Informe en pantalla (estructura + gráficos) | app | ⬜ Pendiente |
 | Párrafos de coaching redactados por Claude | API de Claude | ⬜ Pendiente |
