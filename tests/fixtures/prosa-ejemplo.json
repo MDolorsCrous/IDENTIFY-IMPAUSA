@@ -1,39 +1,40 @@
 {
-  "_nota": "Ejemplo de lo que devuelve Claude. La forma de este objeto ES el esquema de salida: una clave por sección, sin prosa libre. Estos textos están escritos a mano para la maqueta.",
-  "titular": "Empuje sin sistema, y un radar que no se apaga",
-  "perfilEnUnaFrase": "Tu perfil dibuja a alguien con motor: nivel de energía y productividad claramente por encima del resto, y una curiosidad que va por delante. Pero ese empuje no se apoya en ninguna estructura — la organización es lo más bajo de todo el perfil — y convive con un radar de preocupación muy activo. La combinación tiene una lógica interna: sacas las cosas adelante a base de tirón, y el radar te avisa pronto de lo que puede salir mal. Funciona. El coste es que rara vez descansa.",
+  "_nota": "Ejemplo de lo que devuelve Claude. La forma de este objeto ES el esquema de salida: una clave por sección, sin prosa libre. Escrito siguiendo el tono documentado en la skill disc-insight-coach: próximo, profesional, humano, claro, motivador, profundo, respetuoso, práctico, accionable, prudente, no clínico. Se atribuye a los resultados y se matiza; nada de frases grandilocuentes.",
+  "titular": "Un perfil con motor propio y con el radar siempre encendido",
+  "perfilEnUnaFrase": "Los resultados muestran un perfil con empuje: el nivel de energía y la productividad quedan claramente por encima del resto, acompañados de una curiosidad intelectual alta. Ese empuje convive con una organización en la parte baja de la escala y con una sensibilidad a la preocupación muy marcada. La combinación tiene su lógica: tu perfil tiende a sacar el trabajo adelante por impulso más que por sistema, y la anticipación te avisa pronto de lo que puede complicarse. Funciona bien, y puede tener un coste en descanso que conviene mirar de cerca.",
   "dominios": {
-    "extraversion": "Tu extraversión se sostiene casi entera sobre la energía. Tienes empuje y ritmo, pero no buscas especialmente la compañía ni te impones en el grupo. Es un perfil de motor propio más que de motor social: rindes por impulso interno, no porque te arrastre la gente.",
-    "agreeableness": "Aquí la nota está en la confianza, que es lo más bajo del bloque. Sí tienes registro empático —la compasión aguanta por encima del resto—, pero partes de la reserva: das el beneficio de la duda tarde. Eso protege, y también hace que cueste más apoyarse en un equipo.",
-    "conscientiousness": "El contraste más marcado de todo tu perfil está aquí. Productividad claramente alta, organización en el extremo bajo. Es decir: consigues terminar cosas, pero no gracias a un sistema, sino a pesar de no tenerlo. Funciona mientras la carga sea asumible.",
-    "negative_emotionality": "Tu sensibilidad a la preocupación es lo más pronunciado del perfil entero. No aparece acompañada de un tono anímico bajo ni de reactividad: no es malestar general, es anticipación. Ves antes lo que puede fallar. Es una ventaja real en gestión de riesgo, y un impuesto silencioso en descanso.",
-    "open_mindedness": "Curiosidad intelectual alta y sensibilidad estética alta, pero imaginación creativa en el extremo contrario. Tu apertura es de las que absorben, analizan y disfrutan lo que ya existe, más que de las que generan alternativas nuevas desde cero."
+    "extraversion": "Tu extraversión se apoya sobre todo en el nivel de energía, que es el más alto de los tres. La sociabilidad y la asertividad quedan cerca del punto medio. Esto sugiere un perfil que se activa por motor propio más que por estímulo social: puedes rendir con intensidad sin necesitar un entorno muy poblado alrededor.",
+    "agreeableness": "Dentro de este dominio, la confianza es la puntuación más baja y la compasión la más alta. Los resultados apuntan a alguien con registro empático que, aun así, tiende a conceder el beneficio de la duda con calma. Es una combinación que protege, y que puede hacer que apoyarse en el equipo cueste algo más de lo necesario.",
+    "conscientiousness": "Aquí aparece el contraste más marcado del perfil: la productividad queda alta y la organización, en la parte baja de la escala. Tu perfil puede sacar adelante lo que se propone sin apoyarse en una estructura previa. Es una fortaleza real mientras la carga sea asumible, y el punto donde conviene poner atención cuando deja de serlo.",
+    "negative_emotionality": "La sensibilidad a la preocupación es lo más pronunciado de todo el perfil, y llega sin ir acompañada de un tono anímico bajo ni de una reactividad alta. Esto sugiere anticipación más que malestar: puedes tender a detectar antes lo que podría fallar. Bien dirigida es una capacidad valiosa en gestión de riesgo; sin dirigir, tiende a mantenerse encendida más tiempo del necesario.",
+    "open_mindedness": "La curiosidad intelectual y la sensibilidad estética quedan altas, mientras que la imaginación creativa se sitúa en la parte baja. Los resultados dibujan una apertura que disfruta explorando, analizando y apreciando lo que ya existe, más que generando alternativas desde cero. Son dos formas distintas de apertura, y esta es claramente la primera."
   },
-  "senales": "Ninguna de estas se cumple, pero a cada una le falta una sola condición. Te las señalo porque marcan por dónde se mueve tu perfil, no porque te describan.",
-  "enElTrabajo": "Con esta combinación, tu rendimiento depende mucho más del entorno de lo que probablemente crees. Donde el trabajo llega ordenado y la carga es previsible, tu productividad y tu curiosidad hacen el resto y no se nota la falta de sistema. Donde la carga es alta, cambiante o depende de coordinarte con gente en la que aún no confías, la ausencia de estructura deja de ser un detalle y el radar de preocupación empieza a trabajar horas extra. La palanca no es \"organizarte más\" en abstracto: es que el sistema lo ponga el entorno cuando tú no lo pones.",
+  "senales": "Ninguna de estas combinaciones se cumple en tu perfil, pero a cada una le falta una sola condición. Se recogen aquí porque señalan por dónde se mueve el perfil, no porque lo describan.",
+  "enElTrabajo": "Con esta combinación, el rendimiento depende bastante del entorno. Cuando el trabajo llega ordenado y la carga es previsible, la productividad y la curiosidad hacen el resto y la falta de estructura apenas se nota. Cuando la carga sube, cambia de forma o exige coordinarse con personas con las que aún no hay confianza establecida, esa estructura ausente empieza a pesar y la anticipación trabaja más horas de las necesarias. La palanca práctica no es organizarse más en abstracto: es asegurar que el sistema lo aporte el entorno cuando el perfil no lo aporta por sí solo.",
   "preguntas": [
     "Cuando algo sale bien, ¿es por el empuje o porque esa vez había estructura?",
-    "¿Qué te cuesta más: organizarte, o admitir que necesitas hacerlo?",
-    "Tu radar de preocupación, ¿cuántas veces al año acierta de verdad?",
-    "¿Con quién bajas la reserva, y qué hizo esa persona para que ocurriera?",
-    "Si mañana tuvieras un sistema que funcionara solo, ¿qué harías con la energía que ahora gastas en compensar?",
-    "¿Qué señal te avisaría de que el empuje ya no está cubriendo la falta de estructura?"
+    "¿Qué resulta más difícil: organizarse, o reconocer que hace falta hacerlo?",
+    "De todas las veces que la anticipación se activó este año, ¿en cuántas acertó?",
+    "¿Con quién baja la reserva, y qué hizo esa persona para que ocurriera?",
+    "Si mañana existiera un sistema que funcionara solo, ¿en qué se emplearía la energía que ahora va a compensarlo?",
+    "¿Qué señal avisaría de que el empuje ya no está cubriendo la falta de estructura?"
   ],
-  "experimentos": [
+  "planAccion": [
     {
       "titulo": "Una sola lista, dos semanas",
-      "texto": "No un sistema: una lista, en un sitio fijo, revisada a la misma hora cada día. El objetivo no es ordenarte la vida, es comprobar cuánta energía estabas gastando en recordar.",
-      "indicador": "Al cabo de dos semanas: ¿cuántas veces te salvó de un olvido?"
+      "texto": "No un sistema completo: una lista, en un sitio fijo, revisada a la misma hora cada día. El objetivo no es ordenarlo todo, sino comprobar cuánta energía se estaba yendo en recordar.",
+      "indicador": "A las dos semanas: cuántas veces evitó un olvido."
     },
     {
-      "titulo": "Escribir el aviso del radar",
-      "texto": "Cada vez que la preocupación se dispare, apúntala en una línea y qué temías. Sin analizarla. Al mes, míralas todas de golpe.",
-      "indicador": "Cuántas se cumplieron. Si acierta mucho, es criterio. Si no, es ruido caro."
+      "titulo": "Poner por escrito el aviso",
+      "texto": "Cada vez que la preocupación se active, anotarla en una línea junto a lo que se temía. Sin analizarla en el momento. Al mes, leerlas todas seguidas.",
+      "indicador": "Cuántas se cumplieron. Si acierta a menudo, es criterio y conviene escucharlo; si no, es ruido que se puede soltar."
     },
     {
       "titulo": "Un préstamo de confianza",
-      "texto": "Elige una tarea que harías tú por no depender de nadie y delégala entera, sin supervisar el proceso. Una sola, y de riesgo bajo.",
-      "indicador": "Qué pasó de verdad, comparado con lo que habías anticipado."
+      "texto": "Elegir una tarea que normalmente se haría en solitario por no depender de nadie, y delegarla entera sin supervisar el proceso. Una sola, y de riesgo bajo.",
+      "indicador": "Qué ocurrió en realidad, comparado con lo que se había anticipado."
     }
-  ]
+  ],
+  "conclusion": "Este perfil tiene una fortaleza clara y bien identificada: capacidad de avance sostenida por energía propia, con una anticipación que detecta pronto los riesgos. El trabajo más rentable a corto plazo no está en corregir nada, sino en darle estructura externa a lo que hoy se sostiene por impulso, y en aprender a distinguir cuándo la anticipación está aportando criterio y cuándo se ha quedado encendida sin motivo."
 }

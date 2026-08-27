@@ -40,28 +40,28 @@ test("el informe tiene los 5 dominios con sus 3 facetas", () => {
   }
 });
 
-test("los nombres visibles sustituyen a los técnicos donde toca", () => {
+test("se conserva la nomenclatura original del BFI-2", () => {
+  // Decisión de la autora: nada de renombrar. Los nombres del informe son los del
+  // instrumento, para que se puedan contrastar con cualquier otra fuente.
   const informe = construir();
   const emocional = informe.domains.find((d) => d.id === "negative_emotionality")!;
-  assert.equal(emocional.label, "Sensibilidad emocional");
-  assert.equal(emocional.technicalLabel, "Emocionalidad negativa");
-
-  const nombres = emocional.facets.map((f) => f.label);
-  assert.deepEqual(nombres, ["Sensibilidad a la preocupación", "Tono anímico", "Reactividad emocional"]);
-  // Los nombres que asustan no aparecen como etiqueta visible en ninguna parte
-  const visibles = informe.domains.flatMap((d) => [d.label, ...d.facets.map((f) => f.label)]);
-  assert.ok(!visibles.includes("Depresión"));
-  assert.ok(!visibles.includes("Ansiedad"));
+  assert.equal(emocional.label, "Emocionalidad negativa");
+  assert.equal(emocional.technicalLabel, undefined);
+  assert.deepEqual(emocional.facets.map((f) => f.label), ["Ansiedad", "Depresión", "Volatilidad emocional"]);
 });
 
-test("la leyenda recoge todos los renombrados, y solo esos", () => {
+test("sin renombrados, la leyenda de equivalencias queda vacía", () => {
+  // Si un día se renombra algo, la leyenda vuelve sola: no hay que tocar el código.
   const informe = construir();
-  for (const e of informe.legend) {
-    assert.notEqual(e.label, e.technicalLabel, `${e.label} está en la leyenda sin haber cambiado`);
-  }
-  const etiquetas = informe.legend.map((e) => e.technicalLabel);
-  assert.ok(etiquetas.includes("Depresión"));
-  assert.ok(etiquetas.includes("Emocionalidad negativa"));
+  assert.deepEqual(informe.legend, []);
+});
+
+test("la nomenclatura clínica lleva su aclaración donde aparece", () => {
+  // Al conservar los nombres originales, la explicación de que Ansiedad y Depresión
+  // son facetas y no diagnósticos no puede vivir escondida en una leyenda.
+  const notas = leer("src/i18n/es-informe.json").notas;
+  assert.ok(notas.negative_emotionality, "falta la aclaración del dominio");
+  assert.match(notas.negative_emotionality, /no son condiciones clínicas|No son condiciones clínicas/);
 });
 
 test("sin baremo, el aviso dice que se compara con la escala", () => {

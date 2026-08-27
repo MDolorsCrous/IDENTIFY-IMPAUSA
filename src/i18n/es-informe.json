@@ -1,10 +1,10 @@
 {
-  "_nota": "Nombres que ve la persona en el informe. Se mantiene a mano: no lo genera tools/gen-config.js. Los nombres técnicos siguen en es.json y aparecen en la leyenda.",
+  "_nota": "Nombres que ve la persona en el informe. Decisión de la autora (27-08-2026): se mantiene la nomenclatura original del BFI-2, sin renombrar. Por eso `renombradas` está vacío y la leyenda de equivalencias no se imprime.",
   "domains": {
     "extraversion": "Extraversión",
     "agreeableness": "Cordialidad",
     "conscientiousness": "Responsabilidad",
-    "negative_emotionality": "Sensibilidad emocional",
+    "negative_emotionality": "Emocionalidad negativa",
     "open_mindedness": "Apertura de mente"
   },
   "facets": {
@@ -16,20 +16,17 @@
     "trust": "Confianza",
     "organization": "Organización",
     "productiveness": "Productividad",
-    "responsibility": "Sentido del deber",
-    "anxiety": "Sensibilidad a la preocupación",
-    "depression": "Tono anímico",
-    "emotional_volatility": "Reactividad emocional",
+    "responsibility": "Responsabilidad",
+    "anxiety": "Ansiedad",
+    "depression": "Depresión",
+    "emotional_volatility": "Volatilidad emocional",
     "intellectual_curiosity": "Curiosidad intelectual",
     "aesthetic_sensitivity": "Sensibilidad estética",
     "creative_imagination": "Imaginación creativa"
   },
-  "renombradas": {
-    "_nota": "Las que cambian respecto al nombre técnico. La leyenda del informe muestra ambos.",
-    "negative_emotionality": "Emocionalidad negativa",
-    "anxiety": "Ansiedad",
-    "depression": "Depresión",
-    "emotional_volatility": "Volatilidad emocional",
-    "responsibility": "Responsabilidad (faceta)"
+  "renombradas": {},
+  "notas": {
+    "_nota": "Aclaraciones que acompañan a un dominio cuando su nomenclatura técnica puede leerse como algo que no es. Al conservar los nombres originales, la explicación va donde aparecen, no escondida en una leyenda.",
+    "negative_emotionality": "Los nombres de estas tres facetas —Ansiedad, Depresión, Volatilidad emocional— son los términos técnicos del cuestionario, y describen tendencias normales de la personalidad. No son condiciones clínicas ni tienen nada que ver con un diagnóstico: una puntuación alta en Depresión significa que sueles registrar el desánimo con más facilidad, no que tengas un trastorno del ánimo."
   }
 }

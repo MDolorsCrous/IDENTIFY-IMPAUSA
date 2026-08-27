@@ -1,6 +1,6 @@
 # 03 — Estructura del informe
 
-Doce secciones. Cada una declara **qué la alimenta**: `código` cuando es determinista y
+Once secciones más portada e índice. Cada una declara **qué la alimenta**: `código` cuando es determinista y
 sale de las puntuaciones, `Claude` cuando hay que redactarla.
 
 La regla que ordena todo: **el código decide qué se dice, Claude decide cómo se dice.**
@@ -9,6 +9,7 @@ Ninguna sección deja que el modelo elija el contenido.
 | # | Sección | Fuente | Qué contiene |
 | --- | --- | --- | --- |
 | 0 | Portada | código | Rótulo *Identify by Impausa*, nombre, fecha |
+| 0b | Índice de navegación | código | Elemento de la casa: las once secciones, enlazadas |
 | 1 | Cómo leer esto | código | Texto fijo: qué es, qué no es, contra qué se compara |
 | 2 | Tu perfil en una frase | código + Claude | Titular determinista + un párrafo personalizado |
 | 3 | Los cinco dominios | código | Gráfico con las cinco puntuaciones y sus bandas |
@@ -16,34 +17,83 @@ Ninguna sección deja que el modelo elija el contenido.
 | 5 | Lo que aparece al cruzarlas | código + Claude | Las reglas que han disparado, con su efecto |
 | 6 | Señales de atención | código + Claude | Reglas a las que les falta una condición, en condicional |
 | 7 | En el trabajo | código + Claude | Resultados profesionales de las facetas destacadas |
-| 8 | Preguntas para llevarte | Claude | 5–7 preguntas ancladas a lo que ha disparado |
-| 9 | Tres experimentos | Claude | Acciones concretas, cada una con su indicador |
-| 10 | Una imagen | skill `metaforas-coaching` | 1–2 metáforas que reencuadren el patrón |
-| 11 | Límites y buen uso | código | Texto fijo: alcance, caducidad, confidencialidad |
-| — | Leyenda y referencias | código | Bandas, nombres técnicos, bibliografía citada |
+| 8 | Preguntas poderosas | Claude | 5–7 preguntas ancladas a lo que ha disparado |
+| 9 | Plan de acción | Claude | 3 acciones concretas, cada una con su indicador |
+| 10 | Conclusiones | Claude | Cierre: la fortaleza y el trabajo más rentable a corto plazo |
+| 11 | Fuentes y metodología | código | Instrumento, adaptación, referencias citadas |
+| 12 | Aviso importante | código | Alcance, prudencia con las facetas, confidencialidad |
 
 ---
 
 ## Los nombres que ve la persona
 
-Los nombres técnicos de las facetas de Emocionalidad negativa no pueden aparecer tal
-cual: leer «Depresión: alta» en un informe propio asusta, y **no es lo que el dato dice**.
+**Se mantiene la nomenclatura original del BFI-2.** Decisión de la autora, 27-08-2026.
 
-| Nombre técnico | Nombre en el informe |
+Se valoró renombrar las tres facetas de Emocionalidad negativa, porque leer «Depresión:
+alta» en un informe propio puede asustar. Se descartó: los nombres del instrumento
+permiten contrastar el informe con cualquier otra fuente, y cambiarlos rompe esa
+trazabilidad.
+
+Lo que sí cambia es **dónde vive la aclaración**. Al conservar los nombres, la
+explicación no puede esconderse en una leyenda al final: acompaña al dominio, justo
+donde aparecen las puntuaciones.
+
+> Los nombres de estas tres facetas —Ansiedad, Depresión, Volatilidad emocional— son los
+> términos técnicos del cuestionario, y describen tendencias normales de la personalidad.
+> No son condiciones clínicas ni tienen nada que ver con un diagnóstico.
+
+Está en `src/i18n/es-informe.json`, en `notas`. Si algún día se decide renombrar algo,
+basta con rellenar `renombradas`: la leyenda de equivalencias reaparece sola.
+
+---
+
+## Tono
+
+**Está documentado, y no hay que inventarlo.** La skill `disc-insight-coach` fija el tono
+de los informes de LivePausa / IMPAUSA:
+
+> próximo · profesional · humano · claro · motivador · profundo · respetuoso · fácil de
+> entender · práctico · accionable · prudente · no clínico · no repetitivo
+
+Y prohíbe expresamente lo grandilocuente, con estos tres ejemplos:
+
+| No | Sí |
 | --- | --- |
-| Emocionalidad negativa (dominio) | Sensibilidad emocional |
-| Ansiedad | Sensibilidad a la preocupación |
-| Depresión | Tono anímico |
-| Volatilidad emocional | Reactividad emocional |
+| «Eres una fuerza imparable» | «Los resultados muestran una alta orientación a la acción» |
+| «Eres una líder nata» | «Tu perfil puede aportar foco, dirección y capacidad de avance» |
+| «Tu mente está programada para…» | «Puedes tender a tomar decisiones con rapidez» |
 
-Los doce restantes se quedan como están: no hay problema con «Organización» ni con
-«Curiosidad intelectual».
+De ahí salen tres reglas prácticas para redactar cada sección:
 
-El nombre técnico aparece **una vez**, en la leyenda, junto al visible. Ni se oculta ni
-se pone donde duele. Ver el protocolo de seguridad de [`02`](02-modelo-interpretacion.md).
+1. **Atribuir a los resultados**, no a la persona: «los resultados muestran», «tu perfil
+   tiende a», «esto sugiere».
+2. **Matizar**: «puede», «tiende a», «suele». Nunca un absoluto sobre alguien.
+3. **Terminar en algo accionable.** Si se nombra un coste, se dice qué hacer con él.
 
-> Pendiente de validar con Elisenda: renombrar un dominio no es inocuo si luego alguien
-> compara el informe con la literatura. Por eso la leyenda.
+Además: segunda persona, sin jerga sin explicar, y nunca etiquetar («tu patrón tiende
+a…», no «eres un X»).
+
+---
+
+## Identidad visual
+
+También documentada, y **no es la del rótulo**. Son dos cosas distintas:
+
+| Elemento | Fuente | Qué fija |
+| --- | --- | --- |
+| El rótulo *Identify by Impausa* de portada | skill `retol-test-impausa` | Serif editorial, degradado naranja→verde en «by Impausa», ancho idéntico al titular |
+| Todo lo demás del informe | skill `disc-insight-coach` | Verde `#1A4A3A`, verde medio `#2D6B57`, beige `#F7F2EB`, naranja `#E8842A`, borde `#E0D9D0` |
+
+**Tipografía: Playfair Display + Source Sans 3.** Resuelve la aparente contradicción entre
+las dos skills: el rótulo pide Cormorant Garamond, pero admite Playfair Display como
+alternativa, y es justo la que pide el informe. Con una sola serif se cumplen las dos.
+
+**El naranja se reserva para señalar**, no para decorar: marca la faceta que se separa de
+las otras dos de su dominio. Las barras van todas en verde medio. Un solo acento, y que
+signifique algo.
+
+Formato A4 vertical, márgenes amplios, interlineado cómodo y párrafos cortos, con estilos
+de impresión para exportar a PDF.
 
 ---
 
@@ -108,17 +158,6 @@ manipulador». Y siempre con la palanca al lado.
 
 ---
 
-## Tono
-
-Segunda persona, adulto, cálido y directo. Sin jerga sin explicar.
-
-- **Nunca etiquetar.** «Tu patrón tiende a…», no «eres un X».
-- **Toda debilidad con su palanca.** Si algo se nombra como coste, se dice qué hacer.
-- **Nada de halago vacío.** Un informe que solo dice cosas bonitas no sirve para nada.
-- **El dato antes que la interpretación.** Primero el número, después qué sugiere.
-
----
-
 ## Longitud
 
 | Sección | Objetivo |
@@ -129,12 +168,13 @@ Segunda persona, adulto, cálido y directo. Sin jerga sin explicar.
 | 6 — Señales | 40–60 palabras por señal |
 | 7 — En el trabajo | 200–250 palabras |
 | 8 — Preguntas | 5–7, una línea cada una |
-| 9 — Experimentos | 3, unas 60 palabras cada uno |
+| 9 — Plan de acción | 3 pasos, unas 60 palabras cada uno |
+| 10 — Conclusiones | 80–120 palabras |
 
 En total, entre 1.800 y 2.500 palabras: unas 8–10 páginas con los gráficos. Suficiente
 para decir algo, corto para que se lea entero.
 
-> Pendiente de decidir: si esto encaja con lo que tenías en mente o lo quieres más breve.
+Confirmado por la autora el 27-08-2026: **ocho páginas**.
 
 ---
 
