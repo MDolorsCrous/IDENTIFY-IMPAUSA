@@ -61,7 +61,7 @@ interpretación, que todavía no existe — ver [`../docs/02-modelo-interpretaci
 npm test
 ```
 
-13 pruebas, sin instalar nada: Node 22.6+ ejecuta TypeScript directamente.
+17 pruebas, sin instalar nada: Node 22.6+ ejecuta TypeScript directamente.
 
 La que importa es la que compara contra el Excel oficial. El fichero
 `BFI-2_formules_correctes_inversos.xlsx` trae un juego de respuestas de ejemplo con
@@ -89,8 +89,10 @@ que escribir un motor nuevo.
 - **`i18n/ca.json`.** No existe el fichero oficial del BFI-2 en catalán. Traducir un
   instrumento estandarizado por nuestra cuenta invalidaría la comparación con los
   datos publicados, así que hace falta la versión oficial.
-- **Erratas en los enunciados.** Los textos vienen del Excel y arrastran sus erratas
-  (`afirnaciones`, `Metóidico/a`, `IServicial`). Hay que corregirlos contra el PDF
-  antes de que los lea nadie.
-- **Ítems 34, 43 y 55.** Su polaridad no se puede deducir del Excel; están puestos
-  según la clave estándar del BFI-2. Ver [`../docs/01-especificacion-test.md`](../docs/01-especificacion-test.md).
+- **Erratas en los enunciados.** Los textos de `i18n/es.json` vienen del Excel y
+  arrastran sus erratas (`afirnaciones`, `Metóidico/a`, `IServicial`). Las páginas 1 y 2
+  del PDF traen los enunciados oficiales bien escritos; hay que volcarlos antes de que
+  los lea nadie. Solo afecta a lo que se ve en pantalla, no al cálculo.
+
+La polaridad de los 60 ítems **ya está verificada** contra la clave de corrección
+oficial del PDF, y esa clave vive en `tests/clave-oficial.test.ts`.

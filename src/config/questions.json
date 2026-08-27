@@ -3,420 +3,360 @@
     "id": 1,
     "domain": "extraversion",
     "facet": "sociability",
-    "reverse": false,
-    "reverseSource": "excel"
+    "reverse": false
   },
   {
     "id": 2,
     "domain": "agreeableness",
     "facet": "compassion",
-    "reverse": false,
-    "reverseSource": "excel"
+    "reverse": false
   },
   {
     "id": 3,
     "domain": "conscientiousness",
     "facet": "organization",
-    "reverse": true,
-    "reverseSource": "excel"
+    "reverse": true
   },
   {
     "id": 4,
     "domain": "negative_emotionality",
     "facet": "anxiety",
-    "reverse": true,
-    "reverseSource": "excel"
+    "reverse": true
   },
   {
     "id": 5,
     "domain": "open_mindedness",
     "facet": "aesthetic_sensitivity",
-    "reverse": true,
-    "reverseSource": "excel"
+    "reverse": true
   },
   {
     "id": 6,
     "domain": "extraversion",
     "facet": "assertiveness",
-    "reverse": false,
-    "reverseSource": "excel"
+    "reverse": false
   },
   {
     "id": 7,
     "domain": "agreeableness",
     "facet": "respectfulness",
-    "reverse": false,
-    "reverseSource": "excel"
+    "reverse": false
   },
   {
     "id": 8,
     "domain": "conscientiousness",
     "facet": "productiveness",
-    "reverse": true,
-    "reverseSource": "excel"
+    "reverse": true
   },
   {
     "id": 9,
     "domain": "negative_emotionality",
     "facet": "depression",
-    "reverse": true,
-    "reverseSource": "excel"
+    "reverse": true
   },
   {
     "id": 10,
     "domain": "open_mindedness",
     "facet": "intellectual_curiosity",
-    "reverse": false,
-    "reverseSource": "excel"
+    "reverse": false
   },
   {
     "id": 11,
     "domain": "extraversion",
     "facet": "energy_level",
-    "reverse": true,
-    "reverseSource": "excel"
+    "reverse": true
   },
   {
     "id": 12,
     "domain": "agreeableness",
     "facet": "trust",
-    "reverse": true,
-    "reverseSource": "excel"
+    "reverse": true
   },
   {
     "id": 13,
     "domain": "conscientiousness",
     "facet": "responsibility",
-    "reverse": false,
-    "reverseSource": "excel"
+    "reverse": false
   },
   {
     "id": 14,
     "domain": "negative_emotionality",
     "facet": "emotional_volatility",
-    "reverse": false,
-    "reverseSource": "excel"
+    "reverse": false
   },
   {
     "id": 15,
     "domain": "open_mindedness",
     "facet": "creative_imagination",
-    "reverse": false,
-    "reverseSource": "excel"
+    "reverse": false
   },
   {
     "id": 16,
     "domain": "extraversion",
     "facet": "sociability",
-    "reverse": true,
-    "reverseSource": "excel"
+    "reverse": true
   },
   {
     "id": 17,
     "domain": "agreeableness",
     "facet": "compassion",
-    "reverse": true,
-    "reverseSource": "excel"
+    "reverse": true
   },
   {
     "id": 18,
     "domain": "conscientiousness",
     "facet": "organization",
-    "reverse": false,
-    "reverseSource": "excel"
+    "reverse": false
   },
   {
     "id": 19,
     "domain": "negative_emotionality",
     "facet": "anxiety",
-    "reverse": false,
-    "reverseSource": "excel"
+    "reverse": false
   },
   {
     "id": 20,
     "domain": "open_mindedness",
     "facet": "aesthetic_sensitivity",
-    "reverse": false,
-    "reverseSource": "excel"
+    "reverse": false
   },
   {
     "id": 21,
     "domain": "extraversion",
     "facet": "assertiveness",
-    "reverse": false,
-    "reverseSource": "excel"
+    "reverse": false
   },
   {
     "id": 22,
     "domain": "agreeableness",
     "facet": "respectfulness",
-    "reverse": true,
-    "reverseSource": "excel"
+    "reverse": true
   },
   {
     "id": 23,
     "domain": "conscientiousness",
     "facet": "productiveness",
-    "reverse": true,
-    "reverseSource": "excel"
+    "reverse": true
   },
   {
     "id": 24,
     "domain": "negative_emotionality",
     "facet": "depression",
-    "reverse": true,
-    "reverseSource": "excel"
+    "reverse": true
   },
   {
     "id": 25,
     "domain": "open_mindedness",
     "facet": "intellectual_curiosity",
-    "reverse": true,
-    "reverseSource": "excel"
+    "reverse": true
   },
   {
     "id": 26,
     "domain": "extraversion",
     "facet": "energy_level",
-    "reverse": true,
-    "reverseSource": "excel"
+    "reverse": true
   },
   {
     "id": 27,
     "domain": "agreeableness",
     "facet": "trust",
-    "reverse": false,
-    "reverseSource": "excel"
+    "reverse": false
   },
   {
     "id": 28,
     "domain": "conscientiousness",
     "facet": "responsibility",
-    "reverse": true,
-    "reverseSource": "excel"
+    "reverse": true
   },
   {
     "id": 29,
     "domain": "negative_emotionality",
     "facet": "emotional_volatility",
-    "reverse": true,
-    "reverseSource": "excel"
+    "reverse": true
   },
   {
     "id": 30,
     "domain": "open_mindedness",
     "facet": "creative_imagination",
-    "reverse": true,
-    "reverseSource": "excel"
+    "reverse": true
   },
   {
     "id": 31,
     "domain": "extraversion",
     "facet": "sociability",
-    "reverse": true,
-    "reverseSource": "excel"
+    "reverse": true
   },
   {
     "id": 32,
     "domain": "agreeableness",
     "facet": "compassion",
-    "reverse": false,
-    "reverseSource": "excel"
+    "reverse": false
   },
   {
     "id": 33,
     "domain": "conscientiousness",
     "facet": "organization",
-    "reverse": false,
-    "reverseSource": "excel"
+    "reverse": false
   },
   {
     "id": 34,
     "domain": "negative_emotionality",
     "facet": "anxiety",
-    "reverse": false,
-    "reverseSource": "clave-estandar-bfi2"
+    "reverse": false
   },
   {
     "id": 35,
     "domain": "open_mindedness",
     "facet": "aesthetic_sensitivity",
-    "reverse": false,
-    "reverseSource": "excel"
+    "reverse": false
   },
   {
     "id": 36,
     "domain": "extraversion",
     "facet": "assertiveness",
-    "reverse": true,
-    "reverseSource": "excel"
+    "reverse": true
   },
   {
     "id": 37,
     "domain": "agreeableness",
     "facet": "respectfulness",
-    "reverse": true,
-    "reverseSource": "excel"
+    "reverse": true
   },
   {
     "id": 38,
     "domain": "conscientiousness",
     "facet": "productiveness",
-    "reverse": false,
-    "reverseSource": "excel"
+    "reverse": false
   },
   {
     "id": 39,
     "domain": "negative_emotionality",
     "facet": "depression",
-    "reverse": false,
-    "reverseSource": "excel"
+    "reverse": false
   },
   {
     "id": 40,
     "domain": "open_mindedness",
     "facet": "intellectual_curiosity",
-    "reverse": false,
-    "reverseSource": "excel"
+    "reverse": false
   },
   {
     "id": 41,
     "domain": "extraversion",
     "facet": "energy_level",
-    "reverse": false,
-    "reverseSource": "excel"
+    "reverse": false
   },
   {
     "id": 42,
     "domain": "agreeableness",
     "facet": "trust",
-    "reverse": true,
-    "reverseSource": "excel"
+    "reverse": true
   },
   {
     "id": 43,
     "domain": "conscientiousness",
     "facet": "responsibility",
-    "reverse": false,
-    "reverseSource": "clave-estandar-bfi2"
+    "reverse": false
   },
   {
     "id": 44,
     "domain": "negative_emotionality",
     "facet": "emotional_volatility",
-    "reverse": true,
-    "reverseSource": "excel"
+    "reverse": true
   },
   {
     "id": 45,
     "domain": "open_mindedness",
     "facet": "creative_imagination",
-    "reverse": true,
-    "reverseSource": "excel"
+    "reverse": true
   },
   {
     "id": 46,
     "domain": "extraversion",
     "facet": "sociability",
-    "reverse": false,
-    "reverseSource": "excel"
+    "reverse": false
   },
   {
     "id": 47,
     "domain": "agreeableness",
     "facet": "compassion",
-    "reverse": true,
-    "reverseSource": "excel"
+    "reverse": true
   },
   {
     "id": 48,
     "domain": "conscientiousness",
     "facet": "organization",
-    "reverse": true,
-    "reverseSource": "excel"
+    "reverse": true
   },
   {
     "id": 49,
     "domain": "negative_emotionality",
     "facet": "anxiety",
-    "reverse": true,
-    "reverseSource": "excel"
+    "reverse": true
   },
   {
     "id": 50,
     "domain": "open_mindedness",
     "facet": "aesthetic_sensitivity",
-    "reverse": true,
-    "reverseSource": "excel"
+    "reverse": true
   },
   {
     "id": 51,
     "domain": "extraversion",
     "facet": "assertiveness",
-    "reverse": true,
-    "reverseSource": "excel"
+    "reverse": true
   },
   {
     "id": 52,
     "domain": "agreeableness",
     "facet": "respectfulness",
-    "reverse": false,
-    "reverseSource": "excel"
+    "reverse": false
   },
   {
     "id": 53,
     "domain": "conscientiousness",
     "facet": "productiveness",
-    "reverse": false,
-    "reverseSource": "excel"
+    "reverse": false
   },
   {
     "id": 54,
     "domain": "negative_emotionality",
     "facet": "depression",
-    "reverse": false,
-    "reverseSource": "excel"
+    "reverse": false
   },
   {
     "id": 55,
     "domain": "open_mindedness",
     "facet": "intellectual_curiosity",
-    "reverse": true,
-    "reverseSource": "clave-estandar-bfi2"
+    "reverse": true
   },
   {
     "id": 56,
     "domain": "extraversion",
     "facet": "energy_level",
-    "reverse": false,
-    "reverseSource": "excel"
+    "reverse": false
   },
   {
     "id": 57,
     "domain": "agreeableness",
     "facet": "trust",
-    "reverse": false,
-    "reverseSource": "excel"
+    "reverse": false
   },
   {
     "id": 58,
     "domain": "conscientiousness",
     "facet": "responsibility",
-    "reverse": true,
-    "reverseSource": "excel"
+    "reverse": true
   },
   {
     "id": 59,
     "domain": "negative_emotionality",
     "facet": "emotional_volatility",
-    "reverse": false,
-    "reverseSource": "excel"
+    "reverse": false
   },
   {
     "id": 60,
     "domain": "open_mindedness",
     "facet": "creative_imagination",
-    "reverse": false,
-    "reverseSource": "excel"
+    "reverse": false
   }
 ]

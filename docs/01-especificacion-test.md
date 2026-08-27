@@ -67,16 +67,15 @@ Rango de cualquier faceta o dominio: **1,00 – 5,00**.
 
 3, 4, 5, 8, 9, 11, 12, 16, 17, 22, 23, 24, 25, 26, 28, 29, 30, 31, 36, 37, 42, 44, 45, 47, 48, 49, 50, 51, 55, 58
 
-De estos, **29 se deducen del propio Excel** comparando cada respuesta de ejemplo con
-su valor recodificado. Los ítems **34, 43 y 55** tienen respuesta 3 en el ejemplo, y
-como `6 − 3 = 3` su polaridad no se puede deducir del fichero. Se han asignado según
-la clave estándar del BFI-2 (34 directo, 43 directo, **55 inverso**), lo que da los 30
-ítems inversos que tiene el instrumento oficial.
+Fuente: la **clave de corrección oficial**, página 3 del PDF, sección «Escalas de las
+facetas del BFI-2», donde los inversos van marcados con una R.
 
-> ⚠️ **Pendiente de confirmar.** El Excel remite al PDF (`Els ítems marcats amb R al PDF
-> es recodifiquen com 6 - resposta`), pero `Spanish BFI-2 Form (1).pdf` es un escaneado
-> sin capa de texto. Hay que abrirlo y comprobar a ojo si 34, 43 y 55 llevan la marca R.
-> Es la única pieza de la especificación que no está verificada contra fuente.
+> **Doblemente verificado.** El Excel permite deducir la polaridad de 57 ítems
+> comparando cada respuesta de ejemplo con su valor recodificado (los otros 3 tienen
+> respuesta 3, y como `6 − 3 = 3` no se puede saber). En esos 57 el Excel y la clave del
+> PDF coinciden **sin una sola discrepancia**, y la clave completa está copiada en
+> `tests/clave-oficial.test.ts`: si alguien toca la configuración y se desvía, la prueba
+> se pone roja.
 
 ## Los 60 ítems
 
@@ -115,7 +114,7 @@ la clave estándar del BFI-2 (34 directo, 43 directo, **55 inverso**), lo que da
 | 31 | A veces tímido, introvertido/a. | Extraversión | Sociabilidad | **inverso** |
 | 32 | IServicial y generoso/a con los demás. | Cordialidad | Compasión | directo |
 | 33 | Que mantiene todo limpio y ordenado. | Responsabilidad | Organización | directo |
-| 34 | Que se preocupa mucho. | Emocionalidad negativa | Ansiedad | directo ⚠️ |
+| 34 | Que se preocupa mucho. | Emocionalidad negativa | Ansiedad | directo |
 | 35 | Que valora el arte y la belleza. | Apertura de mente | Sensibilidad Estética | directo |
 | 36 | A quién le es difícil influir en los demás. | Extraversión | Asertividad | **inverso** |
 | 37 | Que a veces es grosero/a con los demás. | Cordialidad | Respeto | **inverso** |
@@ -124,7 +123,7 @@ la clave estándar del BFI-2 (34 directo, 43 directo, **55 inverso**), lo que da
 | 40 | Complejo/a, de pensamientos profundos. | Apertura de mente | Curiosidad Intelectual | directo |
 | 41 | Lleno de energía. | Extraversión | Nivel de Energía | directo |
 | 42 | Que desconfia de las intenciones de los demás. | Cordialidad | Confianza | **inverso** |
-| 43 | Fiable, con el/la que siempre se puede contar. | Responsabilidad | Responsabilidad | directo ⚠️ |
+| 43 | Fiable, con el/la que siempre se puede contar. | Responsabilidad | Responsabilidad | directo |
 | 44 | Que controla sus emociones. | Emocionalidad negativa | Volatilidad Emocional | **inverso** |
 | 45 | Que tiene dificultad para imaginarse las cosas. | Apertura de mente | Imaginación Creativa | **inverso** |
 | 46 | Hablador/a. | Extraversión | Sociabilidad | directo |
@@ -136,7 +135,7 @@ la clave estándar del BFI-2 (34 directo, 43 directo, **55 inverso**), lo que da
 | 52 | Educado/a, cortés con los demás. | Cordialidad | Respeto | directo |
 | 53 | Tenaz, que trabaja hasta terminar la tarea. | Responsabilidad | Productividad | directo |
 | 54 | Que tiende a sentirse deprimido/a, melancólico/a. | Emocionalidad negativa | Depresión | directo |
-| 55 | Con poco interés por ideas abstractas. | Apertura de mente | Curiosidad Intelectual | inverso ⚠️ |
+| 55 | Con poco interés por ideas abstractas. | Apertura de mente | Curiosidad Intelectual | **inverso** |
 | 56 | Que muestra mucho entusiasmo. | Extraversión | Nivel de Energía | directo |
 | 57 | Que piensa bien de la gente. | Cordialidad | Confianza | directo |
 | 58 | Que a veces se comporta de manera irresponsable. | Responsabilidad | Responsabilidad | **inverso** |

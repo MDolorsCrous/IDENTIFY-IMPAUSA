@@ -21,8 +21,8 @@ chocar con lo que Lovable escriba por su cuenta.
 
 | Pieza | Dónde vive | Estado |
 | --- | --- | --- |
-| Especificación del BFI-2 (60 ítems, escala, fórmulas) | `docs/01` | ✅ Extraída del Excel oficial |
-| Configuración y motor de puntuación | `src/` | ✅ Hecho, 13 pruebas en verde |
+| Especificación del BFI-2 (60 ítems, escala, fórmulas) | `docs/01` | ✅ Verificada contra Excel y PDF |
+| Configuración y motor de puntuación | `src/` | ✅ Hecho, 17 pruebas en verde |
 | Interfaz del test (responder las 60 preguntas) | Lovable | ⬜ **Sin empezar** — la app está en blanco |
 | Modelo de interpretación (bandas, perfiles, reglas) | esta carpeta → `docs/02` | ⬜ **La pieza que falta** |
 | Informe en pantalla (estructura + gráficos) | app | ⬜ Pendiente |
