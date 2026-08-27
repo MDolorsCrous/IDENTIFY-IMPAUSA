@@ -24,7 +24,8 @@ chocar con lo que Lovable escriba por su cuenta.
 | Especificación del BFI-2 (60 ítems, escala, fórmulas) | `docs/01` | ✅ Verificada contra Excel y PDF |
 | Configuración y motor de puntuación | `src/` | ✅ Hecho, 17 pruebas en verde |
 | Interfaz del test (responder las 60 preguntas) | Lovable | ⬜ **Sin empezar** — la app está en blanco |
-| Modelo de interpretación (bandas, perfiles, reglas) | esta carpeta → `docs/02` | ⬜ **La pieza que falta** |
+| Base de conocimiento (15 facetas, ~60 combinaciones) | `docs/base-conocimiento-bfi2.md` | ✅ Extraída del material |
+| Modelo de interpretación (bandas, reglas, seguridad) | `docs/02` | 🟡 Diseñado, bloqueado por los baremos |
 | Informe en pantalla (estructura + gráficos) | app | ⬜ Pendiente |
 | Párrafos de coaching redactados por Claude | API de Claude | ⬜ Pendiente |
 | Exportación PDF / Word con marca LivePausa | app | ⬜ Pendiente |
