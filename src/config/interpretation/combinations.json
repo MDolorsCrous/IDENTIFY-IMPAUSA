@@ -1,0 +1,392 @@
+[
+  {
+    "id": "burnout-aislamiento",
+    "effect": "Riesgo elevado de agotamiento profesional",
+    "conditions": [
+      { "facet": "sociability", "level": "low" },
+      { "facet": "energy_level", "level": "low" },
+      { "facet": "trust", "level": "low" },
+      { "facet": "depression", "level": "high" }
+    ],
+    "summary": "Poca inclinación a socializar, poca energía disponible, desconfianza hacia los compañeros y tendencia a la tristeza. En el trabajo, esta combinación se asocia con una probabilidad notablemente mayor de agotamiento físico y emocional severo.",
+    "scope": "laboral",
+    "evidence": "E2",
+    "safety": "clinico",
+    "references": ["Danner & Lechner, 2024"],
+    "sourceSlides": [28, 38, 53],
+    "appearsIn": ["sociability", "energy_level", "trust"]
+  },
+  {
+    "id": "compromiso-y-estatus-social",
+    "effect": "Alto compromiso ocupacional y estatus social",
+    "conditions": [
+      { "facet": "sociability", "level": "high" },
+      { "facet": "assertiveness", "level": "high" }
+    ],
+    "summary": "Predice orgullo por la actividad profesional y compromiso con el trabajo. En lo interpersonal, estatus social alto, popularidad y facilidad para asumir roles de liderazgo.",
+    "scope": "laboral",
+    "evidence": "E2",
+    "references": ["Danner & Lechner, 2024", "Ozer & Benet-Martínez, 2006", "Soto & John, 2017"],
+    "sourceSlides": [28, 33],
+    "appearsIn": ["sociability", "assertiveness"]
+  },
+  {
+    "id": "ciudadania-organizacional",
+    "effect": "Comportamiento de ciudadanía organizacional (OCB)",
+    "conditions": [
+      { "facet": "sociability", "level": "high" },
+      { "facet": "intellectual_curiosity", "level": "high" },
+      { "facet": "respectfulness", "level": "high" }
+    ],
+    "summary": "Ir más allá de las obligaciones estrictas: ayudar a los compañeros, aportar ideas de mejora, sostener la moral del equipo y hablar bien de la organización.",
+    "scope": "laboral",
+    "evidence": "E2",
+    "references": ["Danner & Lechner, 2024"],
+    "sourceSlides": [28, 48, 88],
+    "appearsIn": ["sociability", "respectfulness", "intellectual_curiosity"]
+  },
+  {
+    "id": "orientacion-prosocial",
+    "effect": "Orientación prosocial y voluntariado",
+    "conditions": [
+      { "facet": "sociability", "level": "high" },
+      { "facet": "compassion", "level": "high" }
+    ],
+    "summary": "Interés activo por relacionarse unido a preocupación genuina por el bienestar ajeno. Se asocia con conductas de ayuda, altruismo, voluntariado y relaciones familiares y de pareja satisfactorias.",
+    "scope": "interpersonal",
+    "evidence": "E2",
+    "references": ["Ozer & Benet-Martínez, 2006", "Soto & John, 2017"],
+    "sourceSlides": [28],
+    "appearsIn": ["sociability"]
+  },
+  {
+    "id": "orientacion-al-poder",
+    "effect": "Orientación al poder y a la manipulación",
+    "conditions": [
+      { "facet": "assertiveness", "level": "high" },
+      { "facet": "compassion", "level": "low" },
+      { "facet": "respectfulness", "level": "low" }
+    ],
+    "summary": "Querer liderar e imponerse sin empatía por el sufrimiento ajeno y sin reparo en romper la cortesía. Es la combinación que mejor predice conductas de búsqueda de poder y disposición a instrumentalizar a otros.",
+    "scope": "interpersonal",
+    "evidence": "E2",
+    "safety": "delicado",
+    "references": ["Soto & John, 2017", "Soto, 2019"],
+    "sourceSlides": [33, 43, 48],
+    "appearsIn": ["assertiveness", "compassion", "respectfulness"]
+  },
+  {
+    "id": "proposito-y-autoaceptacion",
+    "effect": "Sentido de propósito vital y autoaceptación",
+    "conditions": [
+      { "facet": "energy_level", "level": "high" },
+      { "facet": "responsibility", "level": "high" },
+      { "facet": "depression", "level": "low" }
+    ],
+    "summary": "Vitalidad y entusiasmo, capacidad de cumplir objetivos de forma constante y ánimo alejado del abatimiento. Predice claridad de dirección en la vida y satisfacción con la propia valía.",
+    "scope": "personal",
+    "evidence": "E2",
+    "references": ["Soto, 2019"],
+    "sourceSlides": [38],
+    "appearsIn": ["energy_level"],
+    "revision": "El original dice «responsabilidad» sin precisar si se refiere a la faceta (responsabilidad moral) o al dominio entero. Aquí se ha interpretado como la faceta."
+  },
+  {
+    "id": "crecimiento-personal",
+    "effect": "Alto crecimiento personal",
+    "conditions": [
+      { "facet": "energy_level", "level": "high" },
+      { "facet": "intellectual_curiosity", "level": "high" },
+      { "facet": "compassion", "level": "high" }
+    ],
+    "summary": "Entusiasmo para explorar, voluntad de aprender en profundidad y deseo de empatizar con el entorno. Estas personas sienten que evolucionan y maduran a lo largo del tiempo.",
+    "scope": "personal",
+    "evidence": "E2",
+    "references": ["Soto, 2019"],
+    "sourceSlides": [38, 43, 88],
+    "appearsIn": ["energy_level", "compassion", "intellectual_curiosity"]
+  },
+  {
+    "id": "conexion-social",
+    "effect": "Fuerte conexión social y comunitaria",
+    "conditions": [
+      { "facet": "energy_level", "level": "high" },
+      { "facet": "respectfulness", "level": "high" }
+    ],
+    "summary": "Entusiasmo y actividad social manteniendo la cortesía y el respeto por las normas. Predice vínculos comunitarios, de amistad y de compañerismo más sólidos.",
+    "scope": "interpersonal",
+    "evidence": "E2",
+    "references": ["Soto, 2019"],
+    "sourceSlides": [38],
+    "appearsIn": ["energy_level"]
+  },
+  {
+    "id": "benevolencia",
+    "effect": "Comportamiento benevolente",
+    "conditions": [
+      { "facet": "compassion", "level": "high" },
+      { "facet": "trust", "level": "high" },
+      { "facet": "intellectual_curiosity", "level": "high" }
+    ],
+    "summary": "Empatía emocional, creencia en la bondad ajena y mente abierta. Predice conductas prosociales del día a día: prestar, apoyar, preocuparse por el entorno cercano.",
+    "scope": "interpersonal",
+    "evidence": "E2",
+    "references": ["Soto, 2019"],
+    "sourceSlides": [43, 53, 88],
+    "appearsIn": ["compassion", "trust", "intellectual_curiosity"]
+  },
+  {
+    "id": "proteccion-frente-al-conflicto",
+    "effect": "Protección frente al conflicto y al abandono del puesto",
+    "conditions": [
+      { "facet": "trust", "level": "high" },
+      { "facet": "compassion", "level": "high" }
+    ],
+    "summary": "Buenas creencias hacia los compañeros junto con empatía funcionan como protector laboral: aumentan la satisfacción y reducen el deseo de abandonar el entorno de trabajo.",
+    "scope": "laboral",
+    "evidence": "E2",
+    "references": ["Danner & Lechner, 2024"],
+    "sourceSlides": [53],
+    "appearsIn": ["trust"]
+  },
+  {
+    "id": "orientacion-a-la-seguridad",
+    "effect": "Orientación a la seguridad y a lo predecible",
+    "conditions": [
+      { "facet": "organization", "level": "high" },
+      { "facet": "sociability", "level": "low" },
+      { "facet": "intellectual_curiosity", "level": "low" }
+    ],
+    "summary": "Valores orientados a evitar riesgos, a la seguridad personal y al mantenimiento de entornos predecibles. Perfiles que se alejan de la búsqueda de estimulación y de la ruptura de rutinas.",
+    "scope": "personal",
+    "evidence": "E2",
+    "references": ["Soto & John, 2017"],
+    "sourceSlides": [58],
+    "appearsIn": ["organization"]
+  },
+  {
+    "id": "salud-global",
+    "effect": "Mejor salud general autopercibida",
+    "conditions": [
+      { "facet": "organization", "level": "high" },
+      { "facet": "respectfulness", "level": "high" },
+      { "facet": "depression", "level": "low" }
+    ],
+    "summary": "Capacidad de sostener hábitos de vida ordenados y saludables manteniendo a la vez equilibrio emocional e interpersonal. Las tres facetas juntas predicen mejor salud percibida de forma independiente.",
+    "scope": "salud",
+    "evidence": "E2",
+    "references": ["Danner & Lechner, 2024"],
+    "sourceSlides": [58],
+    "appearsIn": ["organization"]
+  },
+  {
+    "id": "rendimiento-global",
+    "effect": "Alto rendimiento global",
+    "conditions": [
+      { "facet": "organization", "level": "high" },
+      { "facet": "productiveness", "level": "high" },
+      { "facet": "responsibility", "level": "high" }
+    ],
+    "summary": "El dominio de Responsabilidad completo: diseñar sistemas ordenados, tener la constancia para ejecutarlos y el compromiso cumplidor hacia el equipo.",
+    "scope": "laboral",
+    "evidence": "E2",
+    "references": ["Soto & John, 2017"],
+    "sourceSlides": [58],
+    "appearsIn": ["organization"]
+  },
+  {
+    "id": "dominio-del-entorno",
+    "effect": "Dominio del entorno",
+    "conditions": [
+      { "facet": "productiveness", "level": "high" },
+      { "facet": "depression", "level": "low" }
+    ],
+    "summary": "Ser resolutivo y enfocado a metas manteniendo el ánimo alejado del abatimiento. Es de los predictores más fuertes de sentirse competente para gestionar las exigencias de la vida diaria.",
+    "scope": "personal",
+    "evidence": "E2",
+    "references": ["Soto & John, 2017", "Soto, 2019"],
+    "sourceSlides": [63, 78],
+    "appearsIn": ["productiveness", "depression"]
+  },
+  {
+    "id": "hedonismo",
+    "effect": "Orientación a la gratificación inmediata",
+    "conditions": [
+      { "facet": "productiveness", "level": "low" },
+      { "facet": "responsibility", "level": "low" },
+      { "facet": "sociability", "level": "high" }
+    ],
+    "summary": "Poca disciplina de trabajo y bajo sentido del deber junto con ganas de estar con otros. Favorece priorizar el ocio y la gratificación a corto plazo por delante de las metas a largo plazo.",
+    "scope": "personal",
+    "evidence": "E2",
+    "safety": "delicado",
+    "references": ["Soto & John, 2017"],
+    "sourceSlides": [63, 68],
+    "appearsIn": ["productiveness", "responsibility"]
+  },
+  {
+    "id": "autonomia",
+    "effect": "Alta autonomía psicológica",
+    "conditions": [
+      { "facet": "responsibility", "level": "high" },
+      { "facet": "creative_imagination", "level": "high" },
+      { "facet": "anxiety", "level": "low" }
+    ],
+    "summary": "Cumplir con los propios deberes, flexibilidad mental para generar soluciones y gestionar la tensión sin angustiarse. Predice decisiones independientes, poco influidas por lo que hacen o piensan los demás.",
+    "scope": "personal",
+    "evidence": "E2",
+    "references": ["Soto & John, 2017"],
+    "sourceSlides": [68, 73, 98],
+    "appearsIn": ["responsibility", "anxiety", "creative_imagination"]
+  },
+  {
+    "id": "busqueda-de-estimulacion",
+    "effect": "Búsqueda de estimulación",
+    "conditions": [
+      { "facet": "responsibility", "level": "high" },
+      { "facet": "sociability", "level": "high" },
+      { "facet": "organization", "level": "low" }
+    ],
+    "summary": "Cumplir con la palabra dada, alta energía social y tolerancia al desorden. Lleva a buscar activamente situaciones estimulantes que rompan la rutina.",
+    "scope": "personal",
+    "evidence": "E2",
+    "references": ["Soto & John, 2017"],
+    "sourceSlides": [68],
+    "appearsIn": ["responsibility"]
+  },
+  {
+    "id": "resistencia-al-estres",
+    "effect": "Alta resistencia al estrés",
+    "conditions": [
+      { "facet": "anxiety", "level": "low" },
+      { "facet": "emotional_volatility", "level": "low" }
+    ],
+    "summary": "Gestionar la tensión sin angustia y sostener el humor sin altibajos. Es el predictor más fuerte de que compañeros y evaluadores externos describan a alguien como resistente al estrés.",
+    "scope": "laboral",
+    "evidence": "E2",
+    "references": ["Soto & John, 2017"],
+    "sourceSlides": [73, 83],
+    "appearsIn": ["anxiety", "emotional_volatility"]
+  },
+  {
+    "id": "falta-de-proposito",
+    "effect": "Bajo sentido de dirección vital",
+    "conditions": [
+      { "facet": "depression", "level": "high" },
+      { "facet": "energy_level", "level": "low" },
+      { "facet": "responsibility", "level": "low" }
+    ],
+    "summary": "Tristeza o inseguridad frecuentes, falta de vitalidad y dificultad para comprometerse con las propias obligaciones. Se asocia con los niveles más bajos de sentido vital y de objetivos claros.",
+    "scope": "personal",
+    "evidence": "E2",
+    "safety": "clinico",
+    "references": ["Soto, 2019"],
+    "sourceSlides": [78],
+    "appearsIn": ["depression"],
+    "revision": "El original dice «baja responsabilidad» sin precisar faceta o dominio. Aquí se ha interpretado como la faceta."
+  },
+  {
+    "id": "relaciones-positivas",
+    "effect": "Relaciones positivas y autoaceptación",
+    "conditions": [
+      { "facet": "depression", "level": "low" },
+      { "facet": "sociability", "level": "high" },
+      { "facet": "compassion", "level": "high" }
+    ],
+    "summary": "Ausencia de abatimiento junto con deseo de conectar y ternura empática. Predice relaciones interpersonales satisfactorias y aceptación de la propia identidad.",
+    "scope": "interpersonal",
+    "evidence": "E2",
+    "references": ["Soto, 2019"],
+    "sourceSlides": [78],
+    "appearsIn": ["depression"]
+  },
+  {
+    "id": "hostilidad-y-conflicto",
+    "effect": "Riesgo de hostilidad y conflicto interpersonal",
+    "conditions": [
+      { "facet": "emotional_volatility", "level": "high" },
+      { "facet": "compassion", "level": "low" },
+      { "facet": "respectfulness", "level": "low" }
+    ],
+    "summary": "Reaccionar con irritación rápida sobre una base de poca cortesía y poca empatía. Se asocia con insatisfacción, conductas confrontativas y conflictos severos tanto en pareja como en el trabajo.",
+    "scope": "interpersonal",
+    "evidence": "E2",
+    "safety": "delicado",
+    "references": ["Ozer & Benet-Martínez, 2006", "Soto & John, 2017"],
+    "sourceSlides": [83],
+    "appearsIn": ["emotional_volatility"]
+  },
+  {
+    "id": "burnout-irritabilidad",
+    "effect": "Riesgo elevado de agotamiento profesional",
+    "conditions": [
+      { "facet": "emotional_volatility", "level": "high" },
+      { "facet": "sociability", "level": "low" }
+    ],
+    "summary": "Humor inestable unido a poco interés por conectar con los compañeros y, por tanto, poco apoyo social disponible. Es una de las vías directas al agotamiento profesional severo.",
+    "scope": "laboral",
+    "evidence": "E2",
+    "safety": "clinico",
+    "references": ["Danner & Lechner, 2024"],
+    "sourceSlides": [83],
+    "appearsIn": ["emotional_volatility"]
+  },
+  {
+    "id": "autodireccion",
+    "effect": "Fuerte autodirección",
+    "conditions": [
+      { "facet": "intellectual_curiosity", "level": "high" },
+      { "facet": "creative_imagination", "level": "high" }
+    ],
+    "summary": "Hambre de conocimiento unida a la capacidad de generar visiones nuevas. Define perfiles exploratorios que investigan y actúan fuera de la norma por motivación intrínseca.",
+    "scope": "personal",
+    "evidence": "E2",
+    "references": ["Soto & John, 2017", "Soto, 2019"],
+    "sourceSlides": [88, 98],
+    "appearsIn": ["intellectual_curiosity", "creative_imagination"]
+  },
+  {
+    "id": "universalismo",
+    "effect": "Orientación al universalismo",
+    "conditions": [
+      { "facet": "aesthetic_sensitivity", "level": "high" },
+      { "facet": "trust", "level": "high" }
+    ],
+    "summary": "Valorar la belleza y el entorno junto con una creencia positiva en los demás. Se asocia con preocupación por el bienestar general y con conductas de apoyo a causas colectivas y ambientales.",
+    "scope": "personal",
+    "evidence": "E2",
+    "references": ["Soto & John, 2017"],
+    "sourceSlides": [93],
+    "appearsIn": ["aesthetic_sensitivity"]
+  },
+  {
+    "id": "apertura-plena",
+    "effect": "Apertura a la experiencia plena",
+    "conditions": [
+      { "facet": "aesthetic_sensitivity", "level": "high" },
+      { "facet": "intellectual_curiosity", "level": "high" },
+      { "facet": "creative_imagination", "level": "high" }
+    ],
+    "summary": "El dominio de Apertura completo: preferencia por una gama amplia y compleja de experiencias perceptivas, cognitivas y afectivas, buscando activamente la novedad.",
+    "scope": "personal",
+    "evidence": "E2",
+    "references": ["Soto & John, 2017"],
+    "sourceSlides": [93],
+    "appearsIn": ["aesthetic_sensitivity"]
+  },
+  {
+    "id": "conformidad-y-tradicion",
+    "effect": "Conformidad y tradición",
+    "conditions": [
+      { "facet": "creative_imagination", "level": "low" },
+      { "facet": "sociability", "level": "low" },
+      { "facet": "respectfulness", "level": "high" }
+    ],
+    "summary": "Poco interés por generar alternativas nuevas, respeto rígido por las normas y las figuras de autoridad, y poca búsqueda de protagonismo social. Predice conductas conformistas y apego a las reglas establecidas.",
+    "scope": "personal",
+    "evidence": "E2",
+    "references": ["Soto & John, 2017"],
+    "sourceSlides": [98],
+    "appearsIn": ["creative_imagination"]
+  }
+]

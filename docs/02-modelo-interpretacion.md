@@ -23,11 +23,33 @@ ni una línea del informe:
 | **B. Criterio explícito** | Fijar cortes sobre la escala 1–5 por criterio, y **decirlo en el informe**: «alto respecto a la escala, no respecto a una población» | Aceptable si se declara |
 | **C. Muestra propia** | Recoger respuestas hasta tener una N suficiente y baremar con datos de IMPAUSA | El ideal a medio plazo |
 
-**Recomendación: A ahora, C como objetivo.** Los datos normativos de la adaptación
-española están publicados; si se consiguen medias y desviaciones típicas por dominio y
-faceta, el motor los aplica sin tocar nada más — sería un fichero `baremos.json`.
+**Decidido: A**, con C como objetivo a medio plazo.
 
-Mientras tanto, **B** como puente, con estos cortes provisionales sobre la escala:
+El motor ya está preparado. `band(score, norm)` calcula z, percentil y puntuación T en
+cuanto reciba medias y desviaciones típicas, y la banda pasa a salir de los cuartiles de
+la distribución: «alta» significa entonces alta **respecto a una población**. Falta solo
+el dato. Formato esperado, `src/config/baremos.json`:
+
+```json
+{
+  "fuente": "Gallardo-Pujol et al. — validación española del BFI-2",
+  "muestra": { "n": 0, "descripcion": "", "anyo": 0 },
+  "normas": {
+    "extraversion":  { "mean": 0.00, "sd": 0.00 },
+    "sociability":   { "mean": 0.00, "sd": 0.00 }
+  }
+}
+```
+
+Hacen falta media y desviación típica de los **5 dominios y las 15 facetas**. Si el
+baremo viene segmentado por sexo o edad, mejor: el motor puede escoger el que toque.
+
+> **Lo que no voy a hacer es rellenar ese fichero con números de memoria.** Un baremo
+> inventado es peor que no tener baremo, porque parece riguroso. Necesito el dato de la
+> publicación.
+
+Mientras no llegue, el motor cae automáticamente a **B** y marca cada banda con
+`method: "escala"`, para que el informe pueda decirlo. Cortes provisionales:
 
 | Banda | Rango | Cómo se nombra en el informe |
 | --- | --- | --- |
@@ -49,8 +71,10 @@ El material de la autora da exactamente estas tres, y conviene no mezclarlas:
 **1. Faceta suelta.** Qué significa puntuar bajo o alto en cada una de las 15.
 Es la capa más segura: viene descrita en el propio material, con referencias.
 
-**2. Combinaciones.** Lo verdaderamente valioso. El material trae unas cuatro
-combinaciones por faceta —unas 60 en total— del tipo:
+**2. Combinaciones.** Lo verdaderamente valioso. El material trae entre dos y cuatro
+combinaciones por faceta, **43 entradas de tabla que deduplican a 26 reglas únicas** —la
+del riesgo de burnout, por ejemplo, aparece en las tablas de Sociabilidad, Nivel de
+Energía y Confianza—. Son del tipo:
 
 > *Baja Sociabilidad + Baja Energía + Baja Confianza + Alta Depresión* → alto riesgo de
 > burnout (Danner & Lechner, 2024)
@@ -86,7 +110,7 @@ Las combinaciones se guardan como **datos, no como prosa**, en
 }
 ```
 
-El motor evalúa las 60 reglas contra las bandas de la persona y devuelve las que
+El motor evalúa las 26 reglas contra las bandas de la persona y devuelve las que
 disparan. Determinista y auditable: siempre se puede responder «esta frase está en el
 informe porque se cumplieron estas cuatro condiciones, y viene de esta referencia».
 
@@ -138,13 +162,16 @@ Reglas duras:
 
 ## Qué queda por decidir
 
-Por orden de urgencia, porque cada uno bloquea al siguiente:
-
-1. **Los baremos.** Salida A, B o C de la tabla de arriba. Sin esto no hay bandas, y sin
-   bandas no dispara ninguna regla.
+1. **Los datos del baremo.** Decidida la salida A, falta el dato: medias y desviaciones
+   típicas de los 5 dominios y las 15 facetas, de la validación española. Es lo único
+   que separa un «alto respecto a la escala» de un «alto respecto a la población».
 2. **Los nombres visibles de las facetas**, sobre todo las tres de Emocionalidad
-   negativa. Propuesta arriba, a validar.
-3. **Las 60 reglas.** Están en el material en prosa; hay que pasarlas a
-   `combinations.json` una a una, decidiendo para cada una sus condiciones exactas.
-   Es transcripción cuidadosa, no invención.
+   negativa. Propuesta en el protocolo de seguridad, a validar.
+3. **Las tres reglas marcadas `revision`.** En el material original, «responsabilidad»
+   unas veces nombra la faceta y otras el dominio entero. En esas tres se ha interpretado
+   como faceta; conviene que lo confirmes.
 4. **Longitud y tono del informe.** Ver [`03`](03-estructura-informe.md).
+
+Ya no queda por decidir la transcripción de las reglas: están las 26 en
+`src/config/interpretation/combinations.json`, cada una con sus condiciones, su cita y la
+diapositiva de la que sale.

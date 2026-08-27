@@ -22,10 +22,13 @@ chocar con lo que Lovable escriba por su cuenta.
 | Pieza | Dónde vive | Estado |
 | --- | --- | --- |
 | Especificación del BFI-2 (60 ítems, escala, fórmulas) | `docs/01` | ✅ Verificada contra Excel y PDF |
-| Configuración y motor de puntuación | `src/` | ✅ Hecho, 17 pruebas en verde |
+| Configuración y motor de puntuación | `src/` | ✅ Hecho |
 | Interfaz del test (responder las 60 preguntas) | Lovable | ⬜ **Sin empezar** — la app está en blanco |
 | Base de conocimiento (15 facetas, ~60 combinaciones) | `docs/base-conocimiento-bfi2.md` | ✅ Extraída del material |
-| Modelo de interpretación (bandas, reglas, seguridad) | `docs/02` | 🟡 Diseñado, bloqueado por los baremos |
+| Modelo de interpretación (bandas, reglas, seguridad) | `docs/02` | ✅ Diseñado |
+| Reglas de combinación (26, con cita) | `src/config/interpretation/` | ✅ Transcritas |
+| Motor de bandas e interpretación | `src/services/interpretation.ts` | ✅ Hecho, 36 pruebas en verde |
+| Baremos españoles (medias y DT) | `src/config/baremos.json` | ⬜ **Falta el dato** |
 | Informe en pantalla (estructura + gráficos) | app | ⬜ Pendiente |
 | Párrafos de coaching redactados por Claude | API de Claude | ⬜ Pendiente |
 | Exportación PDF / Word con marca LivePausa | app | ⬜ Pendiente |
