@@ -1,24 +1,12 @@
 // Vuelca el modelo del informe para un caso, para inspeccionarlo sin montar la app.
 //   node tools/dump-informe.mjs
-import { readFileSync } from "node:fs";
-import { score } from "../src/services/scoring.ts";
-import { bands, interpret } from "../src/services/interpretation.ts";
-import { buildReport } from "../src/services/report.ts";
+import { construirModelo } from "../src/services/pipeline.ts";
+import { cargarRecursos, cargarEjemplo } from "./recursos.mjs";
 
-const leer = (p) => JSON.parse(readFileSync(new URL("../" + p, import.meta.url), "utf8"));
-const config = {
-  questions: leer("src/config/questions.json"),
-  facets: leer("src/config/facets.json"),
-  domains: leer("src/config/domains.json"),
-};
-const reglas = leer("src/config/interpretation/combinations.json");
-const labels = leer("src/i18n/es-informe.json");
-const fixture = leer("tests/fixtures/ejemplo-excel.json");
-
+const recursos = cargarRecursos();
+const fixture = cargarEjemplo();
 const respuestas = Object.fromEntries(Object.entries(fixture.responses).map(([k, v]) => [Number(k), v]));
-const puntuaciones = score(respuestas, config);
-const banded = bands(puntuaciones);
-const informe = buildReport(puntuaciones, banded, interpret(banded.facets, reglas), config.domains, labels);
+const informe = construirModelo(respuestas, recursos);
 
 for (const d of informe.domains) {
   console.log(`\n${d.label.toUpperCase()}  ${d.score.toFixed(2)}  (${d.band})`);

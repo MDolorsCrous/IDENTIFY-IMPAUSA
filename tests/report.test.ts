@@ -7,6 +7,7 @@ import { dirname, join } from "node:path";
 import { score, type Responses } from "../src/services/scoring.ts";
 import { bands, interpret, type Norm, type Rule } from "../src/services/interpretation.ts";
 import { buildReport, type Labels } from "../src/services/report.ts";
+import { construirModelo } from "../src/services/pipeline.ts";
 
 const raiz = join(dirname(fileURLToPath(import.meta.url)), "..");
 const leer = (rel: string) => JSON.parse(readFileSync(join(raiz, rel), "utf8"));
@@ -24,11 +25,10 @@ const respuestas = Object.fromEntries(
   Object.entries(fixture.responses).map(([k, v]) => [Number(k), v]),
 ) as Responses;
 
+const recursos = { config, labels, rules: reglas };
+
 function construir(norms: Record<string, Norm> = {}) {
-  const puntuaciones = score(respuestas, config);
-  const banded = bands(puntuaciones, norms);
-  const interpretacion = interpret(banded.facets, reglas);
-  return buildReport(puntuaciones, banded, interpretacion, config.domains, labels, "Persona de ejemplo");
+  return construirModelo(respuestas, recursos, { norms, persona: "Persona de ejemplo" });
 }
 
 test("el informe tiene los 5 dominios con sus 3 facetas", () => {

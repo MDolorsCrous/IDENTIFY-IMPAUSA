@@ -61,7 +61,7 @@ interpretación, que todavía no existe — ver [`../docs/02-modelo-interpretaci
 npm test
 ```
 
-48 pruebas, sin instalar nada: Node 22.6+ ejecuta TypeScript directamente.
+55 pruebas, sin instalar nada: Node 22.6+ ejecuta TypeScript directamente.
 
 La que importa es la que compara contra el Excel oficial. El fichero
 `BFI-2_formules_correctes_inversos.xlsx` trae un juego de respuestas de ejemplo con

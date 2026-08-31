@@ -21,5 +21,8 @@ salidas/
 !docs/**/*.pdf
 
 # el HTML renderizado se regenera con tools/render-informe.mjs
-informe-ejemplo.html
+informe-*.html
 test-identify.html
+
+# los JSON de datos/ SI se versionan: son el registro de cada test
+!datos/*.json

@@ -24,12 +24,14 @@ chocar con lo que Lovable escriba por su cuenta.
 | Especificación del BFI-2 (60 ítems, escala, fórmulas) | `docs/01` | ✅ Verificada contra Excel y PDF |
 | Configuración y motor de puntuación | `src/` | ✅ Hecho |
 | Interfaz del test (responder las 60 preguntas) | `tools/render-test.mjs` | ✅ Prototipo funcionando |
+| Conexión test → informe | `generar.js` | ✅ Hecha, con paso manual |
 | Base de conocimiento (15 facetas, ~60 combinaciones) | `docs/base-conocimiento-bfi2.md` | ✅ Extraída del material |
 | Modelo de interpretación (bandas, reglas, seguridad) | `docs/02` | ✅ Diseñado |
 | Reglas de combinación (26, con cita) | `src/config/interpretation/` | ✅ Transcritas |
 | Motor de bandas e interpretación | `src/services/interpretation.ts` | ✅ Hecho |
 | Estructura del informe | `docs/03` | ✅ Diseñada |
-| Ensamblador del informe | `src/services/report.ts` | ✅ Hecho, 48 pruebas en verde |
+| Ensamblador del informe | `src/services/report.ts` | ✅ Hecho |
+| Redacción de los pasajes de coaching | API de Claude | ⬜ **Pendiente** — el informe los marca como huecos |
 | Calibración de las reglas | `docs/02` | 🟡 Parametrizada, **a decidir con datos** |
 | Baremos españoles (medias y DT) | `docs/baremos-propuesta.md` | 🟡 Encontrados, **en espera de validación** |
 | Informe en pantalla (estructura + gráficos) | app | ⬜ Pendiente |

@@ -10,27 +10,9 @@
 // naranja #E8842A, Playfair Display + Source Sans 3). El rotulo de portada sigue
 // la skill retol-test-impausa, que admite Playfair Display como alternativa a
 // Cormorant Garamond: asi el documento entero va con una sola serif.
-import { readFileSync, writeFileSync } from "node:fs";
-import { score } from "../src/services/scoring.ts";
-import { bands, interpret } from "../src/services/interpretation.ts";
-import { buildReport } from "../src/services/report.ts";
-
-const leer = (p) => JSON.parse(readFileSync(new URL("../" + p, import.meta.url), "utf8"));
-
-const config = {
-  questions: leer("src/config/questions.json"),
-  facets: leer("src/config/facets.json"),
-  domains: leer("src/config/domains.json"),
-};
-const reglas = leer("src/config/interpretation/combinations.json");
-const labels = leer("src/i18n/es-informe.json");
-const fixture = leer("tests/fixtures/ejemplo-excel.json");
-const prosa = leer("tests/fixtures/prosa-ejemplo.json");
-
-const respuestas = Object.fromEntries(Object.entries(fixture.responses).map(([k, v]) => [Number(k), v]));
-const puntuaciones = score(respuestas, config);
-const banded = bands(puntuaciones);
-const modelo = buildReport(puntuaciones, banded, interpret(banded.facets, reglas), config.domains, labels);
+import { writeFileSync } from "node:fs";
+import { construirModelo } from "../src/services/pipeline.ts";
+import { cargarRecursos, cargarEjemplo, leer } from "./recursos.mjs";
 
 const esc = (s) =>
   String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
@@ -55,12 +37,44 @@ function fila(item, destacada) {
 
 const escala = `<div class="escala"><div></div><div class="escala__eje"><span>1</span><span>3 · punto medio</span><span>5</span></div><div class="escala__hueco"></div></div>`;
 
-const resumenVisual = `<div class="barras">${modelo.domains.map((d) => fila(d, false)).join("")}</div>${escala}`;
+/**
+ * Hueco de redaccion. Se marca en vez de dejarse en blanco: un vacio parece un
+ * error, y esto dice exactamente que falta y quien lo escribe.
+ */
+const hueco = (que) =>
+  `<p class="pendiente"><b>Pendiente de redacción</b> — ${esc(que)}. Este pasaje lo escribe Claude a partir de las puntuaciones de arriba.</p>`;
 
-const dominios = modelo.domains
-  .map((d) => {
-    const nota = labels.notas?.[d.id];
-    return `
+/**
+ * La linea de datos de un dominio, escrita por el codigo.
+ *
+ * No es interpretacion, es descripcion: dice lo que pone el numero. Por eso puede
+ * ir en el informe aunque no haya capa de redaccion.
+ */
+function lineaDatos(d) {
+  const partes = [`<b>${esc(d.label)}: ${num(d.score)}</b> sobre 5, en la banda ${esc(d.band)}.`];
+  if (d.divergentFacet) {
+    const f = d.divergentFacet;
+    partes.push(
+      `De sus tres facetas, la que más se separa de las otras dos es <b>${esc(f.label)}</b>, con ${num(f.score)}.`,
+    );
+  } else {
+    partes.push("Sus tres facetas van juntas: ninguna se separa del resto.");
+  }
+  return `<p>${partes.join(" ")}</p>`;
+}
+
+export function renderInforme(modelo, prosa = {}, labels, opciones = {}) {
+  const conProsa = Boolean(prosa && Object.keys(prosa).length);
+  const fecha = opciones.fecha ?? "";
+  const persona = modelo.meta.generatedFor ?? "";
+
+  const resumenVisual = `<div class="barras">${modelo.domains.map((d) => fila(d, false)).join("")}</div>${escala}`;
+
+  const dominios = modelo.domains
+    .map((d) => {
+      const nota = labels.notas?.[d.id];
+      const texto = prosa.dominios?.[d.id];
+      return `
     <section class="dominio">
       <header class="dominio__cab">
         <h3>${esc(d.label)}</h3>
@@ -68,11 +82,12 @@ const dominios = modelo.domains
       </header>
       <div class="barras">${d.facets.map((f) => fila(f, d.divergentFacet?.id === f.id)).join("")}</div>
       ${escala}
-      <p>${esc(prosa.dominios[d.id])}</p>
+      ${lineaDatos(d)}
+      ${texto ? `<p>${esc(texto)}</p>` : hueco("la lectura de este dominio")}
       ${nota ? `<p class="nota">${esc(nota)}</p>` : ""}
     </section>`;
-  })
-  .join("");
+    })
+    .join("");
 
 const SENALES_MOSTRADAS = 4;
 const senales = modelo.nearMisses.slice(0, SENALES_MOSTRADAS);
@@ -207,6 +222,9 @@ const html = `<title>Informe Identify</title>
   .dominio__dato em{font-style:normal;color:var(--ink-soft);font-size:.8rem}
   .dominio p{margin-top:1rem}
   .nota{font-size:.92rem;color:var(--ink-soft);border-left:2px solid var(--borde);padding-left:.9rem}
+  .pendiente{font-size:.9rem;color:var(--ink-soft);background:var(--naranja-claro);
+    border:1px dashed var(--naranja);border-radius:3px;padding:.7rem .9rem;max-width:none}
+  .pendiente b{color:var(--ink)}
 
   .vacio{border:1px solid var(--borde);border-radius:3px;padding:1.2rem 1.35rem;background:var(--tarjeta)}
   .senales{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:.75rem}
@@ -247,13 +265,13 @@ const html = `<title>Informe Identify</title>
   @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 
-<div class="maqueta">Maqueta · datos del caso de ejemplo del Excel oficial · los textos redactados son de muestra</div>
+${opciones.aviso ? '<div class="maqueta">' + esc(opciones.aviso) + "</div>" : conProsa ? "" : '<div class="maqueta">Informe sin la capa de redacción · los pasajes que escribe Claude van marcados como pendientes</div>'}
 
 <div class="hoja">
 
   <header class="portada">
     <h1 class="rotulo"><span id="rotulo-nombre">Identify</span><span class="rotulo__by" id="rotulo-by">by Impausa</span></h1>
-    <p class="portada__pie">Informe individual · BFI-2 · 60 ítems<br>Persona de ejemplo · 27 de agosto de 2026</p>
+    <p class="portada__pie">Informe individual · BFI-2 · 60 ítems${persona || fecha ? "<br>" + esc([persona, fecha].filter(Boolean).join(" · ")) : ""}</p>
   </header>
 
   <script>
@@ -311,8 +329,8 @@ const html = `<title>Informe Identify</title>
 
   <section class="seccion" id="resumen">
     <p class="eyebrow">Resumen del perfil</p>
-    <p class="titular">${esc(prosa.titular)}</p>
-    <p>${esc(prosa.perfilEnUnaFrase)}</p>
+    ${prosa.titular ? '<p class="titular">' + esc(prosa.titular) + "</p>" : ""}
+    ${prosa.perfilEnUnaFrase ? "<p>" + esc(prosa.perfilEnUnaFrase) + "</p>" : hueco("el resumen del perfil en un párrafo")}
   </section>
 
   <section class="seccion" id="vistazo">
@@ -346,42 +364,46 @@ const html = `<title>Informe Identify</title>
   <section class="seccion" id="senales">
     <p class="eyebrow">Cerca, pero no</p>
     <h2>Señales de atención</h2>
-    <p>${esc(prosa.senales)}</p>
+    ${prosa.senales ? "<p>" + esc(prosa.senales) + "</p>" : hueco("la introducción a las señales")}
     <ul class="senales">${senalesHtml}</ul>
   </section>
 
   <section class="seccion" id="trabajo">
     <p class="eyebrow">Aplicación</p>
     <h2>En el trabajo</h2>
-    <p>${esc(prosa.enElTrabajo)}</p>
+    ${prosa.enElTrabajo ? "<p>" + esc(prosa.enElTrabajo) + "</p>" : hueco("la lectura en clave laboral")}
   </section>
 
   <section class="seccion" id="preguntas">
     <p class="eyebrow">Para pensar</p>
     <h2>Preguntas poderosas</h2>
-    <ul class="preguntas">${prosa.preguntas.map((q) => `<li>${esc(q)}</li>`).join("")}</ul>
+    ${prosa.preguntas?.length ? '<ul class="preguntas">' + prosa.preguntas.map((q) => "<li>" + esc(q) + "</li>").join("") + "</ul>" : hueco("las preguntas poderosas")}
   </section>
 
   <section class="seccion" id="plan">
     <p class="eyebrow">Para hacer</p>
     <h2>Plan de acción</h2>
     <div class="plan">
-      ${prosa.planAccion
-        .map(
-          (e) => `<article class="paso">
+      ${
+        prosa.planAccion?.length
+          ? prosa.planAccion
+              .map(
+                (e) => `<article class="paso">
         <h4>${esc(e.titulo)}</h4>
         <p>${esc(e.texto)}</p>
         <p class="paso__ind"><b>Cómo sabrás si sirve:</b> ${esc(e.indicador)}</p>
       </article>`,
-        )
-        .join("")}
+              )
+              .join("")
+          : hueco("los tres pasos del plan, cada uno con su indicador")
+      }
     </div>
   </section>
 
   <section class="seccion" id="conclusiones">
     <p class="eyebrow">Para cerrar</p>
     <h2>Conclusiones</h2>
-    <p>${esc(prosa.conclusion)}</p>
+    ${prosa.conclusion ? "<p>" + esc(prosa.conclusion) + "</p>" : hueco("las conclusiones")}
   </section>
 
   <footer class="pie" id="fuentes">
@@ -403,10 +425,26 @@ const html = `<title>Informe Identify</title>
 </div>
 `;
 
-const salida = process.argv[2] ?? "informe-ejemplo.html";
-writeFileSync(new URL("../" + salida, import.meta.url), html, "utf8");
-console.log(
-  `escrito ${salida}\n` +
-    `  ${modelo.domains.length} dominios · ${modelo.fired.length} reglas disparadas · ` +
-    `${senales.length} de ${modelo.nearMisses.length} señales · leyenda: ${modelo.legend.length} entradas`,
-);
+  return html;
+}
+
+// Ejecutado directamente, genera la maqueta con el caso de ejemplo del Excel.
+if (import.meta.url === `file:///${process.argv[1].replace(/\\/g, "/")}`) {
+  const recursos = cargarRecursos();
+  const fixture = cargarEjemplo();
+  const prosa = leer("tests/fixtures/prosa-ejemplo.json");
+  const respuestas = Object.fromEntries(Object.entries(fixture.responses).map(([k, v]) => [Number(k), v]));
+  const modelo = construirModelo(respuestas, recursos);
+  const html = renderInforme(modelo, prosa, recursos.labels, {
+    fecha: "27 de agosto de 2026",
+    aviso: "Maqueta · datos del caso de ejemplo del Excel oficial · los textos redactados son de muestra",
+  });
+
+  const salida = process.argv[2] ?? "informe-ejemplo.html";
+  writeFileSync(new URL("../" + salida, import.meta.url), html, "utf8");
+  console.log(
+    `escrito ${salida}\n` +
+      `  ${modelo.domains.length} dominios · ${modelo.fired.length} reglas disparadas · ` +
+      `${modelo.nearMisses.length} señales · leyenda: ${modelo.legend.length} entradas`,
+  );
+}

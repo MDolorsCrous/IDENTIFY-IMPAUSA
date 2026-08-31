@@ -150,6 +150,13 @@ const html = `<title>Test Identify</title>
     padding:.9rem 1.1rem;border-radius:0 4px 4px 0;font-size:.92rem}
   .acciones{display:flex;gap:.8rem;flex-wrap:wrap}
   .boton--claro{background:var(--tarjeta);color:var(--ink);border:1px solid var(--borde)}
+  .campo{display:flex;flex-direction:column;gap:.3rem;font-size:.9rem;margin-bottom:1rem}
+  .campo span{color:var(--ink-soft);font-weight:400}
+  .campo input{font:inherit;color:inherit;background:var(--ground);border:1px solid var(--borde);
+    border-radius:5px;padding:.55rem .7rem;max-width:20rem}
+  .json{width:100%;min-height:9rem;margin-top:.9rem;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;
+    font-size:.8rem;line-height:1.5;background:var(--ground);color:var(--ink-soft);
+    border:1px solid var(--borde);border-radius:5px;padding:.7rem;resize:vertical}
 </style>
 
 <div class="marco" id="app"></div>
@@ -304,8 +311,19 @@ function resultados(){
           \${escala}
         </div>
         \${porDominio}
+        <div class="bloque">
+          <h3>Para generar tu informe</h3>
+          <p class="bloque__sub">Copia este resultado y pásalo a quien elabore el informe.</p>
+          <label class="campo">Tu nombre <span>(opcional, sale en la portada)</span>
+            <input id="persona" type="text" autocomplete="name" placeholder="Marta">
+          </label>
+          <div class="acciones">
+            <button class="boton" id="copiar">Copiar para el informe</button>
+            <button class="boton boton--claro" id="ver">Ver el JSON</button>
+          </div>
+          <textarea id="json" class="json" readonly hidden aria-label="Resultado en JSON"></textarea>
+        </div>
         <div class="acciones">
-          <button class="boton boton--claro" id="copiar">Copiar resultados</button>
           <button class="boton boton--claro" id="reiniciar">Empezar de nuevo</button>
         </div>
         <p class="ayuda">Nada de esto se ha guardado ni enviado a ningún sitio. Si cierras la página, se pierde.</p>
@@ -316,15 +334,32 @@ function resultados(){
     for (const k in respuestas) delete respuestas[k];
     indice = 0; pantalla = "portada"; pintar();
   };
+  // Lo que se copia son las RESPUESTAS, no las puntuaciones: quien genera el
+  // informe vuelve a puntuar con el motor, y asi no hay dos calculos que puedan
+  // discrepar. La fecha se toma del dia en que se responde.
+  const paraElInforme = () => JSON.stringify({
+    test: "identify-bfi2",
+    version: 1,
+    fecha: new Date().toISOString().slice(0, 10),
+    persona: (document.getElementById("persona")?.value || "").trim(),
+    respuestas,
+  }, null, 2);
+
+  const caja = document.getElementById("json");
+  document.getElementById("ver").onclick = e => {
+    caja.value = paraElInforme();
+    caja.hidden = !caja.hidden;
+    e.target.textContent = caja.hidden ? "Ver el JSON" : "Ocultar el JSON";
+    if (!caja.hidden) caja.select();
+  };
   document.getElementById("copiar").onclick = e => {
-    const lineas = ["Identify · BFI-2", "", "DOMINIOS"];
-    for (const d of D.domains) lineas.push(D.domainLabels[d.id] + ": " + num(dominios[d.id]));
-    lineas.push("", "FACETAS");
-    for (const f of D.facets) lineas.push(D.facetLabels[f.id] + ": " + num(facetas[f.id]));
-    navigator.clipboard.writeText(lineas.join("\\n")).then(
-      () => { e.target.textContent = "Copiado"; setTimeout(() => e.target.textContent = "Copiar resultados", 1600); },
-      () => { e.target.textContent = "No se pudo copiar"; },
-    );
+    const texto = paraElInforme();
+    const ok = () => { e.target.textContent = "Copiado"; setTimeout(() => e.target.textContent = "Copiar para el informe", 1800); };
+    navigator.clipboard?.writeText(texto).then(ok, () => {
+      // Si el portapapeles no esta disponible, se ensena el JSON para copiarlo a mano
+      caja.value = texto; caja.hidden = false; caja.select();
+      e.target.textContent = "Cópialo de aquí";
+    });
   };
 }
 
