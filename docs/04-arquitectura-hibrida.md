@@ -29,11 +29,50 @@ interpretación sino descripción, y hace que un informe sin redacción siga dic
 > `datos/` guarda las respuestas de personas reales. Se versiona, siguiendo la convención
 > de THINK_IMPAUSA, pero conviene tenerlo presente antes de hacer público el repositorio.
 
-## A dónde va
+## La redacción
 
-Lo que falta es sustituir el paso manual de la redacción por la llamada a la API. El
-hueco ya está abierto: `renderInforme(modelo, prosa, labels)` recibe la prosa como
-argumento, y `--prosa` demuestra que encaja.
+El ciclo completo, con el mismo paso manual:
+
+```bash
+node generar.js datos/marta-2026-08-27.json --prompt
+# pegar el encargo en una conversación con Claude, guardar el JSON que devuelva
+node generar.js datos/marta-2026-08-27.json --prosa datos/marta.prosa.json
+```
+
+`--prompt` deja el encargo en el portapapeles y en `datos/<nombre>.prompt.md`. Lo
+construye `src/services/prompt.ts`, en tres piezas:
+
+1. **Las instrucciones** — tono documentado, qué se puede afirmar y qué no, las señales
+   en condicional, el trato del material clínico y las longitudes por sección.
+2. **El material** — el perfil ya interpretado: puntuaciones, bandas, la faceta que se
+   separa en cada dominio, las reglas disparadas con su cita, las señales con lo que les
+   falta, y **lo que la base de conocimiento dice de cada faceta al nivel que ha salido**.
+3. **El esquema** — una clave por sección, con longitud máxima. Nada de prosa libre.
+
+**Claude nunca ve las respuestas al cuestionario.** Recibe el perfil resuelto, nunca los
+datos crudos: puntuar es trabajo del código y tiene que ser reproducible. Hay una prueba
+que lo comprueba, y otra que verifica que no se cuele la secuencia de respuestas.
+
+Al volver, `--prosa` **valida antes de escribir**. Si falta una sección, si las preguntas
+no son entre cinco y siete o si el plan no trae tres pasos, el comando lo dice y no genera
+nada. Vale más un informe con los huecos marcados que uno con una redacción a medias.
+
+El encargo se guarda siempre junto al informe, esté la redacción hecha o no: es el
+registro de qué se le pidió al modelo, que pide la regla 4 de aquí abajo.
+
+## Lo que falta para automatizarlo
+
+Hoy el paso de la redacción es manual, como en THINK_IMPAUSA. Para que lo haga el código
+hace falta:
+
+- **Una credencial.** Ni `ANTHROPIC_API_KEY` ni el CLI `ant` están disponibles en este
+  equipo, así que la vía automática no se puede ni ejecutar ni probar.
+- **Dos dependencias**, `@anthropic-ai/sdk` y `zod`, en un proyecto que hoy no tiene
+  ninguna. La llamada usaría `client.messages.parse()` con `output_config.format`, que
+  valida la respuesta contra el esquema en el propio SDK.
+
+Cuando estén las dos cosas, lo único que cambia es de dónde sale el objeto de prosa:
+`renderInforme` y la validación ya funcionan igual.
 
 ```
 Respuestas (test)

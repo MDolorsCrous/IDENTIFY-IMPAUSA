@@ -26,3 +26,6 @@ test-identify.html
 
 # los JSON de datos/ SI se versionan: son el registro de cada test
 !datos/*.json
+
+# el encargo se regenera con el informe
+datos/*.prompt.md

@@ -2,7 +2,8 @@
 //
 //   node generar.js --clipboard                    lee el JSON del portapapeles
 //   node generar.js datos/marta-2026-08-27.json    lo lee de un fichero
-//   node generar.js ... --prosa textos.json        con la capa de redacción
+//   node generar.js ... --prompt                   copia el encargo para Claude
+//   node generar.js ... --prosa textos.json        con la redacción ya hecha
 //
 // Sin --prosa, el informe sale con todo lo que calcula el código y los pasajes
 // redactados marcados como pendientes. Es deliberado: mejor un informe honesto
@@ -14,6 +15,7 @@ import { fileURLToPath } from "node:url";
 
 import { construirModelo } from "./src/services/pipeline.ts";
 import { ScoringError } from "./src/services/scoring.ts";
+import { promptCompleto, validarProsa } from "./src/services/prompt.ts";
 import { renderInforme } from "./tools/render-informe.mjs";
 import { cargarRecursos } from "./tools/recursos.mjs";
 
@@ -31,6 +33,7 @@ const args = process.argv.slice(2);
 const delPortapapeles = args.includes("--clipboard");
 const iProsa = args.indexOf("--prosa");
 const ficheroProsa = iProsa >= 0 ? args[iProsa + 1] : null;
+const pedirPrompt = args.includes("--prompt");
 const ficheroEntrada = args.find((a, i) => !a.startsWith("--") && args[i - 1] !== "--prosa");
 
 if (!delPortapapeles && !ficheroEntrada) {
@@ -108,7 +111,22 @@ try {
   throw e;
 }
 
-const prosa = ficheroProsa ? JSON.parse(leerFichero(ficheroProsa)) : {};
+// ---- La redacción ----
+let prosa = {};
+if (ficheroProsa) {
+  try {
+    prosa = JSON.parse(leerFichero(ficheroProsa));
+  } catch (e) {
+    morir("El fichero de redacción no es un JSON válido.", e.message);
+  }
+  const fallos = validarProsa(prosa, modelo);
+  if (fallos.length) {
+    morir(
+      "La redacción no encaja con el esquema, así que no la meto en el informe.",
+      fallos.join("\n  "),
+    );
+  }
+}
 
 const html = renderInforme(modelo, prosa, recursos.labels, {
   facetas: recursos.facetas,
@@ -133,6 +151,26 @@ writeFileSync(copiaJson, JSON.stringify({ ...entrada, fecha, persona }, null, 2)
 const salidaHtml = join(RAIZ, `informe-${nombre}.html`);
 writeFileSync(salidaHtml, html, "utf8");
 
+// ---- El encargo para Claude ----
+// Se escribe siempre: sirve de encargo cuando falta la redacción, y de registro
+// de qué se le pidió cuando ya está. Es la trazabilidad que pide docs/04.
+const salidaPrompt = join(RAIZ, "datos", nombre + ".prompt.md");
+const prompt = promptCompleto(modelo, recursos.facetas);
+writeFileSync(salidaPrompt, prompt, "utf8");
+
+let copiado = false;
+if (pedirPrompt) {
+  try {
+    execFileSync("powershell", ["-NoProfile", "-Command", "$input | Set-Clipboard"], {
+      input: prompt,
+      encoding: "utf8",
+    });
+    copiado = true;
+  } catch {
+    // Si el portapapeles falla, el fichero ya está escrito: no es un error fatal.
+  }
+}
+
 function fechaLarga(iso) {
   const meses = ["enero","febrero","marzo","abril","mayo","junio","julio","agosto","septiembre","octubre","noviembre","diciembre"];
   const [a, m, d] = iso.split("-").map(Number);
@@ -149,4 +187,16 @@ console.log(`
   Redacción: ${Object.keys(prosa).length ? "incluida" : "pendiente, marcada en el informe"}
 
   Copia de las respuestas en ${copiaJson}
-`);
+${
+  Object.keys(prosa).length
+    ? "  El encargo que se le pasó a Claude queda en " + salidaPrompt
+    : pedirPrompt
+      ? `
+  ── Para la redacción ──────────────────────────────────────────
+  ${copiado ? "El encargo está en el portapapeles." : "El encargo está en " + salidaPrompt}
+  1. Pégalo en una conversación con Claude.
+  2. Guarda el JSON que devuelva, por ejemplo en datos/${nombre}.prosa.json
+  3. Vuelve a generar:  node generar.js ${delPortapapeles ? "datos/" + nombre + ".json" : ficheroEntrada} --prosa datos/${nombre}.prosa.json
+`
+      : "  Para la redacción, vuelve a lanzarlo con --prompt"
+}`);
