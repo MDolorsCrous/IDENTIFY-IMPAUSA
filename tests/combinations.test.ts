@@ -130,3 +130,58 @@ test("appearsIn incluye alguna faceta de las condiciones", () => {
     );
   }
 });
+
+// ---- La base de conocimiento por faceta ----
+
+interface Lectura {
+  texto: string;
+  referencias: string[];
+}
+interface FichaFaceta {
+  definicion: string;
+  bajo: Lectura;
+  alto: Lectura;
+  sourceSlides: number[];
+}
+
+const fichas = leer("src/config/interpretation/facetas.json") as Record<string, FichaFaceta>;
+const idsFaceta = (leer("src/config/facets.json") as { id: string }[]).map((f) => f.id);
+
+test("hay lectura para las 15 facetas, y para ninguna que no exista", () => {
+  const conFicha = Object.keys(fichas).filter((k) => !k.startsWith("_"));
+  assert.deepEqual([...conFicha].sort(), [...idsFaceta].sort());
+});
+
+test("cada faceta tiene definición y las dos lecturas, con cita", () => {
+  for (const id of idsFaceta) {
+    const f = fichas[id];
+    assert.ok(f.definicion?.length > 20, `${id}: definición corta o ausente`);
+    for (const polo of ["bajo", "alto"] as const) {
+      assert.ok(f[polo]?.texto?.length > 80, `${id}.${polo}: texto demasiado corto`);
+      assert.ok(f[polo].referencias?.length > 0, `${id}.${polo}: sin referencia`);
+    }
+    assert.ok(f.sourceSlides?.length > 0, `${id}: sin diapositiva de origen`);
+  }
+});
+
+test("las dos lecturas de una faceta dicen cosas distintas", () => {
+  for (const id of idsFaceta) {
+    assert.notEqual(fichas[id].bajo.texto, fichas[id].alto.texto, id);
+  }
+});
+
+test("los textos están redactados, no copiados en bruto", () => {
+  // El material de origen arrastra estos errores de conversión. Si reaparecen,
+  // es que alguien ha pegado el texto sin pasarlo por el tono de la casa.
+  const enBruto = ["mucho alto", "sede gregarismo", "ninguna a los", "los cuesta", "sedes "];
+  for (const id of idsFaceta) {
+    for (const polo of ["bajo", "alto"] as const) {
+      for (const marca of enBruto) {
+        assert.ok(
+          !fichas[id][polo].texto.includes(marca),
+          `${id}.${polo} conserva «${marca}» del original sin redactar`,
+        );
+      }
+    }
+  }
+});

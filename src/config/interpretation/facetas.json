@@ -1,0 +1,198 @@
+{
+  "_nota": "Qué significa puntuar bajo o alto en cada faceta. Procede de la base de conocimiento de la autora (docs/base-conocimiento-bfi2.md, diapositivas 25-99). Los textos están redactados en el tono documentado —atribuidos a los resultados, matizados, sin absolutos— y limpios de los errores de conversión del original. Las definiciones vienen de las diapositivas 7-9.",
+
+  "sociability": {
+    "definicion": "Disfrute de la compañía de los demás y tendencia a buscar interacción social.",
+    "bajo": {
+      "texto": "Sugiere preferencia por la soledad, el trabajo autónomo y una menor necesidad de estimulación social. Puedes interactuar con eficacia cuando hace falta, pero no sueles buscar activamente rodearte de gente ni socializar por puro placer. Conviene tenerlo en cuenta en entornos que exigen interacción constante: ahí este perfil se asocia con un mayor riesgo de agotamiento.",
+      "referencias": ["Soto & John, 2017", "Danner & Lechner, 2024"]
+    },
+    "alto": {
+      "texto": "Sugiere un deseo marcado de acercarse y conectar con los demás. Suele venir acompañado de facilidad para tejer redes de contactos y de preferencia por entornos donde la interacción es constante, además de facilidad para la aceptación entre iguales y para hacer amistades. En el trabajo se asocia con niveles altos de satisfacción y compromiso.",
+      "referencias": ["Soto & John, 2017", "Ozer & Benet-Martínez, 2006", "Danner & Lechner, 2024"]
+    },
+    "sourceSlides": [26, 27]
+  },
+
+  "assertiveness": {
+    "definicion": "Inclinación a expresarse con confianza, ejercer liderazgo y tomar la iniciativa social.",
+    "bajo": {
+      "texto": "Sugiere preferencia por dejar que otros tomen el control y la iniciativa. Puede costarte influir en las decisiones del grupo, y es probable que te sientas más cómodo en papeles de acompañamiento que imponiendo tu visión.",
+      "referencias": ["Soto & John, 2017"]
+    },
+    "alto": {
+      "texto": "Sugiere una tendencia clara a tomar la iniciativa y actuar como referente. Suele traducirse en expresar las propias opiniones con seguridad, sentirse cómodo llevando la voz cantante y tener facilidad para influir y persuadir.",
+      "referencias": ["Soto & John, 2017"]
+    },
+    "sourceSlides": [31, 32]
+  },
+
+  "energy_level": {
+    "definicion": "Tendencia a sentirse animado, entusiasta y activo.",
+    "bajo": {
+      "texto": "Sugiere preferencia por un ritmo más calmado y reflexivo. Es raro que te sientas impaciente por actuar, y tu nivel de actividad general suele ser menor que el de la mayoría. En su extremo puede acercarse a la desmotivación, y ahí conviene mirar si va acompañado de desánimo.",
+      "referencias": ["Soto & John, 2017"]
+    },
+    "alto": {
+      "texto": "Sugiere una tendencia marcada a la actividad y el entusiasmo. Suele manifestarse en vivir y trabajar a un ritmo rápido, implicarse pronto en lo que surge y rara vez quedarse en posición pasiva, con una capacidad notable de despliegue de energía física y mental.",
+      "referencias": ["Soto & John, 2017"]
+    },
+    "sourceSlides": [36, 37]
+  },
+
+  "compassion": {
+    "definicion": "Tendencia a mostrar empatía, preocuparse por los demás y actuar con bondad.",
+    "bajo": {
+      "texto": "Sugiere una lectura más pragmática y menos afectiva de las situaciones. Puede que sientas poca resonancia emocional ante el malestar ajeno y que tu forma de acercarte a los problemas de otros sea más objetiva que cálida.",
+      "referencias": ["Soto & John, 2017"]
+    },
+    "alto": {
+      "texto": "Sugiere una inclinación clara a la empatía, la ternura y el altruismo. Suele acompañarse de disposición a ayudar sin esperar nada a cambio y de una preocupación genuina por lo que les ocurre a quienes tienes cerca.",
+      "referencias": ["Soto & John, 2017"]
+    },
+    "sourceSlides": [41, 42]
+  },
+
+  "respectfulness": {
+    "definicion": "Consideración por las normas sociales, las buenas maneras y la cortesía.",
+    "bajo": {
+      "texto": "Sugiere menos reparo en la confrontación y en saltarse las formas. Puede traducirse en entrar en discusiones con facilidad y en que cueste frenar una reacción antagónica cuando algo no encaja.",
+      "referencias": ["Soto & John, 2017"]
+    },
+    "alto": {
+      "texto": "Sugiere una inclinación marcada a ser cortés y considerado. Suele manifestarse en evitar el enfrentamiento, sostener las formas incluso a disgusto y tener facilidad para contener el impulso de confrontar.",
+      "referencias": ["Soto & John, 2017"]
+    },
+    "sourceSlides": [46, 47]
+  },
+
+  "trust": {
+    "definicion": "Tendencia a confiar en las intenciones de los demás y verlos como benevolentes.",
+    "bajo": {
+      "texto": "Sugiere una actitud vigilante y escéptica. Puede que tiendas a buscar segundas intenciones, que te cueste dar por supuesta la buena fe ajena y que perdonar te lleve más tiempo.",
+      "referencias": ["Soto & John, 2017"]
+    },
+    "alto": {
+      "texto": "Sugiere una creencia de fondo en que las personas son buenas por naturaleza. Suele traducirse en asumir lo mejor de los demás, confiar con facilidad en sus intenciones y tener un carácter que perdona pronto.",
+      "referencias": ["Soto & John, 2017"]
+    },
+    "sourceSlides": [51, 52]
+  },
+
+  "organization": {
+    "definicion": "Tendencia a ser metódico, ordenado y estructurado.",
+    "bajo": {
+      "texto": "Sugiere tolerancia al desorden y poca inclinación a planificar. Puede manifestarse en descuidar el entorno físico o el orden de las tareas, y en que cueste sostener sistemas y rutinas estables.",
+      "referencias": ["Soto & John, 2017"]
+    },
+    "alto": {
+      "texto": "Sugiere una tendencia clara a lo metódico y sistemático. Suele acompañarse de preferencia por mantener el entorno ordenado, disfrutar planificando y seguir procedimientos claros, con bastante atención al detalle.",
+      "referencias": ["Soto & John, 2017"]
+    },
+    "sourceSlides": [56, 57]
+  },
+
+  "productiveness": {
+    "definicion": "Capacidad de mantenerse concentrado y eficiente en las tareas y las metas.",
+    "bajo": {
+      "texto": "Sugiere dificultad para arrancar y sostener el esfuerzo. Puede traducirse en posponer el comienzo de las tareas y en que la constancia del día a día cueste más de lo que te gustaría.",
+      "referencias": ["Soto & John, 2017"]
+    },
+    "alto": {
+      "texto": "Sugiere una ética de trabajo firme y bastante autodisciplina. Suele manifestarse en ser eficiente y persistente, trabajar hasta terminar lo empezado y sostener un nivel alto de esfuerzo hacia lo que te propones.",
+      "referencias": ["Soto & John, 2017"]
+    },
+    "sourceSlides": [61, 62]
+  },
+
+  "responsibility": {
+    "definicion": "Adherencia a los propios valores, honestidad y sentido del deber.",
+    "bajo": {
+      "texto": "Sugiere una relación más laxa con los compromisos adquiridos. Puede traducirse en faltar a lo prometido con cierta facilidad y en resultar menos previsible para quienes cuentan contigo.",
+      "referencias": ["Soto & John, 2017"]
+    },
+    "alto": {
+      "texto": "Sugiere fiabilidad y constancia. Suele manifestarse en cumplir con rigor lo que se promete y en asumir el deber hacia los demás, de modo que tu entorno sabe que puede contar contigo cuando hace falta.",
+      "referencias": ["Soto & John, 2017"]
+    },
+    "sourceSlides": [66, 67]
+  },
+
+  "anxiety": {
+    "definicion": "Tendencia a preocuparse con facilidad y a sentir nerviosismo o tensión.",
+    "bajo": {
+      "texto": "Sugiere estabilidad ante la presión y facilidad para mantener la calma. Es raro que aparezcan miedos o preocupaciones desproporcionadas, y sueles gestionar el estrés sintiéndote seguro incluso en entornos exigentes.",
+      "referencias": ["Soto & John, 2017"]
+    },
+    "alto": {
+      "texto": "Sugiere una tendencia marcada a la preocupación y la tensión. Suele traducirse en episodios frecuentes de sentirse en alerta, dar muchas vueltas a los problemas y encontrar difícil desconectar en situaciones de estrés.",
+      "referencias": ["Soto & John, 2017"]
+    },
+    "sourceSlides": [71, 72]
+  },
+
+  "depression": {
+    "definicion": "Tendencia a registrar la tristeza y el desánimo con facilidad.",
+    "bajo": {
+      "texto": "Sugiere seguridad en uno mismo y una actitud resiliente ante los tropiezos. Sueles sentirte cómodo con quien eres y es raro que aparezcan periodos prolongados de desánimo.",
+      "referencias": ["Soto & John, 2017"]
+    },
+    "alto": {
+      "texto": "Sugiere una tendencia a registrar el abatimiento con más facilidad que la media. Puede costar sostener el optimismo después de un fracaso, y aparecer momentos de no sentirse del todo cómodo o seguro contigo mismo.",
+      "referencias": ["Soto & John, 2017"]
+    },
+    "sourceSlides": [76, 77]
+  },
+
+  "emotional_volatility": {
+    "definicion": "Facilidad con la que cambia el estado de ánimo ante los contratiempos.",
+    "bajo": {
+      "texto": "Sugiere estabilidad emocional y autocontrol. Suele traducirse en mantener la calma bajo presión y en no reaccionar de forma desproporcionada aunque la situación sea adversa.",
+      "referencias": ["Soto & John, 2017"]
+    },
+    "alto": {
+      "texto": "Sugiere una tendencia a alterarse con facilidad. Puede manifestarse en cambios de humor frecuentes y en que, ante un contratiempo, la emoción tome la delantera antes de poder encauzarla.",
+      "referencias": ["Soto & John, 2017"]
+    },
+    "sourceSlides": [81, 82]
+  },
+
+  "intellectual_curiosity": {
+    "definicion": "Inclinación a pensar en profundidad, analizar y explorar ideas.",
+    "bajo": {
+      "texto": "Sugiere preferencia por lo práctico y poco interés por lo abstracto. Puede traducirse en encontrar poco útiles las discusiones teóricas y en preferir la información concreta y aplicable.",
+      "referencias": ["Soto & John, 2017"]
+    },
+    "alto": {
+      "texto": "Sugiere una inclinación marcada al pensamiento profundo y a explorar ideas nuevas. Suele manifestarse en curiosidad por asuntos muy distintos entre sí y en disfrutar de las conversaciones intelectuales y de los temas abstractos.",
+      "referencias": ["Soto & John, 2017"]
+    },
+    "sourceSlides": [86, 87]
+  },
+
+  "aesthetic_sensitivity": {
+    "definicion": "Apreciación por el arte, la música, la naturaleza y la belleza.",
+    "bajo": {
+      "texto": "Sugiere pocos intereses artísticos. Puede traducirse en encontrar poco atractivas expresiones como la poesía o el teatro, y en preferir entornos y experiencias más prácticos, sin dar mucha importancia a lo estético.",
+      "referencias": ["Soto & John, 2017"]
+    },
+    "alto": {
+      "texto": "Sugiere una atracción clara por el arte, la música y la literatura. Suele acompañarse de valorar la belleza y de disfrutar de las experiencias estéticas y de las expresiones culturales.",
+      "referencias": ["Soto & John, 2017"]
+    },
+    "sourceSlides": [91, 92]
+  },
+
+  "creative_imagination": {
+    "definicion": "Tendencia a pensar de forma imaginativa y a generar ideas nuevas.",
+    "bajo": {
+      "texto": "Sugiere preferencia por lo práctico y por los caminos ya probados. Puede costar imaginar soluciones que no se hayan visto antes, y resultar más cómodo recurrir a métodos y rutinas conocidos que aportar algo original.",
+      "referencias": ["Soto & John, 2017"]
+    },
+    "alto": {
+      "texto": "Sugiere una tendencia marcada a la originalidad. Suele manifestarse en facilidad para imaginar escenarios y soluciones, disfrutar aportando ideas nuevas y encontrar maneras poco convencionales de hacer las cosas.",
+      "referencias": ["Soto & John, 2017"]
+    },
+    "sourceSlides": [96, 97]
+  }
+}

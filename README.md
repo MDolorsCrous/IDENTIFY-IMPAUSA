@@ -31,6 +31,7 @@ chocar con lo que Lovable escriba por su cuenta.
 | Motor de bandas e interpretación | `src/services/interpretation.ts` | ✅ Hecho |
 | Estructura del informe | `docs/03` | ✅ Diseñada |
 | Ensamblador del informe | `src/services/report.ts` | ✅ Hecho |
+| Lecturas de las 15 facetas (alto y bajo) | `src/config/interpretation/facetas.json` | ✅ Conectadas al informe |
 | Redacción de los pasajes de coaching | API de Claude | ⬜ **Pendiente** — el informe los marca como huecos |
 | Calibración de las reglas | `docs/02` | 🟡 Parametrizada, **a decidir con datos** |
 | Baremos españoles (medias y DT) | `docs/baremos-propuesta.md` | 🟡 Encontrados, **en espera de validación** |

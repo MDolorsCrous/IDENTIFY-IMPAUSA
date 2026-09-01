@@ -110,7 +110,10 @@ try {
 
 const prosa = ficheroProsa ? JSON.parse(leerFichero(ficheroProsa)) : {};
 
-const html = renderInforme(modelo, prosa, recursos.labels, { fecha: fechaLarga(fecha) });
+const html = renderInforme(modelo, prosa, recursos.labels, {
+  facetas: recursos.facetas,
+  fecha: fechaLarga(fecha),
+});
 
 // ---- Guardar ----
 const slug = (s) =>

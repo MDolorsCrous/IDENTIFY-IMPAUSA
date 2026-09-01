@@ -63,7 +63,44 @@ function lineaDatos(d) {
   return `<p>${partes.join(" ")}</p>`;
 }
 
+/** A qué polo de la base de conocimiento corresponde cada banda. */
+const POLO = { baja: "bajo", "media-baja": "bajo", "media-alta": "alto", alta: "alto" };
+/** Las bandas centrales llevan la lectura del polo, pero rebajada. */
+const MATIZADA = new Set(["media-baja", "media-alta"]);
+
+/**
+ * Lo que significa cada faceta al nivel que ha salido.
+ *
+ * Sale de la base de conocimiento de IMPAUSA. Las bandas centrales llevan el
+ * mismo texto que su polo pero avisando de que la puntuación está cerca del
+ * punto medio: la lectura orienta, no describe un extremo que no se ha dado.
+ */
+function lecturasFacetas(dominio, facetas) {
+  if (!facetas) return "";
+  const bloques = dominio.facets
+    .map((f) => {
+      const ficha = facetas[f.id];
+      const polo = POLO[f.band];
+      const lectura = ficha?.[polo];
+      if (!lectura) return "";
+      const matizada = MATIZADA.has(f.band);
+      return `
+        <div class="lectura">
+          <div class="lectura__cab">
+            <b>${esc(f.label)}</b>
+            <span>${num(f.score)} · ${esc(f.band)}</span>
+          </div>
+          ${ficha.definicion ? `<p class="lectura__def">${esc(ficha.definicion)}</p>` : ""}
+          <p>${matizada ? '<em class="matiz">Cerca del punto medio, así que en versión suave:</em> ' : ""}${esc(lectura.texto)}</p>
+          ${lectura.referencias?.length ? `<p class="lectura__ref">${esc(lectura.referencias.join(" · "))}</p>` : ""}
+        </div>`;
+    })
+    .join("");
+  return bloques ? `<div class="lecturas">${bloques}</div>` : "";
+}
+
 export function renderInforme(modelo, prosa = {}, labels, opciones = {}) {
+  const facetas = opciones.facetas;
   const conProsa = Boolean(prosa && Object.keys(prosa).length);
   const fecha = opciones.fecha ?? "";
   const persona = modelo.meta.generatedFor ?? "";
@@ -83,7 +120,8 @@ export function renderInforme(modelo, prosa = {}, labels, opciones = {}) {
       <div class="barras">${d.facets.map((f) => fila(f, d.divergentFacet?.id === f.id)).join("")}</div>
       ${escala}
       ${lineaDatos(d)}
-      ${texto ? `<p>${esc(texto)}</p>` : hueco("la lectura de este dominio")}
+      ${lecturasFacetas(d, facetas)}
+      ${texto ? `<p>${esc(texto)}</p>` : hueco("la lectura conjunta de este dominio")}
       ${nota ? `<p class="nota">${esc(nota)}</p>` : ""}
     </section>`;
     })
@@ -99,7 +137,8 @@ const senalesHtml = senales
     return `
       <li>
         <b>${esc(m.rule.effect)}</b>
-        <span>Se daría con una ${esc(nombre.toLowerCase())} ${pedido}; en tu perfil queda ${esc(f.band)}.</span>
+        <span>${esc(m.rule.summary)}</span>
+        <span class="senal__falta">Se daría con una ${esc(nombre.toLowerCase())} ${pedido}; en tu perfil queda ${esc(f.band)}. ${esc(m.rule.references.join(" · "))}</span>
       </li>`;
   })
   .join("");
@@ -225,12 +264,23 @@ const html = `<title>Informe Identify</title>
   .pendiente{font-size:.9rem;color:var(--ink-soft);background:var(--naranja-claro);
     border:1px dashed var(--naranja);border-radius:3px;padding:.7rem .9rem;max-width:none}
   .pendiente b{color:var(--ink)}
+  .lecturas{display:flex;flex-direction:column;gap:1rem;margin:1.1rem 0}
+  .lectura{border-left:2px solid var(--borde);padding-left:1rem;break-inside:avoid}
+  .lectura__cab{display:flex;justify-content:space-between;align-items:baseline;gap:1rem;
+    margin-bottom:.15rem}
+  .lectura__cab span{font-size:.8rem;color:var(--ink-soft);font-variant-numeric:tabular-nums;
+    white-space:nowrap}
+  .lectura__def{font-size:.86rem;color:var(--ink-soft);margin-bottom:.4rem}
+  .lectura p{margin-bottom:.35rem;font-size:.97rem}
+  .lectura__ref{font-size:.78rem;color:var(--ink-soft);margin-bottom:0}
+  .matiz{color:var(--naranja);font-style:normal;font-weight:600;font-size:.88rem}
 
   .vacio{border:1px solid var(--borde);border-radius:3px;padding:1.2rem 1.35rem;background:var(--tarjeta)}
   .senales{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:.75rem}
   .senales li{display:flex;flex-direction:column;gap:.1rem;padding-left:.9rem;
     border-left:2px solid var(--borde)}
   .senales span{color:var(--ink-soft);font-size:.94rem}
+  .senal__falta{font-size:.84rem!important;font-style:italic;margin-top:.15rem}
 
   .preguntas{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:.7rem;
     counter-reset:p}
@@ -436,6 +486,7 @@ if (import.meta.url === `file:///${process.argv[1].replace(/\\/g, "/")}`) {
   const respuestas = Object.fromEntries(Object.entries(fixture.responses).map(([k, v]) => [Number(k), v]));
   const modelo = construirModelo(respuestas, recursos);
   const html = renderInforme(modelo, prosa, recursos.labels, {
+    facetas: recursos.facetas,
     fecha: "27 de agosto de 2026",
     aviso: "Maqueta · datos del caso de ejemplo del Excel oficial · los textos redactados son de muestra",
   });
