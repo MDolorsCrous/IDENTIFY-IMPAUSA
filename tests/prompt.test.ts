@@ -158,6 +158,18 @@ test("el encargo para la API reparte instrucciones, perfil y esquema", () => {
   assert.ok(!e.mensaje.includes(Object.values(fixture.responses).join(",")));
   // El esquema viaja aparte, para imponerlo en output_config.format en vez de
   // pedirlo por favor dentro del texto.
-  assert.deepEqual(e.esquema, esquemaSalida(modelo));
+  // El esquema del cable no es literalmente el del informe: la API solo acepta
+  // minItems 0 o 1, y por ahi devolvia un 400. La cuenta exacta la siguen
+  // imponiendo las instrucciones y validarProsa.
+  const real = esquemaSalida(modelo) as any;
+  assert.equal(real.properties.preguntas.minItems, 5);
+  assert.equal(e.esquema.properties.preguntas.minItems, 1);
+  assert.equal(e.esquema.properties.planAccion.minItems, 1);
+  assert.equal(e.esquema.properties.preguntas.maxItems, undefined);
+  // Lo que se quita no se pierde: se cuenta en la descripcion, como hacen los SDK.
+  assert.match(e.esquema.properties.preguntas.description, /mínimo 5.+máximo 7/);
+  assert.match(e.esquema.properties.titular.description, /máximo 80 caracteres/);
+  assert.ok(INSTRUCCIONES.includes("entre 5 y 7"));
+  assert.ok(INSTRUCCIONES.includes("exactamente 3 pasos"));
   assert.ok(!e.mensaje.includes("Esquema de la respuesta"));
 });

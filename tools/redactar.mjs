@@ -46,10 +46,11 @@ export async function redactar(modelo, facetas, { alEmpezar } = {}) {
   alEmpezar?.();
 
   let respuesta;
+  let flujo;
   try {
     // Se transmite en streaming porque con pensamiento adaptativo la respuesta
     // puede tardar, y una peticion normal se quedaria sin tiempo.
-    const flujo = cliente.beta.messages.stream({
+    flujo = cliente.beta.messages.stream({
       model: MODELO,
       max_tokens: 32000,
       system: sistema,
@@ -66,6 +67,10 @@ export async function redactar(modelo, facetas, { alEmpezar } = {}) {
     });
     respuesta = await flujo.finalMessage();
   } catch (e) {
+    // Sin esto, salir con el flujo aun abierto deja una asercion de libuv por
+    // pantalla que tapa el error de verdad.
+    try { flujo?.abort(); } catch {}
+    await new Promise((r) => setImmediate(r)); // que libuv cierre antes de salir
     throw traducir(e);
   }
 

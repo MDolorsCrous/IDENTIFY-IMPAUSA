@@ -239,6 +239,64 @@ export function promptCompleto(
  * instaladas en Claude Code ni en la cuenta de claude.ai, así que las
  * instrucciones tienen que viajar con la petición.
  */
+/**
+ * El esquema, adaptado a lo que acepta `output_config.format`.
+ *
+ * Los esquemas estructurados admiten un subconjunto de JSON Schema: `maxItems`,
+ * `maxLength` y compañía se rechazan con un 400, y `minItems` solo vale 0 o 1.
+ * Aquí se quitan, pero **no se pierden**: se cuentan en la `description`, que
+ * es lo que hacen los SDK oficiales. Así el modelo las sigue viendo.
+ *
+ * Lo que garantiza el número exacto no es esto: son las instrucciones y
+ * `validarProsa`, que rechaza la redacción si no cuadra. `esquemaSalida` se
+ * queda intacto, que es el contrato del informe.
+ */
+const NO_SOPORTADAS = [
+  "maxLength",
+  "minLength",
+  "pattern",
+  "maxItems",
+  "uniqueItems",
+  "minimum",
+  "maximum",
+  "multipleOf",
+];
+
+function comoTexto(k: string, v: unknown): string {
+  const como: Record<string, string> = {
+    maxLength: `máximo ${v} caracteres`,
+    minLength: `mínimo ${v} caracteres`,
+    maxItems: `máximo ${v} elementos`,
+    minItems: `mínimo ${v} elementos`,
+  };
+  return como[k] ?? `${k}: ${v}`;
+}
+
+function paraElCable(valor: unknown): unknown {
+  if (Array.isArray(valor)) return valor.map(paraElCable);
+  if (!valor || typeof valor !== "object") return valor;
+
+  const entrada = valor as Record<string, unknown>;
+  const salida: Record<string, unknown> = {};
+  const perdidas: string[] = [];
+
+  for (const [k, v] of Object.entries(entrada)) {
+    if (NO_SOPORTADAS.includes(k)) {
+      perdidas.push(comoTexto(k, v));
+    } else if (k === "minItems" && typeof v === "number" && v > 1) {
+      perdidas.push(comoTexto(k, v));
+      salida[k] = 1;
+    } else {
+      salida[k] = paraElCable(v);
+    }
+  }
+
+  if (perdidas.length) {
+    salida.description = [entrada.description, perdidas.join(", ")].filter(Boolean).join(" · ");
+  }
+  return salida;
+}
+
 export function encargoParaLaApi(
   modelo: ReportModel,
   facetas: Record<string, FichaFaceta>,
@@ -254,7 +312,7 @@ export function encargoParaLaApi(
       JSON.stringify(materialParaRedactar(modelo, facetas), null, 2),
       "```",
     ].join("\n"),
-    esquema: esquemaSalida(modelo),
+    esquema: paraElCable(esquemaSalida(modelo)) as object,
   };
 }
 
