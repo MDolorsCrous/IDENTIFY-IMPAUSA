@@ -120,3 +120,16 @@ test("a un paso del plan sin indicador se le ve el fallo", () => {
   const fallos = validarProsa(mala, modelo);
   assert.ok(fallos.some((f) => f.includes("paso 2") && f.includes("indicador")));
 });
+
+test("el encargo lleva el método de la casa, no solo el tono", () => {
+  // Las preguntas y el plan se apoyan en los marcos de executive-coach-senior.
+  // Si esto desaparece, la redacción vuelve a salir de lo que le parezca al modelo.
+  for (const marco of [
+    "marco de asertividad",
+    "marco de conflicto",
+    "regulación emocional ANTES",
+    "no recetes el rasgo que falta",
+  ]) {
+    assert.ok(INSTRUCCIONES.includes(marco), `las instrucciones no traen «${marco}»`);
+  }
+});

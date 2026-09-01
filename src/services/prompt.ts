@@ -70,6 +70,24 @@ nunca a la persona.
 SI NO HA DISPARADO NINGUNA REGLA
 No lo disimules ni rellenes. El peso recae en el recorrido dominio a dominio.
 
+DE DÓNDE SACAS LAS PALANCAS
+Las preguntas y el plan no salen de tu criterio: salen del método de la casa
+(skill executive-coach-senior). Según lo que haya salido alto o bajo:
+
+- Asertividad baja → marco de asertividad: poner límites, decir que no, recibir
+  críticas. La palanca es el guion concreto, no «tener más confianza».
+- Respeto bajo con asertividad alta → marco de conflicto: qué tipo de conflicto
+  es, a qué temperatura está, y separar posiciones de intereses.
+- Volatilidad emocional alta → regulación emocional ANTES que cualquier guion de
+  conversación difícil. El orden importa.
+- Confianza baja → dinámicas de poder y mapa de personas: delegar cuesta más de
+  lo que explica la capacidad, y se entrena con pruebas pequeñas y baratas.
+- Organización baja con productividad alta → sistemas y tiempo, no motivación.
+
+Y una regla que viene de ahí: **no recetes el rasgo que falta**. Decirle a quien
+tiene la organización baja que se organice más no funciona casi nunca; la palanca
+suele ser estructura externa, no más esfuerzo.
+
 LONGITUDES
 - titular: una línea, menos de 80 caracteres
 - perfilEnUnaFrase: 120-150 palabras
