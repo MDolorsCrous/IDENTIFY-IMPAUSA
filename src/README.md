@@ -61,7 +61,7 @@ interpretación, que todavía no existe — ver [`../docs/02-modelo-interpretaci
 npm test
 ```
 
-86 pruebas, sin instalar nada: Node 22.6+ ejecuta TypeScript directamente.
+96 pruebas, sin instalar nada: Node 22.6+ ejecuta TypeScript directamente.
 
 La que importa es la que compara contra el Excel oficial. El fichero
 `BFI-2_formules_correctes_inversos.xlsx` trae un juego de respuestas de ejemplo con
@@ -69,6 +69,11 @@ sus resultados ya calculados; `tests/fixtures/ejemplo-excel.json` los recoge y e
 motor tiene que reproducir los 60 valores recodificados, las 15 facetas y los 5
 dominios **exactamente**. Si alguien toca la configuración y rompe la psicometría,
 esa prueba se pone roja.
+
+Otra que conviene conocer: `tests/skill.test.ts` compara la skill de `skill/` con estos
+mismos JSON. La skill se genera (`node tools/gen-skill.mjs`), no se escribe; si alguien
+arregla una frase editándola ahí, esa prueba avisa de que el sitio donde se cambia el
+texto es el JSON.
 
 ## Adaptarlo a otro instrumento
 

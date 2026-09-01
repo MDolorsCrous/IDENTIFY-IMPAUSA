@@ -40,7 +40,7 @@ chocar con lo que Lovable escriba por su cuenta.
 | Informe en pantalla (estructura + gráficos) | app | ⬜ Pendiente |
 | Párrafos de coaching redactados por Claude | API de Claude | ⬜ Pendiente |
 | Exportación PDF / Word con marca LivePausa | app | ⬜ Pendiente |
-| Skill de Claude Code (`identify-impausa`) | `.claude/skills/` | ⬜ Pendiente |
+| Skill del BFI-2 (`identify-bfi2-knowledge`) | `skill/`, generada con `tools/gen-skill.mjs` | ✅ Hecha |
 
 ## Arquitectura: híbrida
 
@@ -63,6 +63,30 @@ sin dejar que el modelo invente puntuaciones.
 - [`docs/base-conocimiento-bfi2.md`](docs/base-conocimiento-bfi2.md) — el material de interpretación, por faceta
 - [`docs/03-estructura-informe.md`](docs/03-estructura-informe.md) — secciones del informe y qué las alimenta
 - [`docs/04-arquitectura-hibrida.md`](docs/04-arquitectura-hibrida.md) — qué calcula el código y qué redacta Claude
+
+## La skill
+
+`skill/identify-bfi2-knowledge/` lleva el conocimiento del BFI-2 a cualquier conversación:
+las lecturas de las 15 facetas, las 26 combinaciones con sus citas, las metáforas, el tono
+y el protocolo de seguridad. Con ella cargada, redactar un informe es pegarle el perfil.
+
+**No se edita a mano: se genera.**
+
+```
+node tools/gen-skill.mjs
+```
+
+Lee los mismos JSON que usa el motor, así que la skill no puede decir una cosa y el informe
+otra. Si alguien la edita a mano, `tests/skill.test.ts` se pone roja. Salen tres formatos:
+la carpeta (Claude Code), `identify-bfi2-knowledge.skill` (para subir a la web) y
+`todo-en-uno/SKILL.md` (un solo fichero, con las referencias como anexos).
+
+Cuando la conversación ya la tiene cargada, el encargo de redacción no necesita repetir el
+tono ni el método:
+
+```
+node generar.js datos/fichero.json --prompt --corto
+```
 
 ## Marca
 

@@ -10,6 +10,7 @@ import {
   esquemaSalida,
   materialParaRedactar,
   promptCompleto,
+  promptCorto,
   validarProsa,
   type FichaFaceta,
 } from "../src/services/prompt.ts";
@@ -132,4 +133,16 @@ test("el encargo lleva el método de la casa, no solo el tono", () => {
   ]) {
     assert.ok(INSTRUCCIONES.includes(marco), `las instrucciones no traen «${marco}»`);
   }
+});
+
+test("el encargo corto se apoya en la skill en vez de repetirla", () => {
+  const corto = promptCorto(modelo, facetas);
+  const largo = promptCompleto(modelo, facetas);
+
+  assert.ok(corto.includes("identify-bfi2-knowledge"), "no dice de qué skill depende");
+  assert.ok(corto.includes("## El perfil") && corto.includes("## Esquema de la respuesta"));
+  // Lo que ahorra es exactamente el bloque de instrucciones, que trae la skill.
+  assert.ok(!corto.includes("No diagnosticas"), "el corto repite lo que ya está en la skill");
+  // Lo que se ahorra es del tamaño del bloque de instrucciones, ni mas ni menos.
+  assert.ok(largo.length - corto.length > INSTRUCCIONES.length * 0.9, "el corto no ahorra nada");
 });

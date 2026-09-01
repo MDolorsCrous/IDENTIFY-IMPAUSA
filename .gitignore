@@ -29,3 +29,7 @@ test-identify.html
 
 # el encargo se regenera con el informe
 datos/*.prompt.md
+
+# el paquete de la skill se regenera con tools/gen-skill.mjs
+# (la carpeta skill/ SI se versiona: es texto y sus diffs se leen)
+skill/*.skill

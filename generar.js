@@ -3,6 +3,7 @@
 //   node generar.js --clipboard                    lee el JSON del portapapeles
 //   node generar.js datos/marta-2026-08-27.json    lo lee de un fichero
 //   node generar.js ... --prompt                   copia el encargo para Claude
+//   node generar.js ... --prompt --corto           el encargo breve, con la skill cargada
 //   node generar.js ... --prosa textos.json        con la redacción ya hecha
 //
 // Sin --prosa, el informe sale con todo lo que calcula el código y los pasajes
@@ -15,7 +16,12 @@ import { fileURLToPath } from "node:url";
 
 import { construirModelo } from "./src/services/pipeline.ts";
 import { ScoringError } from "./src/services/scoring.ts";
-import { avisosDeLongitud, promptCompleto, validarProsa } from "./src/services/prompt.ts";
+import {
+  avisosDeLongitud,
+  promptCompleto,
+  promptCorto,
+  validarProsa,
+} from "./src/services/prompt.ts";
 import { renderInforme } from "./src/services/render-informe.js";
 import { cargarRecursos } from "./tools/recursos.mjs";
 
@@ -34,6 +40,9 @@ const delPortapapeles = args.includes("--clipboard");
 const iProsa = args.indexOf("--prosa");
 const ficheroProsa = iProsa >= 0 ? args[iProsa + 1] : null;
 const pedirPrompt = args.includes("--prompt");
+// Con la skill identify-bfi2-knowledge cargada, el tono y el metodo ya los sabe:
+// el encargo se queda en el perfil y el esquema.
+const encargoCorto = args.includes("--corto");
 const ficheroEntrada = args.find((a, i) => !a.startsWith("--") && args[i - 1] !== "--prosa");
 
 if (!delPortapapeles && !ficheroEntrada) {
@@ -158,7 +167,7 @@ writeFileSync(salidaHtml, html, "utf8");
 // Se escribe siempre: sirve de encargo cuando falta la redacción, y de registro
 // de qué se le pidió cuando ya está. Es la trazabilidad que pide docs/04.
 const salidaPrompt = join(RAIZ, "datos", nombre + ".prompt.md");
-const prompt = promptCompleto(modelo, recursos.facetas);
+const prompt = (encargoCorto ? promptCorto : promptCompleto)(modelo, recursos.facetas);
 writeFileSync(salidaPrompt, prompt, "utf8");
 
 let copiado = false;
@@ -199,7 +208,9 @@ ${
       ? `
   ── Para la redacción ──────────────────────────────────────────
   ${copiado ? "El encargo está en el portapapeles." : "El encargo está en " + salidaPrompt}
-  1. Pégalo en una conversación con Claude.
+  1. Pégalo en una conversación con Claude${
+    encargoCorto ? " que tenga cargada la skill identify-bfi2-knowledge" : ""
+  }.
   2. Guarda el JSON que devuelva, por ejemplo en datos/${nombre}.prosa.json
   3. Vuelve a generar:  node generar.js ${delPortapapeles ? "datos/" + nombre + ".json" : ficheroEntrada} --prosa datos/${nombre}.prosa.json
 `

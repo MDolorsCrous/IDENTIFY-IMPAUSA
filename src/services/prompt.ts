@@ -227,6 +227,35 @@ export function promptCompleto(
   ].join("\n");
 }
 
+/**
+ * El encargo corto: solo el perfil y el esquema.
+ *
+ * Sirve cuando la conversación ya tiene cargada la skill `identify-bfi2-knowledge`,
+ * que trae el tono, el método y el protocolo de seguridad. Repetirlos aquí no
+ * añadiría nada y arriesgaría lo contrario: dos versiones de las mismas reglas,
+ * y ninguna forma de saber cuál manda. Si la skill no está cargada, el encargo
+ * que hace falta es `promptCompleto`.
+ */
+export function promptCorto(modelo: ReportModel, facetas: Record<string, FichaFaceta>): string {
+  return [
+    "Redacta el informe de Identify by Impausa con este perfil, siguiendo la skill",
+    "`identify-bfi2-knowledge`: su tono, sus longitudes y su protocolo de seguridad.",
+    "El perfil viene ya interpretado — no lo recalcules. Devuelve solo el JSON del esquema.",
+    "",
+    "## Esquema de la respuesta",
+    "",
+    "```json",
+    JSON.stringify(esquemaSalida(modelo), null, 2),
+    "```",
+    "",
+    "## El perfil",
+    "",
+    "```json",
+    JSON.stringify(materialParaRedactar(modelo, facetas), null, 2),
+    "```",
+  ].join("\n");
+}
+
 /** Comprueba una respuesta antes de meterla en el informe. */
 export function validarProsa(prosa: unknown, modelo: ReportModel): string[] {
   const fallos: string[] = [];
