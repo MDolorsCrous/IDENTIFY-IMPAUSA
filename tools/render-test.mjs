@@ -415,9 +415,10 @@ function informe(){
     <div class="barra-informe">
       <button class="enlace" id="volver">← Volver a las puntuaciones</button>
       <div class="acciones">
-        \${conProsa ? "" : '<button class="boton boton--claro" id="encargo">Copiar el encargo</button><button class="enlace" id="encargoLargo" title="Para una conversación que no tenga cargada la skill identify-bfi2-knowledge">sin la skill</button>'}
-        <button class="boton boton--claro" id="pegar">\${conProsa ? "Cambiar la redacción" : "Pegar la redacción"}</button>
-        <button class="boton" id="imprimir">Imprimir</button>
+        \${conProsa || !HAY_SERVIDOR ? "" : '<button class="boton" id="generar">Generar el informe completo</button>'}
+        \${conProsa || HAY_SERVIDOR ? "" : '<button class="boton boton--claro" id="encargo">Copiar el encargo</button><button class="enlace" id="encargoLargo" title="Para una conversación que no tenga cargada la skill identify-bfi2-knowledge">sin la skill</button>'}
+        \${HAY_SERVIDOR && !conProsa ? "" : '<button class="boton boton--claro" id="pegar">' + (conProsa ? "Cambiar la redacción" : "Pegar la redacción") + '</button>'}
+        <button class="boton boton--claro" id="imprimir">Imprimir</button>
       </div>
     </div>
     <iframe id="marco" title="Informe Identify"></iframe>\`;
@@ -436,7 +437,11 @@ function informe(){
   const encargoLargo = document.getElementById("encargoLargo");
   if (encargoLargo) encargoLargo.onclick = e => copiarEnBoton(e.target, promptCompleto(modelo, D.recursos.facetas), "sin la skill");
 
-  document.getElementById("pegar").onclick = () => {
+  const generar = document.getElementById("generar");
+  if (generar) generar.onclick = () => redactarEnElServidor(generar, modelo);
+
+  const pegar = document.getElementById("pegar");
+  if (pegar) pegar.onclick = () => {
     const pegado = window.prompt(
       "Pega aquí el JSON que te haya devuelto Claude con la redacción.\\n\\n" +
       "Se comprueba antes de meterlo: si le falta alguna sección, te lo digo y no toco el informe.",
@@ -451,6 +456,53 @@ function informe(){
     prosa = candidata;
     pintar();
   };
+}
+
+// En la web hay una funcion que redacta con la clave del lado del servidor. En
+// el fichero local no la hay, y por eso ahi salen los botones de copiar el
+// encargo: son dos caminos al mismo sitio, no dos versiones del producto.
+const HAY_SERVIDOR = location.protocol === "http:" || location.protocol === "https:";
+
+const recuerdaCodigo = {
+  leer(){ try { return sessionStorage.getItem("identify-codigo") || ""; } catch { return ""; } },
+  guardar(c){ try { sessionStorage.setItem("identify-codigo", c); } catch {} },
+  olvidar(){ try { sessionStorage.removeItem("identify-codigo"); } catch {} },
+};
+
+async function redactarEnElServidor(boton, modelo){
+  const codigo = recuerdaCodigo.leer() ||
+    window.prompt("Código de acceso\\n\\nTe lo da quien te ha pasado el enlace.", "");
+  if (!codigo) return;
+
+  const etiqueta = boton.textContent;
+  boton.disabled = true;
+  boton.textContent = "Redactando… medio minuto";
+  try {
+    const r = await fetch("/api/redactar", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      // Van las RESPUESTAS, no el perfil: el servidor vuelve a puntuar con el
+      // mismo motor. Asi no hay dos calculos que puedan discrepar, y el
+      // endpoint no se puede usar para pedirle a Claude cualquier otra cosa.
+      body: JSON.stringify({ codigo, respuestas, persona }),
+    });
+    const datos = await r.json().catch(() => ({}));
+    if (!r.ok) {
+      if (r.status === 403) recuerdaCodigo.olvidar();
+      window.alert(datos.error || "No se ha podido generar el informe.");
+      return;
+    }
+    const fallos = validarProsa(datos.prosa, modelo);
+    if (fallos.length) { window.alert("La redacción ha llegado incompleta. Vuelve a intentarlo."); return; }
+    recuerdaCodigo.guardar(codigo);
+    prosa = datos.prosa;
+    pintar();
+  } catch {
+    window.alert("No se ha podido conectar. Comprueba la conexión y vuelve a intentarlo.");
+  } finally {
+    boton.disabled = false;
+    boton.textContent = etiqueta;
+  }
 }
 
 function fechaLarga(iso){

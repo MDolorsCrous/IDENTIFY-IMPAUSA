@@ -13,6 +13,17 @@
 [build]
   command = "node tools/render-test.mjs publico/index.html"
   publish = "publico"
+  functions = "netlify/functions"
+
+[functions]
+  node_bundler = "esbuild"
+
+# La función redacta el informe con la clave de la API, que vive en las
+# variables de entorno del sitio y no baja nunca al navegador.
+[[redirects]]
+  from = "/api/redactar"
+  to = "/.netlify/functions/redactar"
+  status = 200
 
 [build.environment]
   # Fijar la versión de Node: sin esto, un cambio del valor por defecto de

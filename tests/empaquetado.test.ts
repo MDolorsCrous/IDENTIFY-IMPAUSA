@@ -106,3 +106,19 @@ test("el motor empotrado en la página no sabe nada de la API ni de la clave", (
     assert.ok(!paquete.includes(prohibido), `el paquete lleva «${prohibido}»`);
   }
 });
+
+test("la página web pide la redacción al servidor, y le manda las respuestas", () => {
+  // La decisión que sostiene el endpoint: viajan las 60 respuestas, no el
+  // perfil ya montado. Si algún día se mandara el perfil, cualquiera con el
+  // código podría pedirle a Claude lo que quisiera con la tarjeta de otro.
+  const pagina = readFileSync(join(raiz, "test-identify.html"), "utf8");
+  assert.ok(pagina.includes("/api/redactar"), "la página no llama a la función");
+  assert.ok(
+    pagina.includes("JSON.stringify({ codigo, respuestas, persona })"),
+    "lo que se manda al servidor ha cambiado: revísalo, es la defensa del endpoint",
+  );
+  // Y ni el código de acceso ni la clave pueden estar en algo que se publica.
+  for (const prohibido of ["CODIGO_ACCESO", "ANTHROPIC_API_KEY", "sk-ant"]) {
+    assert.ok(!pagina.includes(prohibido), `la página lleva «${prohibido}»`);
+  }
+});
