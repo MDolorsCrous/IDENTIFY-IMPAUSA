@@ -1,5 +1,9 @@
 # Aportación para `metaforas-coaching`
 
+> **Pegada el 1 de septiembre de 2026** en metaforas-coaching: references/mapa-laia.md (fila tras DISC + nota de lectura) y el description de SKILL.md.
+> Se conserva aquí como registro de qué se aportó; si hay que cambiarlo, el sitio
+> es la skill, no este fichero.
+
 El `mapa-laia.md` conecta cada instrumento con las categorías del catálogo, pero no tiene
 fila para el BFI-2. Esta es.
 

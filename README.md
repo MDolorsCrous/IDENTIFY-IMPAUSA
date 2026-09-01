@@ -89,6 +89,21 @@ regeneres la skill hay que volver a ponerla ahí, o la instalada se queda vieja.
 cp -r skill/identify-bfi2-knowledge "$HOME/.claude/skills/"
 ```
 
+### Empaquetar cualquier skill
+
+`tools/empaquetar-skill.mjs` convierte una carpeta de `~/.claude/skills/` en el `.skill`
+que pide claude.ai. Hace falta porque `Compress-Archive` guarda las rutas con barra
+invertida y un paquete así no sube.
+
+```
+node tools/empaquetar-skill.mjs --todas
+```
+
+Los deja en `~/.claude/skills/paquetes-para-subir/`. Es el segundo paso obligatorio cada
+vez que se toca una skill: **la copia de disco y la de la cuenta de claude.ai son
+independientes**, y en Claude Code manda la de disco. Si solo se actualiza una, las dos
+dicen cosas distintas sin avisar.
+
 Cuando la conversación ya la tiene cargada, el encargo de redacción no necesita repetir el
 tono ni el método:
 

@@ -1,5 +1,9 @@
 # Aportación para `laia-coach`
 
+> **Pegada el 1 de septiembre de 2026** en laia-coach: SKILL.md (description, «When to use», entrada 12 de la lista y fila de la tabla §2.2) y references/tools.md (índice + §12).
+> Se conserva aquí como registro de qué se aportó; si hay que cambiarlo, el sitio
+> es la skill, no este fichero.
+
 Identify usa el **BFI-2**, y esa skill hoy no lo tiene entre sus instrumentos: lista once
 y el Big Five no es ninguno. Esto es lo que hay que añadirle para que Identify entre en el
 circuito integrativo como ya lo hace el DISC.

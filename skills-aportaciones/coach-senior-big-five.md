@@ -1,5 +1,9 @@
 # Aportación para `executive-coach-senior`
 
+> **Pegada el 1 de septiembre de 2026** en executive-coach-senior: references/tools/big-five.md nuevo, fila en la tabla de SKILL.md y su description.
+> Se conserva aquí como registro de qué se aportó; si hay que cambiarlo, el sitio
+> es la skill, no este fichero.
+
 Ficha del instrumento, para `references/tools/big-five.md`. Sigue el formato de las once
 que ya hay (`disc.md` como referencia) y está en inglés porque esa skill lo está.
 
