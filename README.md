@@ -7,7 +7,8 @@ Test autoadministrable + informe interpretativo del ecosistema **IMPAUSA / LiveP
 
 | Ruta | Qué es |
 | --- | --- |
-| `Projects\IDENTIFY_TEST` | **Esta carpeta.** Documentación y capa de interpretación del test |
+| `Projects\IDENTIFY_TEST` | **Esta carpeta.** El proyecto entero |
+| `github.com/MDolorsCrous/IDENTIFY-IMPAUSA` | Su repositorio, **privado**. Netlify publica el test desde `main` |
 | `github.com/MDolorsCrous/impausa-identify-bigfive` | Repo que Lovable sincroniza. Contiene el PRD en el README, no la app |
 | `Projects\IDENTIFY_BIGFIVE` | Clon de ese repo. Hoy contiene solo la plantilla en blanco de Lovable |
 | `Projects\IDENTIFY_IMPAUSA` | Repo vacío creado por error. No se usa |
