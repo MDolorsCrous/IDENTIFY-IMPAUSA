@@ -81,6 +81,14 @@ otra. Si alguien la edita a mano, `tests/skill.test.ts` se pone roja. Salen tres
 la carpeta (Claude Code), `identify-bfi2-knowledge.skill` (para subir a la web) y
 `todo-en-uno/SKILL.md` (un solo fichero, con las referencias como anexos).
 
+Está instalada en `C:\Users\maria\.claude\skills\identify-bfi2-knowledge\`, así que vale para
+todas las conversaciones y no solo para este proyecto. **Es una copia**: cada vez que
+regeneres la skill hay que volver a ponerla ahí, o la instalada se queda vieja.
+
+```
+cp -r skill/identify-bfi2-knowledge "$HOME/.claude/skills/"
+```
+
 Cuando la conversación ya la tiene cargada, el encargo de redacción no necesita repetir el
 tono ni el método:
 
