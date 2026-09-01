@@ -16,7 +16,7 @@ import { fileURLToPath } from "node:url";
 import { construirModelo } from "./src/services/pipeline.ts";
 import { ScoringError } from "./src/services/scoring.ts";
 import { avisosDeLongitud, promptCompleto, validarProsa } from "./src/services/prompt.ts";
-import { renderInforme } from "./tools/render-informe.mjs";
+import { renderInforme } from "./src/services/render-informe.js";
 import { cargarRecursos } from "./tools/recursos.mjs";
 
 const RAIZ = fileURLToPath(new URL(".", import.meta.url));
@@ -132,6 +132,7 @@ const avisos = Object.keys(prosa).length ? avisosDeLongitud(prosa, modelo) : [];
 
 const html = renderInforme(modelo, prosa, recursos.labels, {
   facetas: recursos.facetas,
+  metaforas: recursos.metaforas,
   fecha: fechaLarga(fecha),
 });
 

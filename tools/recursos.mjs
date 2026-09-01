@@ -18,6 +18,7 @@ export function cargarRecursos() {
     labels: leer("src/i18n/es-informe.json"),
     rules: leer("src/config/interpretation/combinations.json"),
     facetas: leer("src/config/interpretation/facetas.json"),
+    metaforas: leer("src/config/interpretation/metaforas.json"),
   };
 }
 

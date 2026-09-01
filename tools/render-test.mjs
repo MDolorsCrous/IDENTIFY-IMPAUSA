@@ -5,33 +5,45 @@
 // Los 60 items, la escala y los items inversos salen de src/config y src/i18n:
 // la misma fuente que usa el motor. Aqui no se transcribe nada a mano.
 //
-// El calculo va incrustado en la pagina y replica src/services/scoring.ts. Para
-// que no se separen en silencio, la pagina se autocomprueba al cargar contra el
-// caso de ejemplo del Excel oficial y avisa si algun valor no coincide.
-import { readFileSync, writeFileSync } from "node:fs";
+// La pagina no lleva una copia del motor: lleva el motor. tools/empaquetar.mjs
+// coge los mismos ficheros de src/services/ que usan el comando y las pruebas,
+// les quita los tipos y los concatena. Aun asi, al cargar se autocomprueba
+// contra el caso de ejemplo del Excel —puntuaciones, bandas, reglas y senales—
+// y avisa en portada si algo no coincide.
+import { writeFileSync } from "node:fs";
 
-const leer = (p) => JSON.parse(readFileSync(new URL("../" + p, import.meta.url), "utf8"));
+import { construirModelo } from "../src/services/pipeline.ts";
+import { empaquetarMotor } from "./empaquetar.mjs";
+import { cargarRecursos, cargarEjemplo, cargarIdioma, leer } from "./recursos.mjs";
 
-const questions = leer("src/config/questions.json");
-const facets = leer("src/config/facets.json");
-const domains = leer("src/config/domains.json");
-const es = leer("src/i18n/es.json");
-const labels = leer("src/i18n/es-informe.json");
-const fixture = leer("tests/fixtures/ejemplo-excel.json");
+const recursos = cargarRecursos();
+const es = cargarIdioma();
+const fixture = cargarEjemplo();
+const paquete = empaquetarMotor();
+
+// Lo que el motor de Node saca del caso de ejemplo. La pagina tiene que sacar
+// exactamente esto con su copia empotrada.
+const respuestasEjemplo = Object.fromEntries(
+  Object.entries(fixture.responses).map(([k, v]) => [Number(k), v]),
+);
+const modeloEjemplo = construirModelo(respuestasEjemplo, recursos);
 
 const datos = {
-  questions,
-  facets,
-  domains,
+  recursos,
   stem: es.stem,
   scale: es.scale,
   texts: es.questions,
-  facetLabels: labels.facets,
-  domainLabels: labels.domains,
+  facetLabels: recursos.labels.facets,
+  domainLabels: recursos.labels.domains,
   check: {
     responses: fixture.responses,
     facets: fixture.facetsEsperado,
     domains: fixture.domainsEsperado,
+    bandas: Object.fromEntries(
+      modeloEjemplo.domains.flatMap((d) => d.facets).map((f) => [f.id, f.band]),
+    ),
+    disparadas: modeloEjemplo.fired.length,
+    senales: modeloEjemplo.nearMisses.length,
   },
 };
 
@@ -154,6 +166,11 @@ const html = `<title>Test Identify</title>
   .campo span{color:var(--ink-soft);font-weight:400}
   .campo input{font:inherit;color:inherit;background:var(--ground);border:1px solid var(--borde);
     border-radius:5px;padding:.55rem .7rem;max-width:20rem}
+  .barra-informe{display:flex;justify-content:space-between;align-items:center;gap:1rem;
+    flex-wrap:wrap;padding:.7rem 1.25rem;background:var(--ground);
+    border-bottom:1px solid var(--borde);position:sticky;top:0;z-index:3}
+  .barra-informe .boton{padding:.5rem 1rem;font-size:.9rem}
+  #marco{flex:1;width:100%;border:0;min-height:calc(100vh - 4rem);background:#fff}
   .json{width:100%;min-height:9rem;margin-top:.9rem;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;
     font-size:.8rem;line-height:1.5;background:var(--ground);color:var(--ink-soft);
     border:1px solid var(--borde);border-radius:5px;padding:.7rem;resize:vertical}
@@ -162,30 +179,43 @@ const html = `<title>Test Identify</title>
 <div class="marco" id="app"></div>
 
 <script>
+${paquete}
+</script>
+
+<script>
 const D = ${JSON.stringify(datos)};
+const CFG = D.recursos.config;
+const puntuar = respuestas => {
+  const s = score(respuestas, CFG);
+  return { facetas: s.facets, dominios: s.domains };
+};
 
-// ---- Calculo: replica de src/services/scoring.ts ----
-const INVERSOS = new Set(D.questions.filter(q => q.reverse).map(q => q.id));
-const recodificar = (respuesta, inverso) => inverso ? 6 - respuesta : respuesta;
-
-function puntuar(respuestas){
-  const rec = {};
-  for (const q of D.questions) rec[q.id] = recodificar(respuestas[q.id], INVERSOS.has(q.id));
-  const media = items => items.reduce((a,i) => a + rec[i], 0) / items.length;
-  const facetas = {}, dominios = {};
-  for (const f of D.facets) facetas[f.id] = media(f.items);
-  for (const d of D.domains) dominios[d.id] = media(d.items);
-  return { facetas, dominios };
-}
-
-// Autocomprobacion contra el caso de ejemplo del Excel oficial
+/**
+ * Autocomprobacion contra el caso de ejemplo del Excel oficial.
+ *
+ * El motor de esta pagina es el mismo de src/services/, empotrado al generar.
+ * Aun asi se comprueba al cargar: puntuaciones, bandas, reglas disparadas y
+ * senales tienen que dar lo que dio el motor en Node. Si no, algo se ha roto
+ * por el camino y vale mas no ensenar resultados.
+ */
 function comprobar(){
   const r = {};
   for (const k in D.check.responses) r[+k] = D.check.responses[k];
-  const { facetas, dominios } = puntuar(r);
   const fallos = [];
-  for (const id in D.check.facets) if (Math.abs(facetas[id] - D.check.facets[id]) > 1e-9) fallos.push(id);
-  for (const id in D.check.domains) if (Math.abs(dominios[id] - D.check.domains[id]) > 1e-9) fallos.push(id);
+  try {
+    const { facetas, dominios } = puntuar(r);
+    for (const id in D.check.facets) if (Math.abs(facetas[id] - D.check.facets[id]) > 1e-9) fallos.push(id);
+    for (const id in D.check.domains) if (Math.abs(dominios[id] - D.check.domains[id]) > 1e-9) fallos.push(id);
+
+    const modelo = construirModelo(r, D.recursos);
+    for (const f of modelo.domains.flatMap(d => d.facets)) {
+      if (f.band !== D.check.bandas[f.id]) fallos.push("banda de " + f.id);
+    }
+    if (modelo.fired.length !== D.check.disparadas) fallos.push("nº de reglas disparadas");
+    if (modelo.nearMisses.length !== D.check.senales) fallos.push("nº de señales");
+  } catch (e) {
+    fallos.push("el motor no arranca: " + e.message);
+  }
   return fallos;
 }
 const FALLOS = comprobar();
@@ -194,14 +224,16 @@ const FALLOS = comprobar();
 let pantalla = "portada";
 let indice = 0;
 const respuestas = {};   // solo en memoria: no se guarda nada
+let persona = "";
+let prosa = {};          // la redaccion, si se pega
 const app = document.getElementById("app");
-const num = v => v.toFixed(2).replace(".", ",");
-const pos = v => ((v - 1) / 4) * 100;
-const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+// esc, num y pos ya vienen en el paquete del motor: no se redeclaran aqui,
+// que en un ambito plano seria un choque de nombres.
 
 function pintar(){
   if (pantalla === "portada") return portada();
   if (pantalla === "test") return pregunta();
+  if (pantalla === "informe") return informe();
   return resultados();
 }
 
@@ -225,7 +257,7 @@ function portada(){
 }
 
 function pregunta(){
-  const q = D.questions[indice];
+  const q = CFG.questions[indice];
   const elegido = respuestas[q.id];
   const hechas = Object.keys(respuestas).length;
   app.innerHTML = \`
@@ -254,11 +286,11 @@ function pregunta(){
 }
 
 function responder(valor){
-  const q = D.questions[indice];
+  const q = CFG.questions[indice];
   respuestas[q.id] = valor;
   if (indice < 59) { indice++; pintar(); }
   else if (Object.keys(respuestas).length === 60) { pantalla = "resultados"; pintar(); }
-  else { indice = D.questions.findIndex(x => respuestas[x.id] === undefined); pintar(); }
+  else { indice = CFG.questions.findIndex(x => respuestas[x.id] === undefined); pintar(); }
 }
 
 document.addEventListener("keydown", e => {
@@ -284,13 +316,13 @@ function filas(items, etiquetas, valores){
 
 function resultados(){
   const { facetas, dominios } = puntuar(respuestas);
-  const escala = '<div class="escala"><div></div><div class="escala__e"><span>1</span><span>3</span><span>5</span></div><div class="escala__h"></div></div>';
-  const porDominio = D.domains.map(d => \`
+  const escalaTest = '<div class="escala"><div></div><div class="escala__e"><span>1</span><span>3</span><span>5</span></div><div class="escala__h"></div></div>';
+  const porDominio = CFG.domains.map(d => \`
     <div class="bloque">
       <h3>\${esc(D.domainLabels[d.id])} — \${num(dominios[d.id])}</h3>
       <p class="bloque__sub">Sus tres facetas</p>
-      \${filas(D.facets.filter(f => f.domain === d.id), D.facetLabels, facetas)}
-      \${escala}
+      \${filas(CFG.facets.filter(f => f.domain === d.id), D.facetLabels, facetas)}
+      \${escalaTest}
     </div>\`).join("");
 
   app.innerHTML = \`
@@ -307,18 +339,19 @@ function resultados(){
         <div class="bloque">
           <h3>Los cinco dominios</h3>
           <p class="bloque__sub">Cada uno es la media de sus doce preguntas</p>
-          \${filas(D.domains, D.domainLabels, dominios)}
-          \${escala}
+          \${filas(CFG.domains, D.domainLabels, dominios)}
+          \${escalaTest}
         </div>
         \${porDominio}
         <div class="bloque">
-          <h3>Para generar tu informe</h3>
-          <p class="bloque__sub">Copia este resultado y pásalo a quien elabore el informe.</p>
+          <h3>Tu informe</h3>
+          <p class="bloque__sub">Con estas mismas puntuaciones, ahora interpretadas.</p>
           <label class="campo">Tu nombre <span>(opcional, sale en la portada)</span>
             <input id="persona" type="text" autocomplete="name" placeholder="Marta">
           </label>
           <div class="acciones">
-            <button class="boton" id="copiar">Copiar para el informe</button>
+            <button class="boton" id="informe">Informe Identify</button>
+            <button class="boton boton--claro" id="laia">Exportar para LAIA COACH</button>
             <button class="boton boton--claro" id="ver">Ver el JSON</button>
           </div>
           <textarea id="json" class="json" readonly hidden aria-label="Resultado en JSON"></textarea>
@@ -332,6 +365,7 @@ function resultados(){
 
   document.getElementById("reiniciar").onclick = () => {
     for (const k in respuestas) delete respuestas[k];
+    persona = ""; prosa = {};
     indice = 0; pantalla = "portada"; pintar();
   };
   // Lo que se copia son las RESPUESTAS, no las puntuaciones: quien genera el
@@ -352,15 +386,96 @@ function resultados(){
     e.target.textContent = caja.hidden ? "Ver el JSON" : "Ocultar el JSON";
     if (!caja.hidden) caja.select();
   };
-  document.getElementById("copiar").onclick = e => {
-    const texto = paraElInforme();
-    const ok = () => { e.target.textContent = "Copiado"; setTimeout(() => e.target.textContent = "Copiar para el informe", 1800); };
-    navigator.clipboard?.writeText(texto).then(ok, () => {
-      // Si el portapapeles no esta disponible, se ensena el JSON para copiarlo a mano
-      caja.value = texto; caja.hidden = false; caja.select();
-      e.target.textContent = "Cópialo de aquí";
-    });
+  document.getElementById("informe").onclick = () => {
+    persona = (document.getElementById("persona")?.value || "").trim();
+    pantalla = "informe"; pintar();
   };
+
+  // Para LAIA COACH van los RESULTADOS, no las respuestas: esa skill trabaja
+  // con lo que ya da cada instrumento, para cruzarlo con los demas.
+  document.getElementById("laia").onclick = e => copiarEnBoton(e.target, paraLaia(), "Exportar para LAIA COACH");
+}
+
+function copiarEnBoton(boton, texto, etiqueta){
+  const caja = document.getElementById("json");
+  navigator.clipboard?.writeText(texto).then(
+    () => { boton.textContent = "Copiado"; setTimeout(() => boton.textContent = etiqueta, 1800); },
+    () => { if (caja) { caja.value = texto; caja.hidden = false; caja.select(); } boton.textContent = "Cópialo de aquí"; },
+  );
+}
+
+function paraLaia(){
+  const { facetas, dominios } = puntuar(respuestas);
+  const dosDec = v => v.toFixed(2).replace(".", ",");
+  const lineas = [
+    "BFI-2 (Big Five) — Identify by Impausa",
+    "Fecha: " + new Date().toISOString().slice(0, 10),
+    persona ? "Persona: " + persona : null,
+    "Escala 1–5. Cada dominio es la media de sus 12 ítems; cada faceta, la de sus 4.",
+    "",
+    "DOMINIOS",
+    ...CFG.domains.map(d => "- " + D.domainLabels[d.id] + ": " + dosDec(dominios[d.id])),
+    "",
+    "FACETAS",
+    ...CFG.domains.flatMap(d => [
+      D.domainLabels[d.id] + ":",
+      ...CFG.facets.filter(f => f.domain === d.id)
+        .map(f => "  - " + D.facetLabels[f.id] + ": " + dosDec(facetas[f.id])),
+    ]),
+  ].filter(Boolean);
+  return lineas.join("\\n");
+}
+
+// ---- El informe ----
+function informe(){
+  const modelo = construirModelo(respuestas, D.recursos, { persona: persona || undefined });
+  const html = renderInforme(modelo, prosa, D.recursos.labels, {
+    facetas: D.recursos.facetas,
+    metaforas: D.recursos.metaforas,
+    fecha: fechaLarga(new Date().toISOString().slice(0, 10)),
+  });
+  const conProsa = Object.keys(prosa).length > 0;
+
+  app.innerHTML = \`
+    <div class="barra-informe">
+      <button class="enlace" id="volver">← Volver a las puntuaciones</button>
+      <div class="acciones">
+        \${conProsa ? "" : '<button class="boton boton--claro" id="encargo">Copiar el encargo de redacción</button>'}
+        <button class="boton boton--claro" id="pegar">\${conProsa ? "Cambiar la redacción" : "Pegar la redacción"}</button>
+        <button class="boton" id="imprimir">Imprimir</button>
+      </div>
+    </div>
+    <iframe id="marco" title="Informe Identify"></iframe>\`;
+
+  const marco = document.getElementById("marco");
+  marco.srcdoc = html;
+
+  document.getElementById("volver").onclick = () => { pantalla = "resultados"; pintar(); };
+  document.getElementById("imprimir").onclick = () => marco.contentWindow?.print();
+  const encargo = document.getElementById("encargo");
+  if (encargo) encargo.onclick = e => copiarEnBoton(e.target, promptCompleto(modelo, D.recursos.facetas), "Copiar el encargo de redacción");
+
+  document.getElementById("pegar").onclick = () => {
+    const pegado = window.prompt(
+      "Pega aquí el JSON que te haya devuelto Claude con la redacción.\\n\\n" +
+      "Se comprueba antes de meterlo: si le falta alguna sección, te lo digo y no toco el informe.",
+      "",
+    );
+    if (pegado === null) return;
+    let candidata;
+    try { candidata = JSON.parse(pegado); }
+    catch { window.alert("Eso no es un JSON válido. Cópialo entero, desde la primera llave hasta la última."); return; }
+    const fallos = validarProsa(candidata, modelo);
+    if (fallos.length) { window.alert("La redacción no encaja con el esquema:\\n\\n· " + fallos.join("\\n· ")); return; }
+    prosa = candidata;
+    pintar();
+  };
+}
+
+function fechaLarga(iso){
+  const meses = ["enero","febrero","marzo","abril","mayo","junio","julio","agosto","septiembre","octubre","noviembre","diciembre"];
+  const [a, m, d] = iso.split("-").map(Number);
+  return Number.isFinite(d) ? d + " de " + meses[m - 1] + " de " + a : iso;
 }
 
 // Norma de marca: «by Impausa» mide exactamente lo mismo que el titular.
@@ -390,4 +505,11 @@ pintar();
 
 const salida = process.argv[2] ?? "test-identify.html";
 writeFileSync(new URL("../" + salida, import.meta.url), html, "utf8");
-console.log(`escrito ${salida} · ${questions.length} items · ${facets.length} facetas · ${domains.length} dominios`);
+console.log(
+  `escrito ${salida}
+` +
+    `  ${recursos.config.questions.length} ítems · ${recursos.config.facets.length} facetas · ` +
+    `${Object.keys(recursos.metaforas.categorias).length} categorías de metáforas
+` +
+    `  motor empotrado: ${(paquete.length / 1024).toFixed(0)} KB · página: ${(html.length / 1024).toFixed(0)} KB`,
+);

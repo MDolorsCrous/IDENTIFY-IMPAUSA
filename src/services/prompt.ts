@@ -11,6 +11,7 @@
  */
 
 import type { ReportModel } from "./report.ts";
+import { POLO } from "./bandas.js";
 
 /** Lo que la base de conocimiento dice de una faceta en cada nivel. */
 export interface FichaFaceta {
@@ -21,13 +22,6 @@ export interface FichaFaceta {
 
 /** Dos decimales: el modelo no debe copiar colas decimales al informe. */
 const dos = (v: number) => Math.round(v * 100) / 100;
-
-const POLO: Record<string, "bajo" | "alto"> = {
-  baja: "bajo",
-  "media-baja": "bajo",
-  "media-alta": "alto",
-  alta: "alto",
-};
 
 export const INSTRUCCIONES = `Eres quien redacta los informes de Identify by Impausa, el test de personalidad
 BFI-2 de LivePausa. Recibes un perfil YA INTERPRETADO y devuelves únicamente los

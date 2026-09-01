@@ -24,7 +24,8 @@ chocar con lo que Lovable escriba por su cuenta.
 | Especificación del BFI-2 (60 ítems, escala, fórmulas) | `docs/01` | ✅ Verificada contra Excel y PDF |
 | Configuración y motor de puntuación | `src/` | ✅ Hecho |
 | Interfaz del test (responder las 60 preguntas) | `tools/render-test.mjs` | ✅ Prototipo funcionando |
-| Conexión test → informe | `generar.js` | ✅ Hecha, con paso manual |
+| Conexión test → informe | `generar.js` y el botón del test | ✅ El test genera el informe |
+| Metáforas del informe | `src/config/interpretation/metaforas.json` | ✅ Del catálogo de la skill |
 | Base de conocimiento (15 facetas, ~60 combinaciones) | `docs/base-conocimiento-bfi2.md` | ✅ Extraída del material |
 | Modelo de interpretación (bandas, reglas, seguridad) | `docs/02` | ✅ Diseñado |
 | Reglas de combinación (26, con cita) | `src/config/interpretation/` | ✅ Transcritas |
