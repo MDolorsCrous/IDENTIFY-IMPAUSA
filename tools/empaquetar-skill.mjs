@@ -17,6 +17,7 @@ import { crearZip } from "./zip.mjs";
 
 const SKILLS = path.join(homedir(), ".claude", "skills");
 const SALIDA_POR_DEFECTO = path.join(SKILLS, "paquetes-para-subir");
+const LIMITE_DESCRIPCION = 1024; // lo que acepta claude.ai al cargar la skill
 
 function morir(mensaje) {
   console.error("\n✖ " + mensaje + "\n");
@@ -61,16 +62,40 @@ if (args.includes("--todas")) {
 
 mkdirSync(salida, { recursive: true });
 
+// Una skill mal no puede impedir empaquetar las demas: se apunta y se sigue.
+const rechazadas = [];
+
 for (const carpeta of carpetas) {
   const nombre = path.basename(carpeta);
-  if (!esSkill(carpeta)) morir(`«${nombre}» no tiene un SKILL.md con frontmatter.`);
+  if (!esSkill(carpeta)) {
+    rechazadas.push(`${nombre}: no tiene un SKILL.md con frontmatter`);
+    continue;
+  }
+
+  const skillMd = readFileSync(path.join(carpeta, "SKILL.md"), "utf8");
+  const bruto = skillMd.slice(0, skillMd.indexOf("\n---", 4));
 
   // El nombre del frontmatter y el de la carpeta tienen que coincidir: si no,
   // la skill se sube con una identidad y se busca con otra.
-  const skillMd = readFileSync(path.join(carpeta, "SKILL.md"), "utf8");
-  const declarado = (skillMd.slice(0, skillMd.indexOf("\n---", 4)).match(/^name:\s*(.+)$/m) ?? [])[1];
+  const declarado = (bruto.match(/^name:\s*(.+)$/m) ?? [])[1];
   if (declarado?.trim() !== nombre) {
-    morir(`«${nombre}»: el frontmatter dice name: ${declarado}. Tienen que ser el mismo.`);
+    rechazadas.push(`${nombre}: el frontmatter dice name: ${declarado}`);
+    continue;
+  }
+
+  // claude.ai rechaza el paquete si la descripcion pasa de 1024 caracteres, y lo
+  // dice al subir, no antes. Mejor enterarse aqui.
+  const desc = (bruto.match(/description:\s*>?-?\s*\n?([\s\S]*?)(?=\n[a-zA-Z_-]+:\s|$)/) ?? [])[1];
+  const largo = (desc ?? "").replace(/\s+/g, " ").trim().length;
+  if (largo > LIMITE_DESCRIPCION) {
+    rechazadas.push(
+      `${nombre}: la descripción ocupa ${largo} caracteres, ` +
+        `${largo - LIMITE_DESCRIPCION} más de los ${LIMITE_DESCRIPCION} que admite claude.ai`,
+    );
+    continue;
+  }
+  if (largo > LIMITE_DESCRIPCION - 60) {
+    console.warn(`  ⚠ ${nombre}: descripción a ${LIMITE_DESCRIPCION - largo} caracteres del tope`);
   }
 
   const lista = ficheros(carpeta).map((rel) => ({
@@ -90,3 +115,10 @@ for (const carpeta of carpetas) {
 }
 
 console.log(`\nEn ${salida}, cada uno como .zip y como .skill.`);
+
+if (rechazadas.length) {
+  console.error(`\n✖ Sin empaquetar, ${rechazadas.length}:`);
+  for (const r of rechazadas) console.error("  " + r);
+  console.error("");
+  process.exit(1);
+}

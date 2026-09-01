@@ -100,7 +100,11 @@ node tools/empaquetar-skill.mjs --todas
 ```
 
 Los deja en `~/.claude/skills/paquetes-para-subir/`, cada uno con las dos extensiones:
-`.zip` para «Customize > Skills» de claude.ai, `.skill` para arrastrarlo al chat. Es el segundo paso obligatorio cada
+`.zip` para «Customize > Skills» de claude.ai, `.skill` para arrastrarlo al chat.
+
+Comprueba antes de empaquetar que el `name` del frontmatter coincide con la carpeta y que
+la descripción no pasa de **1024 caracteres**, que es lo que admite claude.ai. Ese límite
+solo se ve al subir, cuando ya has perdido el viaje. Es el segundo paso obligatorio cada
 vez que se toca una skill: **la copia de disco y la de la cuenta de claude.ai son
 independientes**, y en Claude Code manda la de disco. Si solo se actualiza una, las dos
 dicen cosas distintas sin avisar.
