@@ -245,3 +245,39 @@ export function validarProsa(prosa: unknown, modelo: ReportModel): string[] {
   }
   return fallos;
 }
+
+/** Longitudes que pide el encargo, en palabras. */
+const LONGITUDES: Record<string, [number, number]> = {
+  perfilEnUnaFrase: [120, 150],
+  enElTrabajo: [200, 250],
+  conclusion: [80, 120],
+  dominio: [150, 200],
+};
+
+const palabras = (s: string) => s.trim().split(/\s+/).length;
+
+/**
+ * Avisos de longitud. No invalidan nada: la redacción puede ser buena y quedarse
+ * corta. Pero si una sección se desvía del encargo conviene verlo antes de
+ * mandar el informe, no después.
+ */
+export function avisosDeLongitud(prosa: Record<string, any>, modelo: ReportModel): string[] {
+  const avisos: string[] = [];
+  const revisar = (nombre: string, texto: string, rango: [number, number]) => {
+    const n = palabras(texto);
+    if (n < rango[0]) avisos.push(`${nombre}: ${n} palabras, el encargo pide ${rango[0]}–${rango[1]}`);
+    else if (n > rango[1]) avisos.push(`${nombre}: ${n} palabras, se pasa de ${rango[1]}`);
+  };
+
+  for (const clave of ["perfilEnUnaFrase", "enElTrabajo", "conclusion"]) {
+    if (typeof prosa[clave] === "string") revisar(clave, prosa[clave], LONGITUDES[clave]);
+  }
+  for (const d of modelo.domains) {
+    const texto = prosa.dominios?.[d.id];
+    if (typeof texto === "string") revisar(`dominio ${d.id}`, texto, LONGITUDES.dominio);
+  }
+  if (typeof prosa.titular === "string" && prosa.titular.length > 80) {
+    avisos.push(`titular: ${prosa.titular.length} caracteres, el encargo pide menos de 80`);
+  }
+  return avisos;
+}

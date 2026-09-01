@@ -15,7 +15,7 @@ import { fileURLToPath } from "node:url";
 
 import { construirModelo } from "./src/services/pipeline.ts";
 import { ScoringError } from "./src/services/scoring.ts";
-import { promptCompleto, validarProsa } from "./src/services/prompt.ts";
+import { avisosDeLongitud, promptCompleto, validarProsa } from "./src/services/prompt.ts";
 import { renderInforme } from "./tools/render-informe.mjs";
 import { cargarRecursos } from "./tools/recursos.mjs";
 
@@ -128,6 +128,8 @@ if (ficheroProsa) {
   }
 }
 
+const avisos = Object.keys(prosa).length ? avisosDeLongitud(prosa, modelo) : [];
+
 const html = renderInforme(modelo, prosa, recursos.labels, {
   facetas: recursos.facetas,
   fecha: fechaLarga(fecha),
@@ -184,7 +186,9 @@ console.log(`
   Persona:   ${persona || "(sin nombre)"}
   Bandas:    ${modelo.meta.method === "baremo" ? "percentiles" : "posición en la escala, aún sin baremos"}
   Reglas:    ${modelo.fired.length} disparadas · ${modelo.nearMisses.length} señales
-  Redacción: ${Object.keys(prosa).length ? "incluida" : "pendiente, marcada en el informe"}
+  Redacción: ${Object.keys(prosa).length ? "incluida" : "pendiente, marcada en el informe"}${
+  avisos.length ? "\n\n  Se desvía del encargo en:\n    " + avisos.join("\n    ") : ""
+}
 
   Copia de las respuestas en ${copiaJson}
 ${
