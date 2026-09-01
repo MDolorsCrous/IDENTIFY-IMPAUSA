@@ -24,6 +24,9 @@ salidas/
 informe-*.html
 test-identify.html
 
+# la web la construye Netlify en cada despliegue, desde las mismas fuentes
+publico/
+
 # los JSON de datos/ SI se versionan: son el registro de cada test
 !datos/*.json
 

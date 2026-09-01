@@ -10,7 +10,9 @@
 // les quita los tipos y los concatena. Aun asi, al cargar se autocomprueba
 // contra el caso de ejemplo del Excel —puntuaciones, bandas, reglas y senales—
 // y avisa en portada si algo no coincide.
-import { writeFileSync } from "node:fs";
+import { mkdirSync, writeFileSync } from "node:fs";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
 
 import { construirModelo } from "../src/services/pipeline.ts";
 import { empaquetarMotor } from "./empaquetar.mjs";
@@ -483,7 +485,11 @@ pintar();
 `;
 
 const salida = process.argv[2] ?? "test-identify.html";
-writeFileSync(new URL("../" + salida, import.meta.url), html, "utf8");
+const destino = fileURLToPath(new URL("../" + salida, import.meta.url));
+// La carpeta puede no existir: en Netlify el sitio se construye desde un clon
+// limpio, y `publico/` no está en el repositorio.
+mkdirSync(path.dirname(destino), { recursive: true });
+writeFileSync(destino, html, "utf8");
 console.log(
   `escrito ${salida}
 ` +

@@ -1,0 +1,29 @@
+# Identify by Impausa — el test autoadministrable, como sitio estático.
+#
+# La web NO se versiona: se construye aquí. `test-identify.html` está en el
+# .gitignore a propósito, porque es una salida del generador; si además se
+# subiera al repositorio, tarde o temprano el fichero publicado y las fuentes
+# dirían cosas distintas. Netlify lo genera en cada despliegue desde
+# src/config, src/i18n y src/services, que son la única fuente.
+#
+# Se publica una carpeta que solo contiene la página. Ni el código, ni la
+# documentación, ni datos/: lo que no está en `publico/` no se sirve, y por eso
+# no hacen falta reglas para esconderlo.
+
+[build]
+  command = "node tools/render-test.mjs publico/index.html"
+  publish = "publico"
+
+[build.environment]
+  # Fijar la versión de Node: sin esto, un cambio del valor por defecto de
+  # Netlify puede romper el build sin que nadie haya tocado nada. Hace falta
+  # 22.6 o más para que Node ejecute los .ts directamente, que es de lo que
+  # vive este proyecto.
+  NODE_VERSION = "24"
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "no-referrer"
+    X-Frame-Options = "DENY"
