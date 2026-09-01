@@ -1,12 +1,15 @@
 // Genera los ficheros de configuracion del BFI-2 a partir del Excel oficial.
 // Nada se transcribe a mano: los textos y la polaridad salen del fichero.
-const { execSync } = require("child_process");
-const fs = require("fs");
-const path = require("path");
+import { execSync } from "node:child_process";
+import fs from "node:fs";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
+
+const DIRNAME = path.dirname(fileURLToPath(import.meta.url));
 
 const XLSX = process.argv[2];
 const DEST = process.argv[3];
-const dump = execSync(`node "${__dirname}/xlsx.js" "${XLSX}"`, { maxBuffer: 1 << 28 }).toString();
+const dump = execSync(`node "${DIRNAME}/xlsx.js" "${XLSX}"`, { maxBuffer: 1 << 28 }).toString();
 
 const resp = {}, rec = {}, texto = {};
 for (const line of dump.split("\n")) {
@@ -91,13 +94,22 @@ const formulas = {
 };
 
 // --- i18n/es.json ---
+// Los enunciados salen del PDF oficial, no del Excel: el Excel arrastra erratas
+// de conversion y estos son los textos que lee la persona.
+const OFICIALES = JSON.parse(
+  fs.readFileSync(path.join(DEST, "src/config/enunciados-oficiales.json"), "utf8"),
+).enunciados;
+const sinOficial = [];
+for (let n = 1; n <= 60; n++) if (!OFICIALES[n]) sinOficial.push(n);
+if (sinOficial.length) throw new Error("faltan enunciados oficiales: " + sinOficial.join(", "));
+
 const es = {
   scale: { 1: "Muy en desacuerdo", 2: "Algo en desacuerdo", 3: "Neutral, sin opinión",
     4: "Algo de acuerdo", 5: "Muy de acuerdo" },
   stem: "Soy alguien que…",
   domains: Object.fromEntries(DOMINIOS.map((d) => [d.id, d.es])),
   facets: Object.fromEntries(DOMINIOS.flatMap((d) => d.facetas.map((f) => [f.id, f.es]))),
-  questions: Object.fromEntries(Array.from({ length: 60 }, (_, i) => [i + 1, texto[i + 1]])),
+  questions: Object.fromEntries(Array.from({ length: 60 }, (_, i) => [i + 1, OFICIALES[i + 1]])),
 };
 
 // --- fixture: el caso de ejemplo del propio Excel, para las pruebas ---

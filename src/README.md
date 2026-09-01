@@ -89,10 +89,17 @@ que escribir un motor nuevo.
 - **`i18n/ca.json`.** No existe el fichero oficial del BFI-2 en catalán. Traducir un
   instrumento estandarizado por nuestra cuenta invalidaría la comparación con los
   datos publicados, así que hace falta la versión oficial.
-- **Erratas en los enunciados.** Los textos de `i18n/es.json` vienen del Excel y
-  arrastran sus erratas (`afirnaciones`, `Metóidico/a`, `IServicial`). Las páginas 1 y 2
-  del PDF traen los enunciados oficiales bien escritos; hay que volcarlos antes de que
-  los lea nadie. Solo afecta a lo que se ve en pantalla, no al cálculo.
-
 La polaridad de los 60 ítems **ya está verificada** contra la clave de corrección
 oficial del PDF, y esa clave vive en `tests/clave-oficial.test.ts`.
+
+Los enunciados **ya no vienen del Excel**: salen de `config/enunciados-oficiales.json`,
+transcritos del apéndice del postprint de Gallardo-Pujol et al. (2022). Eran once los que
+tenían erratas —`entusiamado`, `Metóidico/a`, `IServicial`, `desconfia`, cuatro tildes de
+más en `quién` y dos `/a` que faltaban—, y son textos que lee la persona.
+`tools/gen-config.js` los toma de ahí, y hay pruebas que se ponen rojas si alguien vuelve
+a generarlos desde el Excel.
+
+> Dos diferencias no son erratas sino decisión editorial: en los ítems 20 y 51 el Excel
+> escribía `Fascinado/a` y `otros/as`, y el oficial dice `Fascinado` y `otros`. Se ha
+> seguido el oficial por fidelidad al instrumento. Si prefieres la forma inclusiva, se
+> cambia en `enunciados-oficiales.json` anotando que es una desviación deliberada.

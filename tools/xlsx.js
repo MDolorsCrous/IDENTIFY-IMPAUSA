@@ -1,4 +1,4 @@
-const {execSync} = require("child_process");
+import { execSync } from "node:child_process";
 const f = process.argv[2];
 const get = p => execSync(`unzip -p "${f}" ${p}`, {maxBuffer: 1<<28}).toString("utf8");
 const decode = s => s.replace(/&lt;/g,"<").replace(/&gt;/g,">").replace(/&amp;/g,"&").replace(/&quot;/g,'"').replace(/&apos;/g,"'");

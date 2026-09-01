@@ -86,3 +86,41 @@ test("cada ítem está asignado a la faceta que dice la clave", () => {
     }
   }
 });
+
+// ---- Los enunciados que lee la persona ----
+
+const oficiales = leer("src/config/enunciados-oficiales.json").enunciados as Record<string, string>;
+const visibles = leer("src/i18n/es.json").questions as Record<string, string>;
+
+test("los 60 enunciados visibles son los del PDF oficial", () => {
+  for (let n = 1; n <= 60; n++) {
+    assert.ok(oficiales[n], `falta el enunciado oficial ${n}`);
+    assert.equal(visibles[n], oficiales[n], `el ítem ${n} no coincide con el oficial`);
+  }
+});
+
+test("no han vuelto las erratas del Excel", () => {
+  // Estas once venían del Excel y se leían en pantalla. Si reaparecen, es que
+  // alguien ha vuelto a generar los textos desde el Excel en vez del PDF.
+  const erratas = [
+    "entusiamado",
+    "Metóidico",
+    "IServicial",
+    "desconfia ",
+    "A quién le cuesta",
+    "A quién le es difícil",
+    "A veces tímido,",
+  ];
+  const todo = Object.values(visibles).join(" | ");
+  for (const errata of erratas) {
+    assert.ok(!todo.includes(errata), `ha vuelto la errata «${errata}»`);
+  }
+});
+
+test("ningún enunciado arrastra restos de la maquetación del PDF", () => {
+  for (const [n, texto] of Object.entries(oficiales)) {
+    assert.ok(!/SPANISH ADAPTATION|Por favor/i.test(texto), `el ítem ${n} lleva pie de página`);
+    assert.ok(texto.length < 70, `el ítem ${n} es sospechosamente largo`);
+    assert.ok(!/\d/.test(texto), `el ítem ${n} lleva un número`);
+  }
+});

@@ -1,37 +1,7 @@
 {
-  "scale": {
-    "1": "Muy en desacuerdo",
-    "2": "Algo en desacuerdo",
-    "3": "Neutral, sin opinión",
-    "4": "Algo de acuerdo",
-    "5": "Muy de acuerdo"
-  },
-  "stem": "Soy alguien que…",
-  "domains": {
-    "extraversion": "Extraversión",
-    "agreeableness": "Cordialidad",
-    "conscientiousness": "Responsabilidad",
-    "negative_emotionality": "Emocionalidad negativa",
-    "open_mindedness": "Apertura de mente"
-  },
-  "facets": {
-    "sociability": "Sociabilidad",
-    "assertiveness": "Asertividad",
-    "energy_level": "Nivel de Energía",
-    "compassion": "Compasión",
-    "respectfulness": "Respeto",
-    "trust": "Confianza",
-    "organization": "Organización",
-    "productiveness": "Productividad",
-    "responsibility": "Responsabilidad",
-    "anxiety": "Ansiedad",
-    "depression": "Depresión",
-    "emotional_volatility": "Volatilidad Emocional",
-    "intellectual_curiosity": "Curiosidad Intelectual",
-    "aesthetic_sensitivity": "Sensibilidad Estética",
-    "creative_imagination": "Imaginación Creativa"
-  },
-  "questions": {
+  "_nota": "Los 60 enunciados oficiales del BFI-2 en espanol, tal como aparecen en el apendice del postprint de Gallardo-Pujol et al. (2022), https://osf.io/download/hywba/. Son los que lee la persona. Mandan sobre los del Excel, que arrastran erratas de conversion.",
+  "_fuente": "Gallardo-Pujol et al. (2022), Spanish adaptation of the BFI-2, apendice del postprint (OSF kp572)",
+  "enunciados": {
     "1": "Abierto/a, sociable",
     "2": "Compasivo/a, con un gran corazón",
     "3": "Que tiende a ser desorganizado/a",

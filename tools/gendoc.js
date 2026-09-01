@@ -1,10 +1,13 @@
 // Genera docs/01-especificacion-test.md a partir del Excel oficial.
 // Los textos de los items se copian del fichero, no se transcriben a mano.
-const { execSync } = require("child_process");
-const fs = require("fs");
+import { execSync } from "node:child_process";
+import fs from "node:fs";
+import { fileURLToPath } from "node:url";
+
+const DIRNAME = path.dirname(fileURLToPath(import.meta.url));
 const XLSX = process.argv[2];
 const SALIDA = process.argv[3];
-const dump = execSync(`node "${__dirname}/xlsx.js" "${XLSX}"`, { maxBuffer: 1 << 28 }).toString();
+const dump = execSync(`node "${DIRNAME}/xlsx.js" "${XLSX}"`, { maxBuffer: 1 << 28 }).toString();
 
 const resp = {}, rec = {}, texto = {};
 for (const line of dump.split("\n")) {

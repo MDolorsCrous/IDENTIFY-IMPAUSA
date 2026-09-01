@@ -1,6 +1,6 @@
 // Convierte el texto extraido del PDF de la base de conocimiento en un documento
 // navegable. No interpreta nada: reordena y limpia. El contenido es literal.
-const fs = require("fs");
+import fs from "node:fs";
 
 const ORIGEN = process.argv[2];
 const SALIDA = process.argv[3];
