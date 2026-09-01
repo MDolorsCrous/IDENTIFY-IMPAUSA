@@ -440,7 +440,7 @@ function informe(){
     <div class="barra-informe">
       <button class="enlace" id="volver">← Volver a las puntuaciones</button>
       <div class="acciones">
-        \${conProsa ? "" : '<button class="boton boton--claro" id="encargo">Copiar el encargo de redacción</button>'}
+        \${conProsa ? "" : '<button class="boton boton--claro" id="encargo">Copiar el encargo</button><button class="enlace" id="encargoLargo" title="Para una conversación que no tenga cargada la skill identify-bfi2-knowledge">sin la skill</button>'}
         <button class="boton boton--claro" id="pegar">\${conProsa ? "Cambiar la redacción" : "Pegar la redacción"}</button>
         <button class="boton" id="imprimir">Imprimir</button>
       </div>
@@ -452,8 +452,14 @@ function informe(){
 
   document.getElementById("volver").onclick = () => { pantalla = "resultados"; pintar(); };
   document.getElementById("imprimir").onclick = () => marco.contentWindow?.print();
+  // Dos encargos, y manda el corto: la skill identify-bfi2-knowledge ya trae el
+  // tono, el metodo y el protocolo de seguridad, asi que repetirlos seria tener
+  // las mismas reglas en dos sitios. El largo queda para una conversacion que no
+  // la tenga cargada.
   const encargo = document.getElementById("encargo");
-  if (encargo) encargo.onclick = e => copiarEnBoton(e.target, promptCompleto(modelo, D.recursos.facetas), "Copiar el encargo de redacción");
+  if (encargo) encargo.onclick = e => copiarEnBoton(e.target, promptCorto(modelo, D.recursos.facetas), "Copiar el encargo");
+  const encargoLargo = document.getElementById("encargoLargo");
+  if (encargoLargo) encargoLargo.onclick = e => copiarEnBoton(e.target, promptCompleto(modelo, D.recursos.facetas), "sin la skill");
 
   document.getElementById("pegar").onclick = () => {
     const pegado = window.prompt(
