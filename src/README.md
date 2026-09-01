@@ -99,7 +99,8 @@ más en `quién` y dos `/a` que faltaban—, y son textos que lee la persona.
 `tools/gen-config.js` los toma de ahí, y hay pruebas que se ponen rojas si alguien vuelve
 a generarlos desde el Excel.
 
-> Dos diferencias no son erratas sino decisión editorial: en los ítems 20 y 51 el Excel
-> escribía `Fascinado/a` y `otros/as`, y el oficial dice `Fascinado` y `otros`. Se ha
-> seguido el oficial por fidelidad al instrumento. Si prefieres la forma inclusiva, se
-> cambia en `enunciados-oficiales.json` anotando que es una desviación deliberada.
+El fichero guarda las dos listas: `oficiales`, literal del PDF, y `enunciados`, que es
+lo que se muestra. Hoy difieren en dos ítems, el 20 y el 51, donde se mantiene la forma
+inclusiva —`Fascinado/a`, `otros/as`— por criterio editorial de IMPAUSA. Las desviaciones
+van declaradas con su motivo en el propio fichero, y **una prueba comprueba que no haya
+ninguna sin declarar**: apartarse del texto oficial se puede, pero solo a propósito.

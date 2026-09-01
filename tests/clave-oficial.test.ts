@@ -124,3 +124,23 @@ test("ningún enunciado arrastra restos de la maquetación del PDF", () => {
     assert.ok(!/\d/.test(texto), `el ítem ${n} lleva un número`);
   }
 });
+
+test("la única diferencia con el PDF son las desviaciones declaradas", () => {
+  // Se puede apartar del texto oficial, pero solo a propósito y dejándolo escrito.
+  const fichero = leer("src/config/enunciados-oficiales.json");
+  const declaradas = new Set(fichero.desviaciones.map((d: { item: number }) => String(d.item)));
+
+  for (let n = 1; n <= 60; n++) {
+    const oficial = fichero.oficiales[n];
+    const mostrado = fichero.enunciados[n];
+    if (declaradas.has(String(n))) {
+      assert.notEqual(mostrado, oficial, `el ítem ${n} está declarado como desviación y no lo es`);
+    } else {
+      assert.equal(mostrado, oficial, `el ítem ${n} se aparta del oficial sin declararlo`);
+    }
+  }
+
+  for (const d of fichero.desviaciones) {
+    assert.ok(d.motivo?.length > 15, `la desviación del ítem ${d.item} no explica por qué`);
+  }
+});
