@@ -5,6 +5,7 @@
 //   node generar.js ... --prompt                   copia el encargo para Claude
 //   node generar.js ... --prompt --corto           el encargo breve, con la skill cargada
 //   node generar.js ... --prosa textos.json        con la redacción ya hecha
+//   node generar.js ... --redactar                 se la pide a Claude por API
 //
 // Sin --prosa, el informe sale con todo lo que calcula el código y los pasajes
 // redactados marcados como pendientes. Es deliberado: mejor un informe honesto
@@ -43,6 +44,9 @@ const pedirPrompt = args.includes("--prompt");
 // Con la skill identify-bfi2-knowledge cargada, el tono y el metodo ya los sabe:
 // el encargo se queda en el perfil y el esquema.
 const encargoCorto = args.includes("--corto");
+// Pide la redacción a la API en vez de al portapapeles. Necesita
+// ANTHROPIC_API_KEY en el entorno y el SDK instalado.
+const pedirRedaccion = args.includes("--redactar");
 const ficheroEntrada = args.find((a, i) => !a.startsWith("--") && args[i - 1] !== "--prosa");
 
 if (!delPortapapeles && !ficheroEntrada) {
@@ -137,6 +141,27 @@ if (ficheroProsa) {
   }
 }
 
+// Redacción automática por API. El módulo se carga aquí dentro y no arriba a
+// propósito: es el único que necesita el SDK instalado, así que sin --redactar
+// el comando sigue funcionando en un proyecto sin node_modules.
+let costeRedaccion = null;
+if (pedirRedaccion && !Object.keys(prosa).length) {
+  const { redactar, ErrorDeRedaccion } = await import("./tools/redactar.mjs").catch(() => {
+    morir("Falta el SDK de Anthropic.", "Instálalo con:  npm install @anthropic-ai/sdk");
+  });
+  try {
+    const r = await redactar(modelo, recursos.facetas, {
+      alEmpezar: () => process.stdout.write("  Redactando con Claude… "),
+    });
+    prosa = r.prosa;
+    costeRedaccion = r;
+    console.log("hecho.\n");
+  } catch (e) {
+    if (e instanceof ErrorDeRedaccion) morir(e.message, e.pista);
+    throw e;
+  }
+}
+
 const avisos = Object.keys(prosa).length ? avisosDeLongitud(prosa, modelo) : [];
 
 const html = renderInforme(modelo, prosa, recursos.labels, {
@@ -159,6 +184,14 @@ const nombre = `${slug(persona)}-${fecha}`;
 mkdirSync(join(RAIZ, "datos"), { recursive: true });
 const copiaJson = join(RAIZ, "datos", nombre + ".json");
 writeFileSync(copiaJson, JSON.stringify({ ...entrada, fecha, persona }, null, 2) + "\n", "utf8");
+
+// La redacción que ha venido de la API se guarda como si la hubieras pegado a
+// mano: así el informe se puede regenerar con --prosa sin volver a pagarla.
+let copiaProsa = null;
+if (costeRedaccion) {
+  copiaProsa = join(RAIZ, "datos", nombre + ".prosa.json");
+  writeFileSync(copiaProsa, JSON.stringify(prosa, null, 2) + "\n", "utf8");
+}
 
 const salidaHtml = join(RAIZ, `informe-${nombre}.html`);
 writeFileSync(salidaHtml, html, "utf8");
@@ -196,11 +229,23 @@ console.log(`
   Persona:   ${persona || "(sin nombre)"}
   Bandas:    ${modelo.meta.method === "baremo" ? "percentiles" : "posición en la escala, aún sin baremos"}
   Reglas:    ${modelo.fired.length} disparadas · ${modelo.nearMisses.length} señales
-  Redacción: ${Object.keys(prosa).length ? "incluida" : "pendiente, marcada en el informe"}${
-  avisos.length ? "\n\n  Se desvía del encargo en:\n    " + avisos.join("\n    ") : ""
-}
+  Redacción: ${
+    costeRedaccion
+      ? `escrita por ${costeRedaccion.modelo} · ` +
+        `${costeRedaccion.uso.input_tokens} tokens de entrada, ${costeRedaccion.uso.output_tokens} de salida · ` +
+        `${costeRedaccion.coste.toFixed(3)} $`
+      : Object.keys(prosa).length
+        ? "incluida"
+        : "pendiente, marcada en el informe"
+  }${avisos.length ? "\n\n  Se desvía del encargo en:\n    " + avisos.join("\n    ") : ""}
 
-  Copia de las respuestas en ${copiaJson}
+  Copia de las respuestas en ${copiaJson}${
+    copiaProsa
+      ? `\n  Y la redacción en ${copiaProsa}\n  Para rehacer el informe sin volver a pagarla:  node generar.js ${
+          delPortapapeles ? "datos/" + nombre + ".json" : ficheroEntrada
+        } --prosa ${copiaProsa.replace(RAIZ, "").replace(/\\/g, "/")}`
+      : ""
+  }
 ${
   Object.keys(prosa).length
     ? "  El encargo que se le pasó a Claude queda en " + salidaPrompt

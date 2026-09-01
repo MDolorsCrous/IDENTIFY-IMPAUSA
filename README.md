@@ -34,7 +34,7 @@ chocar con lo que Lovable escriba por su cuenta.
 | Ensamblador del informe | `src/services/report.ts` | ✅ Hecho |
 | Lecturas de las 15 facetas (alto y bajo) | `src/config/interpretation/facetas.json` | ✅ Conectadas al informe |
 | Encargo de redacción para Claude | `src/services/prompt.ts` + `--prompt` | ✅ Hecho, con paso manual |
-| Llamada automática a la API | — | ⬜ Falta clave y dependencias |
+| Llamada automática a la API | `tools/redactar.mjs` + `--redactar` | ✅ Hecha, falta poner la clave |
 | Calibración de las reglas | `docs/02` | 🟡 Parametrizada, **a decidir con datos** |
 | Baremos españoles (medias y DT) | `docs/baremos-propuesta.md` | 🟡 Encontrados, **en espera de validación** |
 | Informe en pantalla (estructura + gráficos) | app | ⬜ Pendiente |
@@ -63,6 +63,32 @@ sin dejar que el modelo invente puntuaciones.
 - [`docs/base-conocimiento-bfi2.md`](docs/base-conocimiento-bfi2.md) — el material de interpretación, por faceta
 - [`docs/03-estructura-informe.md`](docs/03-estructura-informe.md) — secciones del informe y qué las alimenta
 - [`docs/04-arquitectura-hibrida.md`](docs/04-arquitectura-hibrida.md) — qué calcula el código y qué redacta Claude
+
+## La redacción automática
+
+```
+node generar.js datos/fichero.json --redactar
+```
+
+Llama a la API de Claude, valida lo que devuelve y saca el informe completo de una
+pasada. Guarda además la redacción en `datos/<nombre>.prosa.json`, para poder rehacer el
+informe con `--prosa` sin volver a pagarla.
+
+Necesita dos cosas:
+
+1. **La clave**, en la variable de entorno `ANTHROPIC_API_KEY`. No se guarda en ningún
+   fichero del proyecto.
+2. **El SDK**: `npm install @anthropic-ai/sdk`. Es la única dependencia, y solo hace falta
+   para esto: sin `--redactar`, el comando funciona en un proyecto sin `node_modules/`
+   porque el módulo se carga solo cuando se usa.
+
+**La clave nunca entra en `test-identify.html`.** La página es un HTML suelto que se abre
+con doble clic: una clave dentro quedaría a la vista de cualquiera. Por eso la llamada vive
+en `tools/` y no en `src/services/`, que es lo único que se empaqueta, y
+`tests/empaquetado.test.ts` lo comprueba en cada ejecución.
+
+Usa el **encargo largo**, no el corto: la API no ve las skills instaladas en Claude Code ni
+en la cuenta de claude.ai, así que las instrucciones viajan con la petición.
 
 ## La skill
 

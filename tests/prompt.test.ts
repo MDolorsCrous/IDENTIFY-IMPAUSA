@@ -7,6 +7,7 @@ import { dirname, join } from "node:path";
 import { construirModelo, type Recursos } from "../src/services/pipeline.ts";
 import {
   INSTRUCCIONES,
+  encargoParaLaApi,
   esquemaSalida,
   materialParaRedactar,
   promptCompleto,
@@ -145,4 +146,18 @@ test("el encargo corto se apoya en la skill en vez de repetirla", () => {
   assert.ok(!corto.includes("No diagnosticas"), "el corto repite lo que ya está en la skill");
   // Lo que se ahorra es del tamaño del bloque de instrucciones, ni mas ni menos.
   assert.ok(largo.length - corto.length > INSTRUCCIONES.length * 0.9, "el corto no ahorra nada");
+});
+
+test("el encargo para la API reparte instrucciones, perfil y esquema", () => {
+  const e = encargoParaLaApi(modelo, facetas) as any;
+  // Las instrucciones van de sistema, no dentro del mensaje.
+  assert.ok(e.sistema.includes("No diagnosticas"));
+  assert.ok(!e.mensaje.includes("No diagnosticas"));
+  // El perfil va en el mensaje, y sin las respuestas en bruto.
+  assert.ok(e.mensaje.includes("## El perfil"));
+  assert.ok(!e.mensaje.includes(Object.values(fixture.responses).join(",")));
+  // El esquema viaja aparte, para imponerlo en output_config.format en vez de
+  // pedirlo por favor dentro del texto.
+  assert.deepEqual(e.esquema, esquemaSalida(modelo));
+  assert.ok(!e.mensaje.includes("Esquema de la respuesta"));
 });

@@ -95,3 +95,14 @@ test("la página generada lleva el paquete y no se corta", () => {
   // Dos bloques de script: el motor y la aplicación
   assert.ok((pagina.match(/<script>/g) ?? []).length >= 2);
 });
+
+test("el motor empotrado en la página no sabe nada de la API ni de la clave", () => {
+  // La página es un HTML suelto que se abre con doble clic: cualquier clave que
+  // llevara dentro quedaría a la vista de quien lo abriera. Por eso la llamada
+  // a la API vive en tools/redactar.mjs y no en src/services/, que es lo único
+  // que se empaqueta. Esta prueba es el cierre de esa decisión.
+  const paquete = empaquetarMotor();
+  for (const prohibido of ["ANTHROPIC_API_KEY", "@anthropic-ai/sdk", "api.anthropic.com", "x-api-key"]) {
+    assert.ok(!paquete.includes(prohibido), `el paquete lleva «${prohibido}»`);
+  }
+});

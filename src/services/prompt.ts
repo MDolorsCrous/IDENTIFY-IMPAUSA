@@ -228,6 +228,37 @@ export function promptCompleto(
 }
 
 /**
+ * El encargo partido en las tres piezas que pide la API: instrucciones de
+ * sistema, mensaje del usuario y esquema de salida.
+ *
+ * Es el mismo contenido que `promptCompleto`, repartido donde toca. El esquema
+ * no va dentro del texto: va en `output_config.format`, que obliga a la
+ * respuesta a cumplirlo en vez de pedirlo por favor.
+ *
+ * Se usa **el encargo largo, no el corto**. La API no ve las skills que hay
+ * instaladas en Claude Code ni en la cuenta de claude.ai, así que las
+ * instrucciones tienen que viajar con la petición.
+ */
+export function encargoParaLaApi(
+  modelo: ReportModel,
+  facetas: Record<string, FichaFaceta>,
+): { sistema: string; mensaje: string; esquema: object } {
+  return {
+    sistema: INSTRUCCIONES,
+    mensaje: [
+      "Redacta el informe de esta persona.",
+      "",
+      "## El perfil",
+      "",
+      "```json",
+      JSON.stringify(materialParaRedactar(modelo, facetas), null, 2),
+      "```",
+    ].join("\n"),
+    esquema: esquemaSalida(modelo),
+  };
+}
+
+/**
  * El encargo corto: solo el perfil y el esquema.
  *
  * Sirve cuando la conversación ya tiene cargada la skill `identify-bfi2-knowledge`,
