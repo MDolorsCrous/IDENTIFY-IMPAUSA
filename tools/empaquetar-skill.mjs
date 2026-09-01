@@ -78,12 +78,15 @@ for (const carpeta of carpetas) {
     datos: readFileSync(path.join(carpeta, rel)),
   }));
   const paquete = crearZip(lista);
-  const destino = path.join(salida, `${nombre}.skill`);
-  writeFileSync(destino, paquete);
+  // El mismo fichero con las dos extensiones. Son dos vias de subida distintas y
+  // cada una quiere la suya: «Customize > Skills» pide .zip; arrastrarlo al chat
+  // y pulsar «Save skill» acepta .skill. El contenido es identico.
+  writeFileSync(path.join(salida, `${nombre}.skill`), paquete);
+  writeFileSync(path.join(salida, `${nombre}.zip`), paquete);
   console.log(
     `  ${nombre.padEnd(30)} ${String(lista.length).padStart(2)} ficheros  ` +
       `${(paquete.length / 1024).toFixed(1)} KB`,
   );
 }
 
-console.log(`\nEn ${salida}\nSúbelos al chat de claude.ai y pulsa «Save skill».`);
+console.log(`\nEn ${salida}, cada uno como .zip y como .skill.`);

@@ -99,7 +99,8 @@ invertida y un paquete así no sube.
 node tools/empaquetar-skill.mjs --todas
 ```
 
-Los deja en `~/.claude/skills/paquetes-para-subir/`. Es el segundo paso obligatorio cada
+Los deja en `~/.claude/skills/paquetes-para-subir/`, cada uno con las dos extensiones:
+`.zip` para «Customize > Skills» de claude.ai, `.skill` para arrastrarlo al chat. Es el segundo paso obligatorio cada
 vez que se toca una skill: **la copia de disco y la de la cuenta de claude.ai son
 independientes**, y en Claude Code manda la de disco. Si solo se actualiza una, las dos
 dicen cosas distintas sin avisar.
