@@ -91,7 +91,7 @@ test("la página generada lleva el paquete y no se corta", () => {
   const pagina = readFileSync(join(raiz, "test-identify.html"), "utf8");
   assert.ok(pagina.includes("function construirModelo"), "la página no lleva el motor");
   assert.ok(pagina.includes('id="informe"'), "falta el botón del informe");
-  assert.ok(pagina.includes('id="laia"'), "falta la exportación para LAIA COACH");
+  assert.ok(pagina.includes('id="ver"'), "falta el botón del JSON");
   // Dos bloques de script: el motor y la aplicación
   assert.ok((pagina.match(/<script>/g) ?? []).length >= 2);
 });

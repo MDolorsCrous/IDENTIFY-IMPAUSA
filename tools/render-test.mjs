@@ -351,7 +351,6 @@ function resultados(){
           </label>
           <div class="acciones">
             <button class="boton" id="informe">Informe Identify</button>
-            <button class="boton boton--claro" id="laia">Exportar para LAIA COACH</button>
             <button class="boton boton--claro" id="ver">Ver el JSON</button>
           </div>
           <textarea id="json" class="json" readonly hidden aria-label="Resultado en JSON"></textarea>
@@ -390,10 +389,6 @@ function resultados(){
     persona = (document.getElementById("persona")?.value || "").trim();
     pantalla = "informe"; pintar();
   };
-
-  // Para LAIA COACH van los RESULTADOS, no las respuestas: esa skill trabaja
-  // con lo que ya da cada instrumento, para cruzarlo con los demas.
-  document.getElementById("laia").onclick = e => copiarEnBoton(e.target, paraLaia(), "Exportar para LAIA COACH");
 }
 
 function copiarEnBoton(boton, texto, etiqueta){
@@ -402,28 +397,6 @@ function copiarEnBoton(boton, texto, etiqueta){
     () => { boton.textContent = "Copiado"; setTimeout(() => boton.textContent = etiqueta, 1800); },
     () => { if (caja) { caja.value = texto; caja.hidden = false; caja.select(); } boton.textContent = "Cópialo de aquí"; },
   );
-}
-
-function paraLaia(){
-  const { facetas, dominios } = puntuar(respuestas);
-  const dosDec = v => v.toFixed(2).replace(".", ",");
-  const lineas = [
-    "BFI-2 (Big Five) — Identify by Impausa",
-    "Fecha: " + new Date().toISOString().slice(0, 10),
-    persona ? "Persona: " + persona : null,
-    "Escala 1–5. Cada dominio es la media de sus 12 ítems; cada faceta, la de sus 4.",
-    "",
-    "DOMINIOS",
-    ...CFG.domains.map(d => "- " + D.domainLabels[d.id] + ": " + dosDec(dominios[d.id])),
-    "",
-    "FACETAS",
-    ...CFG.domains.flatMap(d => [
-      D.domainLabels[d.id] + ":",
-      ...CFG.facets.filter(f => f.domain === d.id)
-        .map(f => "  - " + D.facetLabels[f.id] + ": " + dosDec(facetas[f.id])),
-    ]),
-  ].filter(Boolean);
-  return lineas.join("\\n");
 }
 
 // ---- El informe ----
