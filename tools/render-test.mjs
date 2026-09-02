@@ -473,6 +473,7 @@ function informe(){
   const html = renderInforme(modelo, prosa, D.recursos.labels, {
     facetas: D.recursos.facetas,
     metaforas: D.recursos.metaforas,
+    fuentes: D.recursos.fuentes,
     fecha: fechaLarga(new Date().toISOString().slice(0, 10)),
   });
   const conProsa = Object.keys(prosa).length > 0;

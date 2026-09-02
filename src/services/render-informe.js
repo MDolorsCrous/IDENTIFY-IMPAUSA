@@ -41,6 +41,32 @@ const hueco = (que) =>
   `<p class="pendiente"><b>Pendiente de redacción</b> — ${esc(que)}. Este pasaje lo escribe Claude a partir de las puntuaciones de arriba.</p>`;
 
 /**
+ * La bibliografia, al final del informe.
+ *
+ * Sale de src/config/fuentes.json, no de aqui: cada referencia esta verificada
+ * contra Crossref y lleva su DOI, para que quien lea el informe pueda ir a
+ * comprobarlo. Un informe que cita autores dentro del texto y no dice que son
+ * deja al lector colgado.
+ */
+function bibliografia(fuentes) {
+  if (!fuentes) return "";
+  const entradas = [fuentes.instrumento, fuentes.adaptacion, ...fuentes.interpretacion];
+  return `
+    <ol class="fuentes">
+      ${entradas
+        .map(
+          (f) => `<li>
+        <span class="fuentes__ref">${esc(f.autores)} (${f.anio}). <i>${esc(f.titulo)}</i>.
+        ${esc(f.publicacion)}. <a href="https://doi.org/${esc(f.doi)}">doi.org/${esc(f.doi)}</a></span>
+        <span class="fuentes__papel">${esc(f.papel)}</span>
+      </li>`,
+        )
+        .join("\n      ")}
+    </ol>
+    <p class="fuentes__copy">${esc(fuentes._atribucion)}</p>`;
+}
+
+/**
  * La linea de datos de un dominio, escrita por el codigo.
  *
  * No es interpretacion, es descripcion: dice lo que pone el numero. Por eso puede
@@ -356,6 +382,12 @@ const html = `<title>Informe Identify</title>
   .pie h4:first-child{margin-top:0}
   .pie ul{margin:.3rem 0 .9rem;padding-left:1.1rem}
   .pie b{color:var(--ink)}
+  .fuentes{margin:.6rem 0 1rem;padding-left:1.3rem;font-size:.86rem}
+  .fuentes li{margin-bottom:.7rem;break-inside:avoid}
+  .fuentes__ref{display:block;color:var(--ink)}
+  .fuentes__papel{display:block;margin-top:.15rem;font-style:italic}
+  .fuentes a{color:inherit}
+  .fuentes__copy{margin:.2rem 0 0;font-size:.84rem}
 
   .maqueta{position:sticky;top:0;z-index:5;background:#1A4A3A;color:#F7F2EB;
     font-size:.8rem;letter-spacing:.02em;text-align:center;padding:.5rem 1rem}
@@ -538,12 +570,11 @@ ${
 
   <footer class="pie" id="fuentes">
     <h4>Fuentes y metodología</h4>
-    <p>Instrumento: <b>BFI-2</b>, Big Five Inventory-2 (Soto &amp; John, 2017), en la adaptación
-    española de Gallardo-Pujol et al. (2022). 60 ítems, escala de 1 a 5, cinco dominios y quince
-    facetas. Cada faceta es la media de sus cuatro ítems; cada dominio, la media de sus doce.</p>
-    <p>Las combinaciones proceden de la base de conocimiento de IMPAUSA sobre el BFI-2, con las
-    referencias de Danner &amp; Lechner (2024), Ozer &amp; Benet-Martínez (2006), Soto (2019) y
-    Soto &amp; John (2017).</p>
+    <p>Instrumento: <b>BFI-2</b>, Big Five Inventory-2, en su adaptación española. 60 ítems, escala
+    de 1 a 5, cinco dominios y quince facetas. Cada faceta es la media de sus cuatro ítems; cada
+    dominio, la media de sus doce. Las combinaciones proceden de la base de conocimiento de IMPAUSA
+    sobre el BFI-2, construida sobre los trabajos que se listan a continuación.</p>
+    ${bibliografia(opciones.fuentes)}
     ${leyenda}
     <h4>Aviso importante</h4>
     <p>Las facetas son escalas de cuatro ítems: sostienen menos peso que los dominios y conviene

@@ -1,0 +1,54 @@
+{
+  "_nota": "Las fuentes sobre las que está construido Identify. Cada una verificada contra Crossref el 1 de septiembre de 2026: autores, año, título, publicación, volumen y páginas salen de ahí, no de la memoria de nadie. La clave de cada entrada es la cita corta que usan facetas.json y combinations.json; tests/fuentes.test.ts comprueba que no haya citas sin referencia ni referencias sin usar.",
+  "_atribucion": "BFI-2 © Oliver P. John y Christopher J. Soto. Adaptación española de Gallardo-Pujol y cols. (2022).",
+
+  "instrumento": {
+    "cita": "Soto & John, 2017",
+    "autores": "Soto, C. J., y John, O. P.",
+    "anio": 2017,
+    "titulo": "The next Big Five Inventory (BFI-2): Developing and assessing a hierarchical model with 15 facets to enhance bandwidth, fidelity, and predictive power",
+    "publicacion": "Journal of Personality and Social Psychology, 113(1), 117–143",
+    "doi": "10.1037/pspp0000096",
+    "papel": "El instrumento: los 60 ítems, los cinco dominios y sus quince facetas."
+  },
+
+  "adaptacion": {
+    "cita": "Gallardo-Pujol y cols., 2022",
+    "autores": "Gallardo-Pujol, D., Rouco, V., Cortijos-Bernabeu, A., Oceja, L., Soto, C. J., y John, O. P.",
+    "anio": 2022,
+    "titulo": "Factor Structure, Gender Invariance, Measurement Properties, and Short Forms of the Spanish Adaptation of the Big Five Inventory-2",
+    "publicacion": "Psychological Test Adaptation and Development, 3(1), 44–69",
+    "doi": "10.1027/2698-1866/a000020",
+    "papel": "La versión española que responde esta persona, y las fiabilidades que obligan a matizar lo que se afirma de una faceta suelta."
+  },
+
+  "interpretacion": [
+    {
+      "cita": "Danner & Lechner, 2024",
+      "autores": "Danner, D., y Lechner, C. M.",
+      "anio": 2024,
+      "titulo": "Big Five Domains and Facets Contextualized to the Work Domain Outperform Noncontextualized Ones",
+      "publicacion": "Journal of Individual Differences, 45(3), 167–175",
+      "doi": "10.1027/1614-0001/a000421",
+      "papel": "Lo que las facetas predicen en el trabajo: satisfacción, rotación, comportamiento de ciudadanía organizacional, riesgo de agotamiento y compromiso."
+    },
+    {
+      "cita": "Ozer & Benet-Martínez, 2006",
+      "autores": "Ozer, D. J., y Benet-Martínez, V.",
+      "anio": 2006,
+      "titulo": "Personality and the Prediction of Consequential Outcomes",
+      "publicacion": "Annual Review of Psychology, 57(1), 401–421",
+      "doi": "10.1146/annurev.psych.57.102904.190127",
+      "papel": "La revisión que ordena qué consecuencias vitales se asocian con cada rasgo, y con qué fuerza."
+    },
+    {
+      "cita": "Soto, 2019",
+      "autores": "Soto, C. J.",
+      "anio": 2019,
+      "titulo": "How Replicable Are Links Between Personality Traits and Consequential Life Outcomes? The Life Outcomes of Personality Replication Project",
+      "publicacion": "Psychological Science, 30(5), 711–727",
+      "doi": "10.1177/0956797619831612",
+      "papel": "La réplica que dice cuáles de esas asociaciones aguantan y cuánto encogen al repetirlas. Es la razón de que este informe hable en condicional."
+    }
+  ]
+}

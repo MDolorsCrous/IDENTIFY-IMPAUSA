@@ -19,6 +19,7 @@ if (process.argv[1] && import.meta.url === `file:///${process.argv[1].replace(/\
   const html = renderInforme(modelo, prosa, recursos.labels, {
     facetas: recursos.facetas,
     metaforas: recursos.metaforas,
+    fuentes: recursos.fuentes,
     fecha: "27 de agosto de 2026",
     aviso: "Maqueta · datos del caso de ejemplo del Excel oficial · los textos redactados son de muestra",
   });

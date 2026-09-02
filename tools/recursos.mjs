@@ -19,6 +19,7 @@ export function cargarRecursos() {
     rules: leer("src/config/interpretation/combinations.json"),
     facetas: leer("src/config/interpretation/facetas.json"),
     metaforas: leer("src/config/interpretation/metaforas.json"),
+    fuentes: leer("src/config/fuentes.json"),
   };
 }
 

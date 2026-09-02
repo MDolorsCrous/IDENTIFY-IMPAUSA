@@ -67,7 +67,12 @@ test("no arrastra nada de Node", () => {
 test("el informe del paquete es idéntico al del motor", () => {
   // La prueba que cierra el circulo: si la pagina y el comando se separaran,
   // dos personas con el mismo perfil recibirian informes distintos.
-  const opciones = { facetas: recursos.facetas, metaforas: recursos.metaforas, fecha: "1 de enero de 2026" };
+  const opciones = {
+    facetas: recursos.facetas,
+    metaforas: recursos.metaforas,
+    fuentes: recursos.fuentes,
+    fecha: "1 de enero de 2026",
+  };
 
   const enNode = renderInforme(
     construirModelo(respuestas, recursos, { persona: "Marta" }),

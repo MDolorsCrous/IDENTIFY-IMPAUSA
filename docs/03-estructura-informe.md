@@ -20,7 +20,7 @@ Ninguna sección deja que el modelo elija el contenido.
 | 8 | Preguntas poderosas | Claude | 5–7 preguntas ancladas a lo que ha disparado |
 | 9 | Plan de acción | Claude | 3 acciones concretas, cada una con su indicador |
 | 10 | Conclusiones | Claude | Cierre: la fortaleza y el trabajo más rentable a corto plazo |
-| 11 | Fuentes y metodología | código | Instrumento, adaptación, referencias citadas |
+| 11 | Fuentes y metodología | código | Instrumento, adaptación y **la bibliografía completa**, generada desde `src/config/fuentes.json`: cinco referencias con autores, publicación y DOI, cada una diciendo qué aporta, más la atribución del copyright del BFI-2. Ninguna se escribe a mano y todas están verificadas contra Crossref; `tests/fuentes.test.ts` impide que quede una cita sin referencia o una referencia sin usar |
 | 12 | Aviso importante | código | Alcance, prudencia con las facetas, confidencialidad |
 
 ---
