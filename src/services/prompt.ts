@@ -161,6 +161,29 @@ export function materialParaRedactar(
 
 const TEXTO = (max: number) => ({ type: "string", maxLength: max });
 
+/** Un paso del plan de acción. */
+const PASO = {
+  type: "object",
+  additionalProperties: false,
+  required: ["titulo", "texto", "indicador"],
+  properties: { titulo: TEXTO(60), texto: TEXTO(600), indicador: TEXTO(240) },
+};
+
+/**
+ * Los pasos del plan, vengan como vengan.
+ *
+ * El esquema los pide como tres claves con nombre —es la única forma de que la
+ * API garantice que son tres— pero las redacciones guardadas de antes son una
+ * lista. Las dos formas se leen igual, así que un informe viejo se puede volver
+ * a generar sin tener que pagar su redacción otra vez.
+ */
+export function pasosDelPlan(plan: unknown): unknown[] {
+  if (Array.isArray(plan)) return plan;
+  if (!plan || typeof plan !== "object") return [];
+  const p = plan as Record<string, unknown>;
+  return ["paso1", "paso2", "paso3"].map((k) => p[k]).filter(Boolean);
+}
+
 /** El esqueleto de la respuesta. Una clave por sección, nada de prosa libre. */
 export function esquemaSalida(modelo: ReportModel): object {
   const dominios = Object.fromEntries(modelo.domains.map((d) => [d.id, TEXTO(1600)]));
@@ -189,16 +212,18 @@ export function esquemaSalida(modelo: ReportModel): object {
       senales: TEXTO(600),
       enElTrabajo: TEXTO(2000),
       preguntas: { type: "array", minItems: 5, maxItems: 7, items: TEXTO(200) },
+      // Tres pasos con nombre, no una lista de tres.
+      //
+      // Parece rebuscado y no lo es: los esquemas estructurados no aceptan
+      // `maxItems`, así que una lista solo podía *pedir* tres pasos en la
+      // descripción. El modelo devolvía otro número, `validarProsa` lo rechazaba
+      // y había que pagar la redacción otra vez. Con tres claves obligatorias,
+      // `required` lo impone y no hay nada que reintentar.
       planAccion: {
-        type: "array",
-        minItems: 3,
-        maxItems: 3,
-        items: {
-          type: "object",
-          additionalProperties: false,
-          required: ["titulo", "texto", "indicador"],
-          properties: { titulo: TEXTO(60), texto: TEXTO(600), indicador: TEXTO(240) },
-        },
+        type: "object",
+        additionalProperties: false,
+        required: ["paso1", "paso2", "paso3"],
+        properties: { paso1: PASO, paso2: PASO, paso3: PASO },
       },
       conclusion: TEXTO(1000),
     },
@@ -272,6 +297,21 @@ function comoTexto(k: string, v: unknown): string {
   return como[k] ?? `${k}: ${v}`;
 }
 
+/**
+ * Cuando el mínimo y el máximo coinciden, se dice de una vez.
+ *
+ * «mínimo 3 elementos, máximo 3 elementos» es una forma torpe de pedir tres, y
+ * como el esquema del cable no puede imponerlo —structured outputs no acepta
+ * `maxItems`— la frase es lo único que lo sostiene. Conviene que sea clara: una
+ * redacción con cuatro pasos la rechaza `validarProsa` y hay que pagarla otra vez.
+ */
+function juntaMinMax(entrada: Record<string, unknown>, perdidas: string[]): string[] {
+  const { minItems, maxItems } = entrada;
+  if (typeof minItems !== "number" || minItems !== maxItems) return perdidas;
+  const exacto = `exactamente ${minItems} elementos`;
+  return [exacto, ...perdidas.filter((p) => !/^(mínimo|máximo) \d+ elementos$/.test(p))];
+}
+
 function paraElCable(valor: unknown): unknown {
   if (Array.isArray(valor)) return valor.map(paraElCable);
   if (!valor || typeof valor !== "object") return valor;
@@ -291,8 +331,9 @@ function paraElCable(valor: unknown): unknown {
     }
   }
 
-  if (perdidas.length) {
-    salida.description = [entrada.description, perdidas.join(", ")].filter(Boolean).join(" · ");
+  const dichas = juntaMinMax(entrada, perdidas);
+  if (dichas.length) {
+    salida.description = [entrada.description, dichas.join(", ")].filter(Boolean).join(" · ");
   }
   return salida;
 }
@@ -362,9 +403,9 @@ export function validarProsa(prosa: unknown, modelo: ReportModel): string[] {
   if (!Array.isArray(preguntas) || preguntas.length < 5 || preguntas.length > 7) {
     fallos.push("«preguntas» debe tener entre 5 y 7 entradas");
   }
-  const plan = p.planAccion;
-  if (!Array.isArray(plan) || plan.length !== 3) {
-    fallos.push("«planAccion» debe tener exactamente 3 pasos");
+  const plan = pasosDelPlan(p.planAccion);
+  if (plan.length !== 3) {
+    fallos.push(`«planAccion» debe tener exactamente 3 pasos, y tiene ${plan.length}`);
   } else {
     plan.forEach((paso, i) => {
       const x = paso as Record<string, unknown>;

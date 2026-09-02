@@ -49,6 +49,20 @@ export function clienteDeApi(entorno = process.env) {
  * redaccion» para todo, y con eso no hay manera de saber si falla la clave, el
  * saldo o la conexion.
  */
+/**
+ * Una conexion que se cae a media respuesta.
+ *
+ * No es un error del SDK sino de la capa HTTP de Node, asi que no hereda de
+ * `Anthropic.APIError` y se colaba como «desconocido». El caso que lo destapo
+ * fue un `terminated` a los 20 segundos en Netlify: un proxy cerrando por
+ * inactividad una conexion que parecia muerta mientras el modelo pensaba.
+ */
+function esCaidaDeConexion(e) {
+  const señales = ["terminated", "ECONNRESET", "ECONNREFUSED", "socket hang up", "premature close", "aborted"];
+  const texto = `${e?.message ?? ""} ${e?.code ?? ""} ${e?.cause?.message ?? ""} ${e?.cause?.code ?? ""}`;
+  return señales.some((s) => texto.toLowerCase().includes(s.toLowerCase()));
+}
+
 export function queHaPasado(e) {
   if (e instanceof Anthropic.AuthenticationError) {
     return {
@@ -81,11 +95,11 @@ export function queHaPasado(e) {
   if (e instanceof Anthropic.BadRequestError) {
     return { que: "peticion", mensaje: "La API ha rechazado la petición.", pista: e.message };
   }
-  if (e instanceof Anthropic.APIConnectionError) {
+  if (e instanceof Anthropic.APIConnectionError || esCaidaDeConexion(e)) {
     return {
       que: "conexion",
-      mensaje: "No se ha podido conectar con la API.",
-      pista: "¿Hay conexión de red?",
+      mensaje: "La conexión con la API se ha cortado. Inténtalo de nuevo.",
+      pista: "Suele ser pasajero: se reintenta solo una vez antes de rendirse.",
     };
   }
   if (e instanceof Anthropic.APIError) {

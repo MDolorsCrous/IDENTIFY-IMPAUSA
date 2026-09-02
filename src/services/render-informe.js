@@ -9,6 +9,7 @@
 // Cormorant Garamond: asi el documento entero va con una sola serif.
 
 import { POLO, MATIZADA } from "./bandas.js";
+import { pasosDelPlan } from "./prompt.ts";
 
 const esc = (s) =>
   String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
@@ -522,8 +523,8 @@ ${opciones.aviso ? '<div class="maqueta">' + esc(opciones.aviso) + "</div>" : co
     <h2>Plan de acción</h2>
     <div class="plan">
       ${
-        prosa.planAccion?.length
-          ? prosa.planAccion
+        pasosDelPlan(prosa.planAccion).length
+          ? pasosDelPlan(prosa.planAccion)
               .map(
                 (e) => `<article class="paso">
         <h4>${esc(e.titulo)}</h4>

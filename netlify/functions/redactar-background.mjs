@@ -19,12 +19,11 @@ import { timingSafeEqual } from "node:crypto";
 import { getStore } from "@netlify/blobs";
 
 import { construirModelo } from "../../src/services/pipeline.ts";
-import { encargoParaLaApi, validarProsa } from "../../src/services/prompt.ts";
 import { ScoringError } from "../../src/services/scoring.ts";
 import { cargarRecursos } from "../../tools/recursos.mjs";
-import { claveDeApi, clienteDeApi, queHaPasado, NOMBRES } from "../../tools/clave-api.mjs";
+import { claveDeApi, NOMBRES } from "../../tools/clave-api.mjs";
+import { pedirRedaccion, FalloDeRedaccion } from "../../tools/pedir-redaccion.mjs";
 
-const MODELO = "claude-opus-5";
 const TOPE_POR_DEFECTO = 25;
 
 const recursos = cargarRecursos();
@@ -114,52 +113,24 @@ export default async function handler(peticion) {
     });
   }
 
-  const { sistema, mensaje, esquema } = encargoParaLaApi(modelo, recursos.facetas);
-  const cliente = clienteDeApi();
+  // La llamada vive en tools/pedir-redaccion.mjs, compartida con el comando:
+  // mismo modelo, mismos parametros y los mismos reintentos en un solo sitio.
   const empezo = Date.now();
-
-  let respuesta;
   try {
-    const flujo = cliente.beta.messages.stream({
-      model: MODELO,
-      max_tokens: 32000,
-      system: sistema,
-      messages: [{ role: "user", content: mensaje }],
-      thinking: { type: "adaptive" },
-      output_config: { effort: "high", format: { type: "json_schema", schema: esquema } },
-      betas: ["server-side-fallback-2026-07-01"],
-      fallbacks: "default",
-    });
-    respuesta = await flujo.finalMessage();
+    const r = await pedirRedaccion(modelo, recursos.facetas, (aviso) => console.warn(aviso));
+    console.log(
+      `informe redactado en ${r.segundos.toFixed(0)} s · ` +
+        `${r.uso.input_tokens} entrada / ${r.uso.output_tokens} salida · ` +
+        `${r.coste.toFixed(3)} $ · ${cuota.usados ?? "?"}/${cuota.tope ?? "?"} hoy`,
+    );
+    return guardar(id, { estado: "listo", prosa: r.prosa });
   } catch (e) {
-    const p = queHaPasado(e);
-    console.error(`Fallo al llamar a la API [${p.que}]:`, e?.status, e?.message, "·", p.pista);
-    return guardar(id, { estado: "error", error: p.mensaje, que: p.que });
+    const segundos = ((Date.now() - empezo) / 1000).toFixed(0);
+    if (e instanceof FalloDeRedaccion) {
+      console.error(`Fallo tras ${segundos} s [${e.que}]: ${e.message} · ${e.pista}`);
+      return guardar(id, { estado: "error", error: e.message, que: e.que });
+    }
+    console.error(`Fallo inesperado tras ${segundos} s:`, e?.message);
+    return guardar(id, { estado: "error", error: "No se ha podido generar el informe." });
   }
-
-  if (respuesta.stop_reason === "refusal") {
-    return guardar(id, { estado: "error", error: "No se ha podido redactar este perfil." });
-  }
-
-  const texto = respuesta.content.find((b) => b.type === "text")?.text;
-  let prosa;
-  try {
-    prosa = JSON.parse(texto ?? "");
-  } catch {
-    console.error("La respuesta no era JSON:", texto?.slice(0, 300));
-    return guardar(id, { estado: "error", error: "La redacción ha llegado mal. Inténtalo de nuevo." });
-  }
-
-  const fallos = validarProsa(prosa, modelo);
-  if (fallos.length) {
-    console.error("La redacción no encaja con el esquema:", fallos);
-    return guardar(id, { estado: "error", error: "La redacción ha llegado incompleta." });
-  }
-
-  console.log(
-    `informe redactado en ${((Date.now() - empezo) / 1000).toFixed(0)} s · ` +
-      `${respuesta.usage.input_tokens} entrada / ${respuesta.usage.output_tokens} salida · ` +
-      `${cuota.usados ?? "?"}/${cuota.tope ?? "?"} hoy`,
-  );
-  return guardar(id, { estado: "listo", prosa });
 }

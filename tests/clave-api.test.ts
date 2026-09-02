@@ -9,7 +9,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 
-import { claveDeApi, NOMBRES } from "../tools/clave-api.mjs";
+import { claveDeApi, queHaPasado, NOMBRES } from "../tools/clave-api.mjs";
 
 test("se prefiere el nombre estándar", () => {
   const r = claveDeApi({ ANTHROPIC_API_KEY: "sk-estandar", THINK_IMPAUSA: "sk-netlify" });
@@ -38,4 +38,25 @@ test("se recorta lo que sobra al pegarla", () => {
 
 test("los dos nombres están documentados, y el estándar va primero", () => {
   assert.deepEqual(NOMBRES, ["ANTHROPIC_API_KEY", "THINK_IMPAUSA"]);
+});
+
+test("una conexión que se cae no es un error desconocido", () => {
+  // El caso real: `terminated` a los 20 segundos en Netlify, sin código de
+  // estado. Como no hereda de Anthropic.APIError se colaba como «desconocido»,
+  // y con ese nombre no se puede ni reintentar ni explicar qué ha pasado.
+  for (const caida of [
+    new TypeError("terminated"),
+    Object.assign(new Error("fetch failed"), { cause: { code: "ECONNRESET" } }),
+    new Error("socket hang up"),
+    Object.assign(new Error("fetch failed"), { cause: { message: "Premature close" } }),
+  ]) {
+    const p = queHaPasado(caida);
+    assert.equal(p.que, "conexion", `«${caida.message}» debería ser una caída de conexión`);
+    assert.match(p.mensaje, /conexión/i);
+  }
+});
+
+test("lo que de verdad es desconocido sigue siéndolo", () => {
+  // Si todo acabara clasificado como conexión, se reintentaría lo que no debe.
+  assert.equal(queHaPasado(new Error("algo rarísimo")).que, "desconocido");
 });

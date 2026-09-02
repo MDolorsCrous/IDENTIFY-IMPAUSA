@@ -10,6 +10,7 @@ import {
   encargoParaLaApi,
   esquemaSalida,
   materialParaRedactar,
+  pasosDelPlan,
   promptCompleto,
   promptCorto,
   validarProsa,
@@ -85,8 +86,10 @@ test("el esquema exige un texto por cada dominio", () => {
     modelo.domains.map((d) => d.id).sort(),
   );
   assert.equal(e.additionalProperties, false);
-  assert.equal(e.properties.planAccion.minItems, 3);
-  assert.equal(e.properties.planAccion.maxItems, 3);
+  // Tres pasos con nombre, no una lista: es la unica forma de que la API
+  // garantice que son exactamente tres, porque no acepta maxItems.
+  assert.deepEqual(e.properties.planAccion.required, ["paso1", "paso2", "paso3"]);
+  assert.equal(e.properties.planAccion.additionalProperties, false);
 });
 
 test("el encargo lleva instrucciones, esquema y perfil", () => {
@@ -164,7 +167,8 @@ test("el encargo para la API reparte instrucciones, perfil y esquema", () => {
   const real = esquemaSalida(modelo) as any;
   assert.equal(real.properties.preguntas.minItems, 5);
   assert.equal(e.esquema.properties.preguntas.minItems, 1);
-  assert.equal(e.esquema.properties.planAccion.minItems, 1);
+  // El plan viaja intacto: al ser un objeto, no hay nada que recortar.
+  assert.deepEqual(e.esquema.properties.planAccion.required, ["paso1", "paso2", "paso3"]);
   assert.equal(e.esquema.properties.preguntas.maxItems, undefined);
   // Lo que se quita no se pierde: se cuenta en la descripcion, como hacen los SDK.
   assert.match(e.esquema.properties.preguntas.description, /mínimo 5.+máximo 7/);
@@ -172,4 +176,30 @@ test("el encargo para la API reparte instrucciones, perfil y esquema", () => {
   assert.ok(INSTRUCCIONES.includes("entre 5 y 7"));
   assert.ok(INSTRUCCIONES.includes("exactamente 3 pasos"));
   assert.ok(!e.mensaje.includes("Esquema de la respuesta"));
+});
+
+test("el plan se lee igual venga como venga", () => {
+  // El esquema pide tres claves con nombre, pero las redacciones guardadas de
+  // antes son una lista. Un informe viejo se tiene que poder volver a generar
+  // sin pagar su redacción otra vez.
+  const comoObjeto = { paso1: { titulo: "a" }, paso2: { titulo: "b" }, paso3: { titulo: "c" } };
+  const comoLista = [{ titulo: "a" }, { titulo: "b" }, { titulo: "c" }];
+
+  assert.deepEqual(pasosDelPlan(comoObjeto), comoLista);
+  assert.deepEqual(pasosDelPlan(comoLista), comoLista);
+  assert.deepEqual(pasosDelPlan(undefined), []);
+  assert.deepEqual(pasosDelPlan({}), []);
+});
+
+test("una redacción con el plan en objeto pasa la validación", () => {
+  const nueva = structuredClone(prosa);
+  const [a, b, c] = nueva.planAccion;
+  nueva.planAccion = { paso1: a, paso2: b, paso3: c };
+  assert.deepEqual(validarProsa(nueva, modelo), []);
+});
+
+test("un plan con dos pasos se rechaza, y dice cuántos ha visto", () => {
+  const corta = structuredClone(prosa);
+  corta.planAccion = corta.planAccion.slice(0, 2);
+  assert.ok(validarProsa(corta, modelo).some((f) => f.includes("y tiene 2")));
 });
