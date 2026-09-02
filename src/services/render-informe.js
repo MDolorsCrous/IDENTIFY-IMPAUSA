@@ -312,6 +312,63 @@ export function renderInforme(modelo, prosa = {}, labels, opciones = {}) {
     })
     .join("");
 
+/**
+ * Las combinaciones que SÍ se cumplen.
+ *
+ * Esta sección estaba escrita a mano con el texto de «no activas ninguna», y no
+ * miraba modelo.fired en ningún momento: a quien activaba una regla, el informe
+ * le decía por escrito que no activaba ninguna. Es la sección que docs/03 llama
+ * «la parte que justifica el informe entero».
+ *
+ * Se escribe con lo que ya está curado en combinations.json —el efecto, el
+ * resumen y las referencias— y no con prosa inventada aquí. Y se afirma, con su
+ * cita, que es justo lo que la distingue de las señales: allí falta una
+ * condición y se habla en condicional; aquí se cumplen todas.
+ */
+const combinacionesHtml = modelo.fired
+  .map((m) => {
+    const quien = m.met
+      .map((x) => `${(labels.facets[x.condition.facet] ?? x.condition.facet).toLowerCase()} ${x.band}`)
+      .join(" + ");
+    // Las marcadas «clinico» no aparecen nunca solas: describen un patrón de la
+    // investigación, no a la persona, y llevan al lado qué hacer con eso.
+    const cuidado =
+      m.rule.safety === "clinico"
+        ? `<span class="combi__aviso">Esto describe un patrón observado en la investigación, no un
+           diagnóstico ni una afirmación sobre ti. Si se parece a lo que estás viviendo, hablarlo
+           con un profesional es lo razonable.</span>`
+        : "";
+    return `
+      <li>
+        <b>${esc(m.rule.effect)}</b>
+        <span>${esc(m.rule.summary)}</span>
+        <span class="combi__quien">Se cumple por ${esc(quien)}. ${esc(m.rule.references.join(" · "))}</span>
+        ${cuidado}
+      </li>`;
+  })
+  .join("");
+
+/** La entradilla de las combinaciones, escrita por el código igual que la de las señales. */
+function introCombinaciones(modelo) {
+  const n = modelo.fired.length;
+  if (!n) {
+    return `<div class="vacio">
+      <p>Tu perfil <b>no activa ninguna</b> de las ${modelo.reglasTotales ?? 26} combinaciones descritas
+      en la literatura científica sobre este cuestionario.</p>
+      <p style="margin-bottom:0;color:var(--ink-soft)">No es una carencia: esas combinaciones exigen
+      varias puntuaciones extremas a la vez, y la mayoría de perfiles no las reúnen. Lo característico
+      de este perfil está en el recorrido faceta a faceta.</p>
+    </div>`;
+  }
+  const cuantas =
+    n === 1 ? "Una de las combinaciones descritas se cumple" : `${n} de las combinaciones descritas se cumplen`;
+  return `<p>${cuantas} <b>entera</b> en tu perfil: todas sus condiciones, no algunas. Por eso van
+    afirmadas y con su cita, a diferencia de las señales del apartado siguiente.</p>
+    <p>Describen <b>patrones observados en la investigación</b>, no a ti. Que una combinación se
+    cumpla dice por dónde suele moverse un perfil como el tuyo, no lo que vas a hacer.</p>
+    <ul class="senales combis">${combinacionesHtml}</ul>`;
+}
+
 const SENALES_MOSTRADAS = 4;
 const senales = modelo.nearMisses.slice(0, SENALES_MOSTRADAS);
 const senalesHtml = senales
@@ -550,6 +607,12 @@ ${tipografias(opciones.marca)}
     border-left:2px solid var(--borde)}
   .senales span{color:var(--ink-soft);font-size:.94rem}
   .senal__falta{font-size:.84rem!important;font-style:italic;margin-top:.15rem}
+  /* Las combinaciones que sí se cumplen: mismo esqueleto que las señales, pero
+     con el filete en verde en vez de gris, porque estas se afirman. */
+  .combis li{border-left-color:var(--verde-medio)}
+  .combi__quien{font-size:.84rem!important;font-style:italic;margin-top:.15rem}
+  .combi__aviso{font-size:.86rem!important;background:var(--naranja-claro);
+    border-radius:3px;padding:.5rem .7rem;margin-top:.4rem;color:var(--ink)!important}
 
   .preguntas{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:.7rem;
     counter-reset:p}
@@ -784,13 +847,7 @@ ${opciones.aviso ? '<div class="maqueta">' + esc(opciones.aviso) + "</div>" : co
   <section class="seccion" id="combinaciones">
     <p class="eyebrow">Combinaciones del perfil</p>
     <h2>Lo que aparece al cruzar las facetas</h2>
-    <div class="vacio">
-      <p>Tu perfil <b>no activa ninguna</b> de las 26 combinaciones descritas en la literatura
-      científica sobre este cuestionario.</p>
-      <p style="margin-bottom:0;color:var(--ink-soft)">No es una carencia: esas combinaciones exigen
-      varias puntuaciones extremas a la vez, y la mayoría de perfiles no las reúnen. Lo característico
-      de este perfil está en el recorrido faceta a faceta.</p>
-    </div>
+    ${introCombinaciones(modelo)}
   </section>
 
   <section class="seccion" id="senales">

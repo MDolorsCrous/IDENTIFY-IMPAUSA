@@ -294,3 +294,70 @@ test("solo las piezas indivisibles se blindan contra el salto de página", () =>
   // Y nada de partir palabras: dejaba cortes como «cons-tante» o «téc-nicos».
   assert.ok(!/hyphens:\s*auto/.test(html), "sigue partiendo palabras");
 });
+
+/** Respuestas construidas para que una regla concreta dispare y ninguna otra estorbe. */
+function respuestasQueDisparan(recursos: any, id: string) {
+  const regla = recursos.rules.find((r: any) => r.id === id);
+  assert.ok(regla, `no existe la regla ${id}`);
+  const respuestas: Record<number, number> = {};
+  for (const q of recursos.config.questions) {
+    const cond = regla.conditions.find((c: any) => c.facet === q.facet);
+    if (!cond) { respuestas[q.id] = 3; continue; }
+    const quiereAlto = cond.level === "high";
+    // Con ítem inverso hay que contestar al revés para que la faceta suba.
+    respuestas[q.id] = quiereAlto ? (q.reverse ? 1 : 5) : (q.reverse ? 5 : 1);
+  }
+  return respuestas as Responses;
+}
+
+test("las combinaciones que se cumplen salen en el informe", () => {
+  // Esta sección estuvo escrita a mano con el texto de «no activas ninguna» y no
+  // miraba modelo.fired: a quien activaba una regla, el informe le decía por
+  // escrito que no activaba ninguna. docs/03 la llama «la parte que justifica el
+  // informe entero», así que aquí se comprueba que dice la verdad en los dos
+  // casos: cuando hay y cuando no.
+  const recursos = cargarRecursos();
+  const opciones = { facetas: recursos.facetas, metaforas: recursos.metaforas, marca: recursos.marca, fecha: "1 de enero de 2026" };
+  // Las citas llevan «&» y en el HTML sale escapado: se deshace para compararlas.
+  const seccion = (html: string) => {
+    const i = html.indexOf('id="combinaciones"');
+    return html.slice(i, html.indexOf("</section>", i)).replaceAll("&amp;", "&");
+  };
+
+  const modelo = construirModelo(respuestasQueDisparan(recursos, "compromiso-y-estatus-social"), recursos, {});
+  assert.ok(modelo.fired.length >= 1, "el perfil de prueba ya no dispara nada");
+  const con = seccion(renderInforme(modelo, {} as any, recursos.labels, opciones));
+
+  assert.ok(!con.includes("no activa ninguna"), "dice que no activa ninguna, y activa " + modelo.fired.length);
+  for (const m of modelo.fired) {
+    assert.ok(con.includes(m.rule.effect), `falta la combinación «${m.rule.effect}»`);
+    assert.ok(con.includes(m.rule.summary), `falta lo que dice «${m.rule.id}»`);
+    // Se afirma con su cita: es lo que la distingue de las señales.
+    for (const cita of m.rule.references) assert.ok(con.includes(cita), `falta la cita ${cita}`);
+  }
+
+  // Y sin ninguna, el mensaje de siempre.
+  const respuestasEjemplo = Object.fromEntries(
+    Object.entries(fixture.responses).map(([k, v]) => [Number(k), v]),
+  ) as Responses;
+  const vacio = construirModelo(respuestasEjemplo, recursos, {});
+  assert.equal(vacio.fired.length, 0, "el caso de ejemplo ya no está vacío");
+  assert.ok(seccion(renderInforme(vacio, {} as any, recursos.labels, opciones)).includes("no activa ninguna"));
+});
+
+test("una combinación marcada como clínica nunca aparece sola", () => {
+  // docs/03: «no aparecen nunca solas: llevan qué hacer, y la mención de que si
+  // eso encaja con lo que la persona vive, hablarlo con un profesional es lo
+  // razonable». Las otras no llevan ese aviso: repetirlo en todas lo vaciaría.
+  const recursos = cargarRecursos();
+  const opciones = { facetas: recursos.facetas, metaforas: recursos.metaforas, marca: recursos.marca, fecha: "1 de enero de 2026" };
+  const seccion = (id: string) => {
+    const modelo = construirModelo(respuestasQueDisparan(recursos, id), recursos, {});
+    const html = renderInforme(modelo, {} as any, recursos.labels, opciones);
+    const i = html.indexOf('id="combinaciones"');
+    return html.slice(i, html.indexOf("</section>", i));
+  };
+
+  assert.ok(seccion("burnout-aislamiento").includes("con un profesional"), "una regla clínica sale sin aviso");
+  assert.ok(!seccion("compromiso-y-estatus-social").includes("con un profesional"), "el aviso clínico sale donde no toca");
+});
