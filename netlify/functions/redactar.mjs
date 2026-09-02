@@ -10,18 +10,18 @@
 // al 5, lo peor que puede hacer alguien con el codigo es generar informes.
 //
 // **Que hace falta en Netlify** (Site configuration -> Environment variables):
-//   ANTHROPIC_API_KEY   la clave de la API
+//   ANTHROPIC_API_KEY   la clave de la API (o THINK_IMPAUSA, ver tools/clave-api.mjs)
 //   CODIGO_ACCESO       el codigo que le das a quien vaya a probarlo
 //   TOPE_DIARIO         opcional, informes por dia (por defecto 25)
 import { timingSafeEqual } from "node:crypto";
 
-import Anthropic from "@anthropic-ai/sdk";
 import { getStore } from "@netlify/blobs";
 
 import { construirModelo } from "../../src/services/pipeline.ts";
 import { encargoParaLaApi, validarProsa } from "../../src/services/prompt.ts";
 import { ScoringError } from "../../src/services/scoring.ts";
 import { cargarRecursos } from "../../tools/recursos.mjs";
+import { claveDeApi, clienteDeApi, queHaPasado, NOMBRES } from "../../tools/clave-api.mjs";
 
 const MODELO = "claude-opus-5";
 const TOPE_POR_DEFECTO = 25;
@@ -61,7 +61,12 @@ async function dentroDelTope() {
 export default async function handler(peticion) {
   if (peticion.method !== "POST") return json(405, { error: "Solo POST." });
 
-  if (!process.env.ANTHROPIC_API_KEY || !process.env.CODIGO_ACCESO) {
+  if (!claveDeApi() || !process.env.CODIGO_ACCESO) {
+    console.error(
+      "Falta configuracion. Clave:", !!claveDeApi(),
+      "· Codigo:", !!process.env.CODIGO_ACCESO,
+      "· Nombres que se miran:", NOMBRES.join(", "),
+    );
     return json(500, { error: "El servidor no está configurado. Avisa a quien lo administra." });
   }
 
@@ -99,7 +104,7 @@ export default async function handler(peticion) {
   }
 
   const { sistema, mensaje, esquema } = encargoParaLaApi(modelo, recursos.facetas);
-  const cliente = new Anthropic();
+  const cliente = clienteDeApi();
 
   let respuesta;
   try {
@@ -115,10 +120,13 @@ export default async function handler(peticion) {
     });
     respuesta = await flujo.finalMessage();
   } catch (e) {
-    // Hacia fuera, un mensaje corto: los detalles de la API no son asunto de
-    // quien responde el test. Al log si van, para poder mirarlos.
-    console.error("Fallo al llamar a la API:", e?.status, e?.message);
-    return json(502, { error: "No se ha podido generar la redacción. Inténtalo de nuevo." });
+    // Se dice QUE tipo de problema es —clave, saldo, ritmo, conexion—, no el
+    // detalle. Ninguna de esas categorias filtra nada de la clave ni de la
+    // cuenta, y sin ellas no hay forma de saber por que falla desde fuera: la
+    // primera version contestaba lo mismo a todo y no habia manera de avanzar.
+    const p = queHaPasado(e);
+    console.error(`Fallo al llamar a la API [${p.que}]:`, e?.status, e?.message, "·", p.pista);
+    return json(502, { error: p.mensaje, que: p.que });
   }
 
   if (respuesta.stop_reason === "refusal") {

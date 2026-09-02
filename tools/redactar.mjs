@@ -9,9 +9,8 @@
 //
 // La clave se lee del entorno (ANTHROPIC_API_KEY): no se pide, no se guarda y
 // no se escribe en ningun fichero del proyecto.
-import Anthropic from "@anthropic-ai/sdk";
-
 import { encargoParaLaApi, validarProsa } from "../src/services/prompt.ts";
+import { claveDeApi, clienteDeApi, queHaPasado, NOMBRES } from "./clave-api.mjs";
 
 const MODELO = "claude-opus-5";
 
@@ -34,15 +33,15 @@ class ErrorDeRedaccion extends Error {
  * @returns {Promise<{prosa: object, uso: object, coste: number}>}
  */
 export async function redactar(modelo, facetas, { alEmpezar } = {}) {
-  if (!process.env.ANTHROPIC_API_KEY) {
+  if (!claveDeApi()) {
     throw new ErrorDeRedaccion(
       "No hay clave de API.",
-      "Ponla en la variable de entorno ANTHROPIC_API_KEY y vuelve a lanzarlo.",
+      `Ponla en la variable de entorno ${NOMBRES[0]} y vuelve a lanzarlo.`,
     );
   }
 
   const { sistema, mensaje, esquema } = encargoParaLaApi(modelo, facetas);
-  const cliente = new Anthropic();
+  const cliente = clienteDeApi();
   alEmpezar?.();
 
   let respuesta;
@@ -117,24 +116,10 @@ export async function redactar(modelo, facetas, { alEmpezar } = {}) {
   return { prosa, uso, coste, modelo: respuesta.model };
 }
 
-/** Los errores de la API, dichos en cristiano y con qué hacer. */
+/** Los errores de la API, dichos en cristiano. El criterio vive en clave-api.mjs. */
 function traducir(e) {
-  if (e instanceof Anthropic.AuthenticationError) {
-    return new ErrorDeRedaccion("La clave de API no vale.", "Revisa ANTHROPIC_API_KEY.");
-  }
-  if (e instanceof Anthropic.RateLimitError) {
-    return new ErrorDeRedaccion("Demasiadas peticiones seguidas.", "Espera un momento y repite.");
-  }
-  if (e instanceof Anthropic.BadRequestError) {
-    return new ErrorDeRedaccion("La API ha rechazado la petición.", e.message);
-  }
-  if (e instanceof Anthropic.APIConnectionError) {
-    return new ErrorDeRedaccion("No se ha podido conectar con la API.", "¿Hay conexión?");
-  }
-  if (e instanceof Anthropic.APIError) {
-    return new ErrorDeRedaccion(`Error ${e.status} de la API.`, e.message);
-  }
-  return e;
+  const p = queHaPasado(e);
+  return e instanceof Error && p.que === "desconocido" ? e : new ErrorDeRedaccion(p.mensaje, p.pista);
 }
 
 export { ErrorDeRedaccion };
