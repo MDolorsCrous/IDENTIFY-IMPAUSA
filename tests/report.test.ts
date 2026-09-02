@@ -198,3 +198,57 @@ test("un pasaje largo se parte en párrafos", () => {
   });
   assert.ok(vieja.includes("<p>Todo seguido, sin cortes.</p>"));
 });
+
+test("cada dominio lleva su color, y el informe no enseña la dirección de la app", () => {
+  // El color de cada dominio sale de marca.json y tiene que llegar igual al
+  // gráfico general, a las barras de facetas y al bloque del dominio: si se
+  // pintara desde el CSS, cambiar uno obligaría a buscarlo por todo el fichero.
+  const recursos = cargarRecursos();
+  const respuestasEjemplo = Object.fromEntries(
+    Object.entries(fixture.responses).map(([k, v]) => [Number(k), v]),
+  ) as Responses;
+  const modelo = construirModelo(respuestasEjemplo, recursos, {});
+  const html = renderInforme(modelo, {} as any, recursos.labels, {
+    facetas: recursos.facetas,
+    metaforas: recursos.metaforas,
+    fuentes: recursos.fuentes,
+    marca: recursos.marca,
+    fecha: "1 de enero de 2026",
+  });
+
+  for (const [id, color] of Object.entries(recursos.marca.dominios)) {
+    // Uno por el gráfico general, uno por el bloque y tres por sus facetas.
+    const veces = html.split(`--dominio:${color}`).length - 1;
+    assert.equal(veces, 5, `${id} no lleva su color en los cinco sitios`);
+  }
+
+  // Ella pidió que la dirección de la aplicación no salga en el informe: el que
+  // lo recibe se lo queda y lo enseña, y ahí solo tiene que ir la marca.
+  for (const rastro of ["netlify", "identify-impausa", "localhost"]) {
+    assert.ok(!html.toLowerCase().includes(rastro), `el informe enseña «${rastro}»`);
+  }
+  // El correo y el web de IMPAUSA sí: son el contacto de la empresa.
+  assert.ok(html.includes(recursos.marca.correo));
+  assert.ok(html.includes(recursos.marca.web));
+});
+
+test("la cabecera y el pie de página impresos se repiten", () => {
+  // El navegador solo sabe repetir algo en cada página impresa si es el thead o
+  // el tfoot de una tabla. En pantalla la tabla no existe: se deshace con CSS.
+  const recursos = cargarRecursos();
+  const respuestasEjemplo = Object.fromEntries(
+    Object.entries(fixture.responses).map(([k, v]) => [Number(k), v]),
+  ) as Responses;
+  const modelo = construirModelo(respuestasEjemplo, recursos, {});
+  const html = renderInforme(modelo, {} as any, recursos.labels, {
+    facetas: recursos.facetas,
+    metaforas: recursos.metaforas,
+    marca: recursos.marca,
+    fecha: "1 de enero de 2026",
+  });
+
+  assert.ok(html.includes('<thead class="papel__cab">'), "falta la cabecera repetida");
+  assert.ok(html.includes('<tfoot class="papel__pie">'), "falta el pie repetido");
+  assert.ok(html.includes(".papel__cab,.papel__pie{display:none}"), "los cintillos se ven en pantalla");
+  assert.ok(html.includes(".papel__cab{display:table-header-group}"), "no se repiten al imprimir");
+});

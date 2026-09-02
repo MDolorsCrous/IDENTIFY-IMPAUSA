@@ -2,11 +2,15 @@
 // devuelve una cadena. No lee disco ni conoce Node, para que la pagina del test
 // pueda llevarse este mismo fichero y no haya dos renderizadores que se separen.
 //
-// Identidad visual: la documentada para los informes de LivePausa / IMPAUSA en la
-// skill disc-insight-coach (verde #1A4A3A, verde medio #2D6B57, beige #F7F2EB,
-// naranja #E8842A, Playfair Display + Source Sans 3). El rotulo de portada sigue
-// la skill retol-test-impausa, que admite Playfair Display como alternativa a
-// Cormorant Garamond: asi el documento entero va con una sola serif.
+// Identidad visual: la misma que los informes Connect de la casa, para que los
+// dos documentos se reconozcan como de la misma familia. Montserrat para titulos
+// y etiquetas, Lato para el cuerpo, chevron dorado en los titulos de seccion,
+// tarjetas en verde menta y un color estable por dominio. Los valores —colores,
+// tipografias, logotipo, contacto— no estan aqui: vienen de src/config/marca.json,
+// que es donde se cambian.
+//
+// El rotulo de portada es la excepcion y conserva su serif: lo manda la skill
+// retol-test-impausa, y es la marca del producto, no el cuerpo del texto.
 
 import { POLO, MATIZADA } from "./bandas.js";
 import { pasosDelPlan } from "./prompt.ts";
@@ -17,9 +21,9 @@ const num = (v) => v.toFixed(2).replace(".", ",");
 /** Posicion de una puntuacion 1-5 sobre el eje, en porcentaje. */
 const pos = (v) => ((v - 1) / 4) * 100;
 
-function fila(item, destacada) {
+function fila(item, destacada, color) {
   return `
-      <div class="fila${destacada ? " fila--destacada" : ""}">
+      <div class="fila${destacada ? " fila--destacada" : ""}"${color ? ` style="--dominio:${color}"` : ""}>
         <div class="fila__nombre">${esc(item.label)}${
           destacada ? '<span class="marca">se separa del resto</span>' : ""
         }</div>
@@ -86,6 +90,29 @@ function introSenales(modelo, labels) {
     <p>Por eso van en condicional y sin cita: <b>no describen tu perfil de hoy</b>. Lo que
     señalan es por dónde se movería si una pieza cambiara — que es justo el tipo de cosa
     que conviene mirar en una conversación de coaching.</p>`;
+}
+
+/**
+ * Las tipografias de la casa, dentro del documento.
+ *
+ * Montserrat para titulos y etiquetas, Lato para el cuerpo — las dos de la skill
+ * impausa-brand-book, que es donde se mantienen. Van incrustadas y no enlazadas
+ * porque el informe se imprime y se convierte en PDF: con un enlace, el dia que
+ * no haya red o cambie el servicio de fuentes, la maquetacion se descuadra.
+ *
+ * El rotulo «Identify by Impausa» conserva Playfair, que es lo que manda la
+ * skill retol-test-impausa. Es la marca del producto, no el cuerpo del texto.
+ */
+function tipografias(marca) {
+  const t = marca?.tipografias;
+  if (!t) return "";
+  const cara = (familia, peso, b64) => `@font-face{font-family:"${familia}";font-style:normal;
+    font-weight:${peso};font-display:swap;src:url(data:font/woff2;base64,${b64}) format("woff2")}`;
+  return `<style>
+    ${cara("Montserrat", "400 700", t.montserrat)}
+    ${cara("Lato", "400", t.lato400)}
+    ${cara("Lato", "700", t.lato700)}
+  </style>`;
 }
 
 /**
@@ -257,24 +284,25 @@ export function metaforasParaInforme(modelo, metaforas) {
 
 export function renderInforme(modelo, prosa = {}, labels, opciones = {}) {
   const facetas = opciones.facetas;
+  const colores = opciones.marca?.dominios;
   const metaforas = metaforasParaInforme(modelo, opciones.metaforas);
   const conProsa = Boolean(prosa && Object.keys(prosa).length);
   const fecha = opciones.fecha ?? "";
   const persona = modelo.meta.generatedFor ?? "";
 
-  const resumenVisual = `<div class="barras">${modelo.domains.map((d) => fila(d, false)).join("")}</div>${escala}`;
+  const resumenVisual = `<div class="barras">${modelo.domains.map((d) => fila(d, false, colores?.[d.id])).join("")}</div>${escala}`;
 
   const dominios = modelo.domains
     .map((d) => {
       const nota = labels.notas?.[d.id];
       const texto = prosa.dominios?.[d.id];
       return `
-    <section class="dominio">
+    <section class="dominio"${colores?.[d.id] ? ` style="--dominio:${colores[d.id]}"` : ""}>
       <header class="dominio__cab">
         <h3>${esc(d.label)}</h3>
         <span class="dominio__dato">${num(d.score)} <em>${esc(d.band)}</em></span>
       </header>
-      <div class="barras">${d.facets.map((f) => fila(f, d.divergentFacet?.id === f.id)).join("")}</div>
+      <div class="barras">${d.facets.map((f) => fila(f, d.divergentFacet?.id === f.id, colores?.[d.id])).join("")}</div>
       ${escala}
       ${lineaDatos(d)}
       ${lecturasFacetas(d, facetas)}
@@ -327,32 +355,52 @@ const html = `<html lang="es">
 <title>Informe Identify</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,700&family=Source+Sans+3:ital,wght@0,400;0,600;1,400&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700&display=swap">
+${tipografias(opciones.marca)}
 <style>
+  /* La paleta de Connect, para que los dos informes de la casa se reconozcan
+     como de la misma familia. Los valores vienen de src/config/marca.json. */
   :root{
-    --verde:#1A4A3A; --verde-medio:#2D6B57; --beige:#F7F2EB; --naranja:#E8842A;
-    --naranja-claro:#FDF0E4; --tarjeta:#FFFFFF; --borde:#E0D9D0;
-    --ground:#F7F2EB; --ink:#1F2A25; --ink-soft:#5E6B64; --track:#E7E0D6;
-    --titulo:#1A4A3A; --sombra:0 1px 2px rgba(26,74,58,.06);
+    --verde:#27624F; --verde-medio:#5F927D; --beige:#F7F4EE; --naranja:#F29A4A;
+    --naranja-claro:#FDF0E4; --dorado:#D8B34D; --menta:#E8F0EC;
+    --tarjeta:#FFFDFC; --borde:#DDD8CE; --menta-borde:#D3E2DA;
+    --ground:#F7F4EE; --ink:#292927; --ink-soft:#6F6B65; --track:#E9E4DA;
+    --titulo:#27624F; --sombra:0 1px 2px rgba(39,98,79,.06);
   }
   @media (prefers-color-scheme:dark){
     :root:not([data-theme="light"]){
       --ground:#10201A; --tarjeta:#162C24; --ink:#EDE6DA; --ink-soft:#A9B8B0;
       --borde:#2C4238; --track:#22382F; --titulo:#8FCBB2; --naranja-claro:#2A2119;
       --verde-medio:#5FA588; --sombra:0 1px 2px rgba(0,0,0,.35);
+      --menta:#163026; --menta-borde:#25453A;
     }
   }
   :root[data-theme="dark"]{
     --ground:#10201A; --tarjeta:#162C24; --ink:#EDE6DA; --ink-soft:#A9B8B0;
     --borde:#2C4238; --track:#22382F; --titulo:#8FCBB2; --naranja-claro:#2A2119;
     --verde-medio:#5FA588; --sombra:0 1px 2px rgba(0,0,0,.35);
+    --menta:#163026; --menta-borde:#25453A;
   }
   *{box-sizing:border-box}
   body{margin:0;background:var(--ground);color:var(--ink);
-    font-family:"Source Sans 3",system-ui,sans-serif;font-size:17px;line-height:1.7;
+    font-family:"Lato","Source Sans 3",system-ui,sans-serif;font-size:16.5px;line-height:1.7;
     -webkit-font-smoothing:antialiased}
-  .hoja{max-width:44rem;margin:0 auto;padding:clamp(1.4rem,4vw,3rem) clamp(1.1rem,4vw,2rem) 5rem;
-    display:flex;flex-direction:column;gap:3rem}
+  .hoja{max-width:44rem;margin:0 auto;padding:clamp(1.4rem,4vw,3rem) clamp(1.1rem,4vw,2rem) 5rem}
+  .cuerpo{display:flex;flex-direction:column;gap:3rem}
+  /* Cabecera y pie propios, repetidos en cada página impresa.
+     El navegador solo sabe repetir algo en cada página si es el thead o el tfoot
+     de una tabla; no hay otra manera de conseguirlo desde la web. En pantalla la
+     tabla no existe: todas sus partes vuelven a ser bloques normales y los dos
+     cintillos se esconden, así que la lectura en pantalla no cambia en nada.
+     Se hace porque los cintillos del navegador —fecha, título y la dirección de
+     la app— no se querían, y al quitarlos se va también la numeración. */
+  .papel,.papel>*,.papel tr,.papel td{display:block;width:auto}
+  .papel__cab,.papel__pie{display:none}
+  .cintillo{display:flex;justify-content:space-between;align-items:baseline;gap:1rem;
+    font-family:"Montserrat",system-ui,sans-serif;font-size:7.6pt;letter-spacing:.04em;
+    color:var(--ink-soft);text-transform:uppercase}
+  .cintillo__marca{color:var(--verde);font-weight:700;letter-spacing:.1em}
+  .cintillo__marca i{font-style:italic;font-weight:400}
   /* Justificado, con partición de palabras.
      Sin partición, el justificado abre huecos enormes entre palabras en español,
      que tiene palabras largas; con partición, el borde derecho queda recto y el
@@ -364,7 +412,8 @@ const html = `<html lang="es">
      el justificado solo produce huecos. */
   .lectura__ref,.fuentes__papel,.senal__falta,.escala span,.fila__dato{text-align:left}
   p:last-child{margin-bottom:0}
-  h2,h3,h4{font-family:"Playfair Display",Georgia,serif;margin:0;text-wrap:balance;color:var(--titulo)}
+  h2,h3,h4{font-family:"Montserrat",system-ui,sans-serif;font-weight:600;margin:0;
+    text-wrap:balance;color:var(--titulo);letter-spacing:-.01em}
   h2{font-size:clamp(1.55rem,4.3vw,2rem);font-weight:700;line-height:1.2}
   h3{font-size:1.3rem;font-weight:700}
   h4{font-size:1.08rem;font-weight:700}
@@ -394,13 +443,22 @@ const html = `<html lang="es">
     -webkit-background-clip:text;background-clip:text;color:transparent}
   .portada__pie{margin-top:1.5rem;color:var(--ink-soft);font-size:.95rem}
 
-  .eyebrow{font-size:.71rem;letter-spacing:.15em;text-transform:uppercase;
-    color:var(--verde-medio);font-weight:600;margin:0 0 .45rem}
-  .seccion>h2{margin-bottom:.8rem}
+  .eyebrow{font-family:"Montserrat",system-ui,sans-serif;font-size:.68rem;
+    letter-spacing:.18em;text-transform:uppercase;color:var(--verde);font-weight:700;
+    margin:0 0 .5rem}
+  /* Título de sección: chevrón dorado delante y línea fina debajo, como Connect.
+     El chevrón es decorativo, así que se dibuja con ::before y no va en el texto:
+     quien escuche el informe con un lector de pantalla no oirá «doble mayor que». */
+  .seccion>h2{margin-bottom:.9rem;padding-bottom:.55rem;position:relative}
+  .seccion>h2::before{content:"»";color:var(--dorado);font-weight:700;margin-right:.4rem}
+  .seccion>h2::after{content:"";position:absolute;left:0;bottom:0;width:3.2rem;height:2px;
+    background:var(--dorado);border-radius:1px}
   section{scroll-margin-top:1rem}
 
-  .indice{background:var(--tarjeta);border:1px solid var(--borde);border-radius:3px;
-    padding:1.2rem 1.4rem;box-shadow:var(--sombra)}
+  /* Las tarjetas de Connect: verde menta, cantonada redonda y sin borde duro.
+     El menta se apaga en modo oscuro, donde un verde claro deslumbraria. */
+  .indice{background:var(--menta);border:1px solid var(--menta-borde);border-radius:10px;
+    padding:1.3rem 1.5rem}
   .indice ol{margin:.5rem 0 0;padding-left:1.3rem;columns:2;column-gap:2rem}
   .indice li{margin-bottom:.3rem;break-inside:avoid}
   .indice a{color:var(--ink);text-decoration:none;border-bottom:1px solid transparent}
@@ -412,9 +470,13 @@ const html = `<html lang="es">
   .aviso ul{margin:.4rem 0 0;padding-left:1.1rem}
   .aviso li{margin-bottom:.25rem}
 
-  .titular{font-family:"Playfair Display",Georgia,serif;font-size:clamp(1.5rem,4.4vw,2rem);
-    font-weight:700;font-style:italic;line-height:1.25;margin:0 0 1rem;color:var(--titulo);
-    text-wrap:balance}
+  /* El titular del resumen, dentro de una banda verde, como en Connect. Es la
+     frase que se lleva quien solo lee la primera página, así que se destaca del
+     resto del texto en vez de ser un párrafo más en negrita. */
+  .titular{font-family:"Montserrat",system-ui,sans-serif;font-weight:600;
+    font-size:clamp(1.15rem,3vw,1.4rem);line-height:1.35;margin:0 0 1.2rem;
+    background:var(--verde);color:#FFFDFC;padding:1.1rem 1.35rem;border-radius:10px;
+    max-width:none;text-align:left;hyphens:none;text-wrap:balance;break-inside:avoid}
 
   .barras{display:flex;flex-direction:column;gap:.55rem;margin:.2rem 0 0}
   .fila{display:grid;grid-template-columns:minmax(7rem,10.5rem) 1fr auto;gap:.85rem;align-items:center}
@@ -422,10 +484,14 @@ const html = `<html lang="es">
   .marca{font-size:.65rem;letter-spacing:.08em;text-transform:uppercase;color:var(--naranja);font-weight:600}
   .eje{position:relative;height:9px;background:var(--track);border-radius:2px}
   .eje__medio{position:absolute;left:50%;top:-3px;bottom:-3px;width:1px;background:var(--borde)}
+  /* El color de cada dominio llega por --dominio desde marca.json, así que el
+     gráfico general, las barras de facetas y los títulos van siempre a juego y
+     hay un solo sitio donde cambiarlo. */
   .eje__relleno{position:absolute;left:0;top:0;bottom:0;border-radius:2px;
-    background:var(--verde-medio);opacity:.5}
+    background:var(--dominio,var(--verde-medio));opacity:.6}
   .eje__punto{position:absolute;top:50%;width:9px;height:9px;border-radius:50%;
-    background:var(--verde-medio);transform:translate(-50%,-50%);box-shadow:0 0 0 2px var(--ground)}
+    background:var(--dominio,var(--verde-medio));transform:translate(-50%,-50%);
+    box-shadow:0 0 0 2px var(--ground)}
   .eje--acento .eje__relleno,.eje--acento .eje__punto{background:var(--naranja)}
   .fila__dato{text-align:right;font-variant-numeric:tabular-nums;line-height:1.2;
     display:flex;flex-direction:column;min-width:4.6rem}
@@ -462,13 +528,13 @@ const html = `<html lang="es">
     font-family:"Playfair Display",Georgia,serif;font-size:1.12rem;font-style:italic;
     line-height:1.45;color:var(--titulo)}
   .imagen figcaption{font-size:.84rem;color:var(--ink-soft);padding-left:1.1rem}
-  .imagen--ancla{background:var(--tarjeta);border:1px solid var(--borde);border-radius:3px;
-    padding:1rem 1.2rem;margin-top:1.4rem;box-shadow:var(--sombra)}
+  .imagen--ancla{background:var(--menta);border:1px solid var(--menta-borde);border-radius:10px;
+    padding:1.15rem 1.35rem;margin-top:1.4rem}
   .imagen--ancla blockquote{padding-top:.2rem;font-size:1.2rem}
   .imagen__etiqueta{font-size:.71rem;letter-spacing:.15em;text-transform:uppercase;
     color:var(--verde-medio);font-weight:600;margin:0}
 
-  .vacio{border:1px solid var(--borde);border-radius:3px;padding:1.2rem 1.35rem;background:var(--tarjeta)}
+  .vacio{border:1px solid var(--menta-borde);border-radius:10px;padding:1.3rem 1.5rem;background:var(--menta)}
   .senales{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:.75rem}
   .senales li{display:flex;flex-direction:column;gap:.1rem;padding-left:.9rem;
     border-left:2px solid var(--borde)}
@@ -530,24 +596,41 @@ const html = `<html lang="es">
      recibia la persona no se parecia al que habia visto. Lo unico que se quita
      es el indice —en papel no se puede pulsar— y la banda de aviso. */
   @media print{
-    @page{size:A4 portrait;margin:14mm}
+    @page{size:A4 portrait;margin:16mm 15mm 15mm}
     /* Sin esto el navegador descarta TODOS los fondos y colores al imprimir, y
        las barras de puntuacion salen en blanco: justo lo que hay que ver. */
     *{-webkit-print-color-adjust:exact !important;print-color-adjust:exact !important}
     /* En papel se imprime siempre la version clara, mande lo que mande el
        sistema: un informe en modo oscuro gasta tinta y se lee peor. */
     :root, :root[data-theme="dark"]{
-      --ground:#F7F2EB; --tarjeta:#FFFFFF; --ink:#1F2A25; --ink-soft:#5E6B64;
-      --borde:#E0D9D0; --track:#E7E0D6; --titulo:#1A4A3A; --verde-medio:#2D6B57;
-      --naranja-claro:#FDF0E4;
+      --ground:#FFFFFF; --tarjeta:#FFFDFC; --ink:#292927; --ink-soft:#6F6B65;
+      --borde:#DDD8CE; --track:#E9E4DA; --titulo:#27624F; --verde:#27624F;
+      --verde-medio:#5F927D; --menta:#E8F0EC; --menta-borde:#D3E2DA;
+      --dorado:#D8B34D; --naranja:#F29A4A; --naranja-claro:#FDF0E4;
     }
-    body{background:var(--ground);font-size:10.5pt}
+    body{background:#FFFFFF;font-size:10.4pt;line-height:1.55}
     .maqueta,.indice{display:none}
-    .hoja{max-width:none;padding:0;gap:1.5rem}
-    .seccion,.dominio,.lectura,.paso,.fuentes li{break-inside:avoid}
-    h2,h3,h4{break-after:avoid}
+    .hoja{max-width:none;padding:0}
+    .cuerpo{gap:1.5rem}
+    /* Aquí la tabla vuelve a ser tabla, y con ella los dos cintillos repetidos. */
+    .papel{display:table;width:100%}
+    .papel__cab{display:table-header-group}
+    .papel__pie{display:table-footer-group}
+    .papel tbody{display:table-row-group}
+    .papel tr{display:table-row}
+    .papel td{display:table-cell}
+    .papel__cab td{padding-bottom:5mm}
+    .papel__pie td{padding-top:5mm}
+    /* Nada de lo que se lee como una pieza entera se parte entre dos páginas:
+       ni una tarjeta, ni un gráfico, ni el bloque de un dominio. */
+    .seccion,.dominio,.lectura,.paso,.fuentes li,.barras,.imagen,.aviso,
+    .vacio,.titular,.firma,.senales li{break-inside:avoid}
+    /* Un título al final de una página, con su texto en la siguiente, deja al
+       lector con el encabezado colgando. */
+    h2,h3,h4,.eyebrow{break-after:avoid}
+    p{orphans:3;widows:3}
     /* Las sombras se convierten en manchas grises en papel. */
-    .dominio,.lectura,.paso,.bloque{box-shadow:none}
+    .dominio,.lectura,.paso,.bloque,.indice,.vacio{box-shadow:none}
     a{text-decoration:none;color:inherit}
   }
   @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
@@ -556,6 +639,20 @@ const html = `<html lang="es">
 ${opciones.aviso ? '<div class="maqueta">' + esc(opciones.aviso) + "</div>" : conProsa ? "" : '<div class="maqueta">Informe sin la capa de redacción · los pasajes que escribe Claude van marcados como pendientes</div>'}
 
 <div class="hoja">
+<table class="papel"><thead class="papel__cab"><tr><td>
+  <div class="cintillo">
+    <span class="cintillo__marca">Identify <i>by Impausa</i></span>
+    <span>Informe individual · BFI-2</span>
+  </div>
+</td></tr></thead>
+<tfoot class="papel__pie"><tr><td>
+  <div class="cintillo cintillo--pie">
+    <span>${esc(opciones.marca?.correo ?? "")} · ${esc(opciones.marca?.web ?? "")}</span>
+    <span>${esc(opciones.marca?.copyright ?? "")}</span>
+  </div>
+</td></tr></tfoot>
+<tbody><tr><td>
+<div class="cuerpo">
 
   ${cabeceraDeMarca(opciones.marca)}
 
@@ -755,6 +852,8 @@ ${
 
   ${cierreDeMarca(opciones.marca)}
 
+</div>
+</td></tr></tbody></table>
 </div>
 `;
 
