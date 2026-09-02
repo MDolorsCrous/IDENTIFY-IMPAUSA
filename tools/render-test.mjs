@@ -165,6 +165,9 @@ const html = `<title>Test Identify</title>
   .acciones{display:flex;gap:.8rem;flex-wrap:wrap}
   .boton--claro{background:var(--tarjeta);color:var(--ink);border:1px solid var(--borde)}
 
+  /* Aviso del fichero local: se parece al web pero no puede redactar solo */
+  .nota--local{background:var(--tarjeta);border-left-color:var(--verde-medio);margin-bottom:1rem}
+
   /* La puerta. El código lo valida el servidor, no esta página */
   .puerta{display:flex;flex-direction:column;gap:.2rem;align-items:center;width:100%;max-width:22rem}
   .puerta .campo{margin-bottom:.1rem;text-align:center;align-items:center}
@@ -480,6 +483,18 @@ function resultados(){
         <div class="bloque">
           <h3>Tu informe</h3>
           <p class="bloque__sub">Con estas mismas puntuaciones, ahora interpretadas.</p>
+          \${
+            HAY_SERVIDOR
+              ? ""
+              : \`<div class="nota nota--local">
+                   <p><b>Este fichero no puede redactar el informe solo.</b> Está abierto desde
+                   tu ordenador, y un fichero suelto no puede llevar dentro la clave de la API:
+                   quedaría a la vista de cualquiera que lo abriese.</p>
+                   <p>Aquí sale el informe con todo lo que calcula el código y los pasajes de
+                   coaching marcados como pendientes; luego puedes copiar el encargo y pegar la
+                   redacción. <b>Para que se redacte solo de un clic, ábrelo en la web.</b></p>
+                 </div>\`
+          }
           <label class="campo">Tu nombre <span>(opcional, sale en la portada)</span>
             <input id="persona" type="text" autocomplete="name" placeholder="Marta">
           </label>

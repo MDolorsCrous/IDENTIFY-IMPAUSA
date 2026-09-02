@@ -158,3 +158,16 @@ test("la puerta pregunta el código al servidor, nunca lo lleva dentro", () => {
     assert.ok(!pagina.includes(prohibido), `la página lleva «${prohibido}»`);
   }
 });
+
+test("el fichero local dice por qué no puede redactar solo", () => {
+  // El fichero local y la web se parecen tanto que es fácil probar uno creyendo
+  // que estás en el otro: sin puerta, sin botón de generar y con el informe
+  // pendiente, todo parece roto cuando en realidad está funcionando como debe.
+  // Nos costó una tarde averiguarlo. Este aviso es para que no vuelva a pasar.
+  const pagina = readFileSync(join(raiz, "test-identify.html"), "utf8");
+  assert.ok(
+    pagina.includes("Este fichero no puede redactar el informe solo"),
+    "falta el aviso que distingue el fichero local de la web",
+  );
+  assert.ok(pagina.includes("ábrelo en la web"), "el aviso no dice a dónde ir");
+});
