@@ -8,6 +8,8 @@ import { score, type Responses } from "../src/services/scoring.ts";
 import { bands, interpret, type Norm, type Rule } from "../src/services/interpretation.ts";
 import { buildReport, type Labels } from "../src/services/report.ts";
 import { construirModelo } from "../src/services/pipeline.ts";
+import { renderInforme } from "../src/services/render-informe.js";
+import { cargarRecursos } from "../tools/recursos.mjs";
 
 const raiz = join(dirname(fileURLToPath(import.meta.url)), "..");
 const leer = (rel: string) => JSON.parse(readFileSync(join(raiz, rel), "utf8"));
@@ -140,4 +142,29 @@ test("las señales nunca se cuelan entre las reglas disparadas", () => {
     assert.ok(!disparadas.has(m.rule.id), `${m.rule.id} está en los dos sitios`);
     assert.equal(m.unmet.length, 1);
   }
+});
+
+test("las señales las escribe el código, y nunca las da por ciertas", () => {
+  // Era el apartado donde más fácil resultaba afirmar como hecho una combinación
+  // que NO se ha cumplido. Escrito por el código, no puede pasar: se dice cuántas
+  // son, qué facetas las dejan fuera, y que no describen el perfil de hoy.
+  const recursos = cargarRecursos();
+  const respuestasEjemplo = Object.fromEntries(
+    Object.entries(fixture.responses).map(([k, v]) => [Number(k), v]),
+  ) as Responses;
+  const modelo = construirModelo(respuestasEjemplo, recursos, {});
+  const html = renderInforme(modelo, {}, recursos.labels, {
+    facetas: recursos.facetas,
+    metaforas: recursos.metaforas,
+    fuentes: recursos.fuentes,
+    fecha: "1 de enero de 2026",
+  });
+  const seccion = html.slice(html.indexOf('id="senales"'), html.indexOf("</section>", html.indexOf('id="senales"')));
+
+  assert.ok(!seccion.includes("Pendiente de redacción"), "las señales siguen esperando a Claude");
+  assert.ok(seccion.includes("no describen tu perfil de hoy"), "no se dice que no describen el perfil");
+  assert.ok(
+    seccion.includes(`${modelo.nearMisses.length} combinaciones se quedan`),
+    "no se dice cuántas se quedan cerca",
+  );
 });

@@ -42,6 +42,34 @@ const hueco = (que) =>
   `<p class="pendiente"><b>Pendiente de redacción</b> — ${esc(que)}. Este pasaje lo escribe Claude a partir de las puntuaciones de arriba.</p>`;
 
 /**
+ * La entradilla de las señales, escrita por el codigo.
+ *
+ * La escribia Claude, y era pagar por poner en prosa una lista que el motor ya
+ * tiene: que reglas se han quedado a una condicion, cual les falta y en que
+ * banda esta. Ademas es el apartado donde mas facil seria afirmar como hecho una
+ * combinacion que NO se ha cumplido; escrito por el codigo, eso no puede pasar.
+ */
+function introSenales(modelo, labels) {
+  const n = modelo.nearMisses.length;
+  if (!n) {
+    return `<p>Ninguna de las 26 combinaciones se queda cerca de cumplirse en tu perfil.
+      No hay nada en esta sección, y es una respuesta tan válida como cualquier otra.</p>`;
+  }
+  const cuantas = n === 1 ? "Una combinación se queda" : `${n} combinaciones se quedan`;
+  const faltan = new Set(modelo.nearMisses.flatMap((m) => m.unmet.map((u) => u.condition.facet)));
+  const nombres = [...faltan].map((id) => esc((labels.facets?.[id] ?? id).toLowerCase()));
+  const cuales =
+    nombres.length === 1
+      ? `Todas dependen de una sola faceta: <b>${nombres[0]}</b>.`
+      : `Las facetas que las dejan fuera son ${nombres.slice(0, -1).map((x) => `<b>${x}</b>`).join(", ")} y <b>${nombres.at(-1)}</b>.`;
+
+  return `<p>${cuantas} <b>a una sola condición</b> de cumplirse. ${cuales}</p>
+    <p>Por eso van en condicional y sin cita: <b>no describen tu perfil de hoy</b>. Lo que
+    señalan es por dónde se movería si una pieza cambiara — que es justo el tipo de cosa
+    que conviene mirar en una conversación de coaching.</p>`;
+}
+
+/**
  * La bibliografia, al final del informe.
  *
  * Sale de src/config/fuentes.json, no de aqui: cada referencia esta verificada
@@ -502,7 +530,7 @@ ${opciones.aviso ? '<div class="maqueta">' + esc(opciones.aviso) + "</div>" : co
   <section class="seccion" id="senales">
     <p class="eyebrow">Cerca, pero no</p>
     <h2>Señales de atención</h2>
-    ${prosa.senales ? "<p>" + esc(prosa.senales) + "</p>" : hueco("la introducción a las señales")}
+    ${introSenales(modelo, labels)}
     <ul class="senales">${senalesHtml}</ul>
   </section>
 

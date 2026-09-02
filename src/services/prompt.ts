@@ -57,9 +57,25 @@ QUÉ PUEDES AFIRMAR
   citar su referencia.
 - Cualquier otra cosa: pregunta o condicional. Nunca afirmación.
 
-LAS SEÑALES SON CONDICIONALES
-Las reglas «casi cumplidas» no describen a la persona: les falta una condición.
-Escríbelas en condicional («si además…») y no las cites.
+LOS DOMINIOS: DI LO QUE LAS FICHAS NO PUEDEN DECIR
+Debajo de cada texto tuyo, el informe imprime la lectura de cada faceta tal como
+viene de la base de conocimiento, con su cita. **No la repitas ni la
+parafrasees**: quedaría dos veces y casi con las mismas palabras.
+
+Tu párrafo dice lo que esas fichas no pueden decir, porque cada una está escrita
+sin saber nada de las otras dos:
+- qué significa que estas tres facetas concretas estén repartidas así
+- cuál se separa de las demás, y qué noticia trae eso
+- qué orden de prioridad se deriva para esta persona
+
+Nombra las puntuaciones cuando ayuden a situarse, pero no vuelvas a explicar qué
+es cada faceta ni qué implica su nivel: eso ya está escrito justo debajo.
+
+LAS SEÑALES NO LAS ESCRIBES TÚ
+Las reglas «casi cumplidas» las redacta el código, que sabe exactamente cuál
+falta y en qué banda está. Tú no tienes que mencionarlas en ninguna sección, y
+sobre todo **no las afirmes**: les falta una condición, así que no describen a
+esta persona.
 
 SI HAY MATERIAL DELICADO
 Cuando una regla venga marcada como clínica, no la dejes como veredicto: di qué
@@ -91,7 +107,8 @@ suele ser estructura externa, no más esfuerzo.
 LONGITUDES
 - titular: una línea, menos de 80 caracteres
 - perfilEnUnaFrase: 120-150 palabras
-- cada dominio: 150-200 palabras
+- cada dominio: 80-110 palabras. Son cortos a propósito: la descripción de cada
+  faceta ya la pone el informe debajo
 - enElTrabajo: 200-250 palabras
 - preguntas: entre 5 y 7, una línea cada una
 - planAccion: exactamente 3 pasos, unas 60 palabras cada uno
@@ -186,7 +203,7 @@ export function pasosDelPlan(plan: unknown): unknown[] {
 
 /** El esqueleto de la respuesta. Una clave por sección, nada de prosa libre. */
 export function esquemaSalida(modelo: ReportModel): object {
-  const dominios = Object.fromEntries(modelo.domains.map((d) => [d.id, TEXTO(1600)]));
+  const dominios = Object.fromEntries(modelo.domains.map((d) => [d.id, TEXTO(900)]));
   return {
     type: "object",
     additionalProperties: false,
@@ -194,7 +211,6 @@ export function esquemaSalida(modelo: ReportModel): object {
       "titular",
       "perfilEnUnaFrase",
       "dominios",
-      "senales",
       "enElTrabajo",
       "preguntas",
       "planAccion",
@@ -209,7 +225,6 @@ export function esquemaSalida(modelo: ReportModel): object {
         required: modelo.domains.map((d) => d.id),
         properties: dominios,
       },
-      senales: TEXTO(600),
       enElTrabajo: TEXTO(2000),
       preguntas: { type: "array", minItems: 5, maxItems: 7, items: TEXTO(200) },
       // Tres pasos con nombre, no una lista de tres.
@@ -392,7 +407,7 @@ export function validarProsa(prosa: unknown, modelo: ReportModel): string[] {
   const p = prosa as Record<string, unknown>;
   if (!p || typeof p !== "object") return ["La respuesta no es un objeto."];
 
-  for (const clave of ["titular", "perfilEnUnaFrase", "senales", "enElTrabajo", "conclusion"]) {
+  for (const clave of ["titular", "perfilEnUnaFrase", "enElTrabajo", "conclusion"]) {
     if (typeof p[clave] !== "string" || !(p[clave] as string).trim()) fallos.push(`falta «${clave}»`);
   }
   const dominios = p.dominios as Record<string, unknown> | undefined;
@@ -422,7 +437,9 @@ const LONGITUDES: Record<string, [number, number]> = {
   perfilEnUnaFrase: [120, 150],
   enElTrabajo: [200, 250],
   conclusion: [80, 120],
-  dominio: [150, 200],
+  // Cortos a propósito: la lectura de cada faceta la imprime el informe justo
+  // debajo, así que este párrafo solo dice lo que esas fichas no pueden decir.
+  dominio: [80, 110],
 };
 
 const palabras = (s: string) => s.trim().split(/\s+/).length;
