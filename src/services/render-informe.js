@@ -42,6 +42,25 @@ const hueco = (que) =>
   `<p class="pendiente"><b>Pendiente de redacción</b> — ${esc(que)}. Este pasaje lo escribe Claude a partir de las puntuaciones de arriba.</p>`;
 
 /**
+ * Un pasaje de Claude, partido en parrafos.
+ *
+ * Los textos largos llegan con una linea en blanco donde cambia la idea, y aqui
+ * se convierte en un parrafo de verdad. Doscientas palabras en un solo bloque se
+ * leen mal por bien escritas que esten: el ojo no encuentra donde descansar.
+ *
+ * Una redaccion antigua, sin lineas en blanco, sale como un solo parrafo y no se
+ * rompe nada.
+ */
+function parrafos(texto) {
+  return String(texto)
+    .split(/\n\s*\n/)
+    .map((p) => p.trim())
+    .filter(Boolean)
+    .map((p) => `<p>${esc(p)}</p>`)
+    .join("\n      ");
+}
+
+/**
  * La entradilla de las señales, escrita por el codigo.
  *
  * La escribia Claude, y era pagar por poner en prosa una lista que el motor ya
@@ -259,7 +278,7 @@ export function renderInforme(modelo, prosa = {}, labels, opciones = {}) {
       ${escala}
       ${lineaDatos(d)}
       ${lecturasFacetas(d, facetas)}
-      ${texto ? `<p>${esc(texto)}</p>` : hueco("la lectura conjunta de este dominio")}
+      ${texto ? parrafos(texto) : hueco("la lectura conjunta de este dominio")}
       ${nota ? `<p class="nota">${esc(nota)}</p>` : ""}
     </section>`;
     })
@@ -339,7 +358,7 @@ const html = `<html lang="es">
      que tiene palabras largas; con partición, el borde derecho queda recto y el
      texto sigue respirando. El atributo lang del html es lo que le dice al
      navegador con qué reglas partir. */
-  p{margin:0 0 .95rem;max-width:64ch;text-align:justify;hyphens:auto;
+  p{margin:0 0 .95rem;text-align:justify;hyphens:auto;
     -webkit-hyphens:auto;hyphenate-limit-chars:7 3 3}
   /* Lo que nunca se justifica: listas de datos, pies y cabeceras cortas, donde
      el justificado solo produce huecos. */
@@ -619,7 +638,7 @@ ${opciones.aviso ? '<div class="maqueta">' + esc(opciones.aviso) + "</div>" : co
   <section class="seccion" id="resumen">
     <p class="eyebrow">Resumen del perfil</p>
     ${prosa.titular ? '<p class="titular">' + esc(prosa.titular) + "</p>" : ""}
-    ${prosa.perfilEnUnaFrase ? "<p>" + esc(prosa.perfilEnUnaFrase) + "</p>" : hueco("el resumen del perfil en un párrafo")}
+    ${prosa.perfilEnUnaFrase ? parrafos(prosa.perfilEnUnaFrase) : hueco("el resumen del perfil")}
   </section>
 
   <section class="seccion" id="vistazo">
@@ -660,7 +679,7 @@ ${opciones.aviso ? '<div class="maqueta">' + esc(opciones.aviso) + "</div>" : co
   <section class="seccion" id="trabajo">
     <p class="eyebrow">Aplicación</p>
     <h2>En el trabajo</h2>
-    ${prosa.enElTrabajo ? "<p>" + esc(prosa.enElTrabajo) + "</p>" : hueco("la lectura en clave laboral")}
+    ${prosa.enElTrabajo ? parrafos(prosa.enElTrabajo) : hueco("la lectura en clave laboral")}
   </section>
 
   <section class="seccion" id="preguntas">
@@ -717,7 +736,7 @@ ${
   <section class="seccion" id="conclusiones">
     <p class="eyebrow">Para cerrar</p>
     <h2>Conclusiones</h2>
-    ${prosa.conclusion ? "<p>" + esc(prosa.conclusion) + "</p>" : hueco("las conclusiones")}
+    ${prosa.conclusion ? parrafos(prosa.conclusion) : hueco("las conclusiones")}
   </section>
 
   <footer class="pie" id="fuentes">

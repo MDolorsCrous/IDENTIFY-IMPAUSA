@@ -104,6 +104,17 @@ Y una regla que viene de ahí: **no recetes el rasgo que falta**. Decirle a quie
 tiene la organización baja que se organice más no funciona casi nunca; la palanca
 suele ser estructura externa, no más esfuerzo.
 
+PUNTO Y APARTE
+Los pasajes largos van en varios párrafos, separados por una línea en blanco
+dentro de la misma cadena. Doscientas palabras seguidas se leen mal por bien
+escritas que estén: el ojo no encuentra dónde descansar.
+
+Se parte donde cambia la idea, no cada tantas palabras:
+- perfilEnUnaFrase: 2 párrafos
+- enElTrabajo: 3 párrafos — lo que aporta, lo que cuesta, y qué hacer con ello
+- conclusion: 2 párrafos
+- cada dominio y cada paso del plan: uno solo, que ya son cortos
+
 LONGITUDES
 - titular: una línea, menos de 80 caracteres
 - perfilEnUnaFrase: 120-150 palabras

@@ -168,3 +168,33 @@ test("las señales las escribe el código, y nunca las da por ciertas", () => {
     "no se dice cuántas se quedan cerca",
   );
 });
+
+test("un pasaje largo se parte en párrafos", () => {
+  // Doscientas palabras en un solo bloque se leen mal por bien escritas que
+  // estén. Los textos llegan con una línea en blanco donde cambia la idea.
+  const recursos = cargarRecursos();
+  const respuestasEjemplo = Object.fromEntries(
+    Object.entries(fixture.responses).map(([k, v]) => [Number(k), v]),
+  ) as Responses;
+  const modelo = construirModelo(respuestasEjemplo, recursos, {});
+  const prosa = {
+    enElTrabajo: "Lo que aporta.\n\nLo que cuesta.\n\nQué hacer con ello.",
+    conclusion: "Un párrafo.\n\nY otro.",
+  };
+  const html = renderInforme(modelo, prosa as any, recursos.labels, {
+    facetas: recursos.facetas,
+    metaforas: recursos.metaforas,
+    fecha: "1 de enero de 2026",
+  });
+
+  const seccion = html.slice(html.indexOf('id="trabajo"'), html.indexOf("</section>", html.indexOf('id="trabajo"')));
+  assert.equal((seccion.match(/<p>/g) ?? []).length, 3, "el pasaje no se ha partido en tres");
+
+  // Y una redacción antigua, sin líneas en blanco, sigue saliendo entera.
+  const vieja = renderInforme(modelo, { conclusion: "Todo seguido, sin cortes." } as any, recursos.labels, {
+    facetas: recursos.facetas,
+    metaforas: recursos.metaforas,
+    fecha: "1 de enero de 2026",
+  });
+  assert.ok(vieja.includes("<p>Todo seguido, sin cortes.</p>"));
+});
