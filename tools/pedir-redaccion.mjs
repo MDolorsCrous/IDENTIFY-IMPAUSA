@@ -12,6 +12,17 @@ const MODELO = "claude-opus-5";
 /** $ por millon de tokens, para poder decir lo que ha costado cada informe. */
 const PRECIO = { entrada: 5, salida: 25 };
 
+/**
+ * Cuanto piensa el modelo antes de escribir.
+ *
+ * No es un detalle menor: en una medicion real, de 6.158 tokens de salida solo
+ * 3.046 eran texto — los otros 3.100 eran razonamiento. Esta perilla es la que
+ * los toca, y por eso se puede cambiar desde fuera: tools/comparar-esfuerzo.mjs
+ * genera el mismo perfil a los tres niveles para decidirlo leyendo, no
+ * estimando.
+ */
+const ESFUERZO = "high";
+
 const INTENTOS = 2;
 const ESPERA_ENTRE_INTENTOS = 5000;
 
@@ -46,7 +57,7 @@ export class FalloDeRedaccion extends Error {
  * @param {(aviso: string) => void} [avisar]  para dejar rastro de los reintentos
  * @returns {Promise<{prosa: object, uso: object, coste: number, modelo: string, segundos: number}>}
  */
-export async function pedirRedaccion(modelo, facetas, avisar = () => {}) {
+export async function pedirRedaccion(modelo, facetas, avisar = () => {}, esfuerzo = ESFUERZO) {
   const { sistema, mensaje, esquema } = encargoParaLaApi(modelo, facetas);
   const cliente = clienteDeApi();
   const empezo = Date.now();
@@ -68,7 +79,7 @@ export async function pedirRedaccion(modelo, facetas, avisar = () => {}) {
         thinking: { type: "adaptive", display: "summarized" },
         // El esquema no se pide en el texto: se impone. La respuesta no puede
         // salir con una seccion de menos.
-        output_config: { effort: "high", format: { type: "json_schema", schema: esquema } },
+        output_config: { effort: esfuerzo, format: { type: "json_schema", schema: esquema } },
         // Si un clasificador declinara la peticion, se reintenta sola en otro
         // modelo. Un informe habla de ansiedad y de animo bajo: no es imposible.
         betas: ["server-side-fallback-2026-07-01"],
