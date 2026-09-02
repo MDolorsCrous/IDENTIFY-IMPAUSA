@@ -122,3 +122,18 @@ test("la página web pide la redacción al servidor, y le manda las respuestas",
     assert.ok(!pagina.includes(prohibido), `la página lleva «${prohibido}»`);
   }
 });
+
+test("la portada ofrece los tres idiomas y explica los dos que faltan", () => {
+  // Este texto es la política del proyecto, no decoración: dice por qué el test
+  // no está en catalán —no hay adaptación oficial del BFI-2— y por qué eso es
+  // una decisión de rigor. Si desaparece, la herramienta vuelve a parecer
+  // descuidada en vez de honesta.
+  const pagina = readFileSync(join(raiz, "test-identify.html"), "utf8");
+  for (const idioma of [">ES<", ">CA<", ">EN<"]) {
+    assert.ok(pagina.includes(idioma), `falta ${idioma} en el selector`);
+  }
+  assert.ok(pagina.includes("Per què aquest test no és en català"), "falta la explicación en catalán");
+  assert.ok(pagina.includes("no n'hi ha"), "la explicación ya no dice que no existe adaptación");
+  assert.ok(pagina.includes("English is on the way"), "falta la explicación en inglés");
+  assert.ok(pagina.includes("<dialog"), "las explicaciones no se abren en un panel");
+});

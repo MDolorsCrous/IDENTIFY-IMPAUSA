@@ -61,7 +61,7 @@ interpretación, que todavía no existe — ver [`../docs/02-modelo-interpretaci
 npm test
 ```
 
-96 pruebas, sin instalar nada: Node 22.6+ ejecuta TypeScript directamente.
+100 pruebas, sin instalar nada: Node 22.6+ ejecuta TypeScript directamente.
 
 La que importa es la que compara contra el Excel oficial. El fichero
 `BFI-2_formules_correctes_inversos.xlsx` trae un juego de respuestas de ejemplo con
@@ -94,6 +94,13 @@ que escribir un motor nuevo.
 - **`i18n/ca.json`.** No existe el fichero oficial del BFI-2 en catalán. Traducir un
   instrumento estandarizado por nuestra cuenta invalidaría la comparación con los
   datos publicados, así que hace falta la versión oficial.
+
+  **Esto ya no es un hueco silencioso.** La portada del test lleva un selector
+  `ES · CA · EN` que, en vez de cambiar de idioma, explica la situación de cada uno:
+  el catalán no tiene adaptación oficial, y el inglés es el original y está por
+  hacer. Los textos viven en `IDIOMAS`, en `tools/render-test.mjs`, y
+  `tests/empaquetado.test.ts` comprueba que no desaparezcan: son la política del
+  proyecto, no decoración.
 
 La polaridad de los 60 ítems **ya está verificada** contra la clave de corrección
 oficial del PDF, y esa clave vive en `tests/clave-oficial.test.ts`.

@@ -164,6 +164,20 @@ const html = `<title>Test Identify</title>
     padding:.9rem 1.1rem;border-radius:0 4px 4px 0;font-size:.92rem}
   .acciones{display:flex;gap:.8rem;flex-wrap:wrap}
   .boton--claro{background:var(--tarjeta);color:var(--ink);border:1px solid var(--borde)}
+
+  /* Idiomas: no cambian la lengua, explican por qué el test está en una sola */
+  .idiomas{display:flex;gap:.15rem;align-items:center;font-size:.82rem;color:var(--ink-soft)}
+  .idioma{background:none;border:0;padding:.3rem .5rem;border-radius:4px;cursor:pointer;
+    color:var(--verde-medio);font-weight:600;letter-spacing:.04em}
+  .idioma:hover{background:var(--tarjeta)}
+  .idioma[aria-current="true"]{color:var(--ink-soft);cursor:default;font-weight:400}
+  .idioma[aria-current="true"]:hover{background:none}
+  .panel{border:1px solid var(--borde);border-radius:8px;background:var(--tarjeta);
+    color:var(--ink);max-width:34rem;padding:1.6rem 1.7rem;box-shadow:var(--sombra-alta)}
+  .panel::backdrop{background:rgba(15,32,26,.45)}
+  .panel h2{font-size:1.35rem;margin-bottom:.8rem;text-wrap:balance}
+  .panel p{margin:0 0 .8rem;text-align:left}
+  .panel p:last-of-type{margin-bottom:1.3rem}
   .campo{display:flex;flex-direction:column;gap:.3rem;font-size:.9rem;margin-bottom:1rem}
   .campo span{color:var(--ink-soft);font-weight:400}
   .campo input{font:inherit;color:inherit;background:var(--ground);border:1px solid var(--borde);
@@ -252,10 +266,62 @@ function portada(){
         <span class="dato">Se calcula en tu navegador</span>
       </div>
       <button class="boton" id="empezar">Empezar cuestionario</button>
+      <div class="idiomas">
+        <button class="idioma" aria-current="true">ES</button><span>·</span>
+        <button class="idioma" data-idioma="ca">CA</button><span>·</span>
+        <button class="idioma" data-idioma="en">EN</button>
+      </div>
       \${FALLOS.length ? '<div class="fallo">Aviso: la autocomprobación del cálculo no coincide en: ' + FALLOS.join(", ") + '. No uses estos resultados.</div>' : ""}
-    </div>\`;
+    </div>
+    <dialog class="panel" id="panelIdioma" aria-labelledby="panelIdiomaT">
+      <h2 id="panelIdiomaT"></h2>
+      <div id="panelIdiomaC"></div>
+      <button class="boton" id="panelIdiomaX"></button>
+    </dialog>\`;
   document.getElementById("empezar").onclick = () => { pantalla = "test"; pintar(); };
+  for (const b of document.querySelectorAll("[data-idioma]")) {
+    b.onclick = () => abrirPanelIdioma(b.dataset.idioma);
+  }
   ajustarRotulo();
+}
+
+// El selector no cambia de idioma: explica por qué el test está en uno solo.
+// Cada lengua tiene su situación y por eso no comparten texto — el catalán no
+// tiene adaptación oficial del BFI-2, y el inglés es el original y sí la tiene.
+// Cada explicación va escrita en su propia lengua, que es lo cortés.
+const IDIOMAS = {
+  ca: {
+    titulo: "Per què aquest test no és en català",
+    cerrar: "Entesos",
+    parrafos: [
+      "Identify funciona amb el BFI-2, un qüestionari validat científicament. La validació és el que fa que les teves puntuacions signifiquin alguna cosa: sense ella, cinc números no són res.",
+      "Del BFI-2 hi ha adaptació oficial al castellà, publicada i validada amb mostra espanyola (Gallardo-Pujol i altres, 2022). Al català, ara mateix, no n'hi ha.",
+      "Podríem traduir-lo nosaltres en una tarda. <strong>No ho fem a propòsit.</strong> Una traducció no validada canvia el que mesura cada pregunta sense que es noti, i els resultats deixarien de ser comparables amb les dades publicades. Tindries un test en català que sembla igual i val menys.",
+      "Preferim dir-t'ho que dissimular-ho.",
+      "El qüestionari, doncs, en castellà. La conversa amb la teva coach, en català sempre que vulguis.",
+    ],
+  },
+  en: {
+    titulo: "English is on the way",
+    cerrar: "Got it",
+    parrafos: [
+      "Identify is built on the BFI-2, which was written in English to begin with (Soto &amp; John, 2017). So English isn't a translation problem: the original items exist and are the reference version everything else is measured against.",
+      "What's missing is our side of the work — the interface, and the layer that turns your scores into a report.",
+      "Until that's ready, the questionnaire runs in Spanish.",
+    ],
+  },
+};
+
+function abrirPanelIdioma(cual){
+  const t = IDIOMAS[cual];
+  if (!t) return;
+  const panel = document.getElementById("panelIdioma");
+  document.getElementById("panelIdiomaT").textContent = t.titulo;
+  document.getElementById("panelIdiomaC").innerHTML = t.parrafos.map(p => "<p>" + p + "</p>").join("");
+  const cerrar = document.getElementById("panelIdiomaX");
+  cerrar.textContent = t.cerrar;
+  cerrar.onclick = () => panel.close();
+  panel.showModal();
 }
 
 function pregunta(){
