@@ -150,7 +150,7 @@ function cierreDeMarca(marca) {
       <a href="https://${esc(web)}">${esc(web)}</a>
     </p>
     <p class="firma__copy">${esc(copyright)}</p>
-    <p class="firma__copy">${esc(producto)} es una herramienta de IMPAUSA POWER, S.L.</p>
+    <p class="firma__copy firma__quien">${esc(producto)} es una herramienta de IMPAUSA POWER, S.L.</p>
   </footer>`;
 }
 
@@ -407,13 +407,13 @@ ${tipografias(opciones.marca)}
   .cintillo__contacto{text-transform:none;letter-spacing:0;font-size:8pt}
   .cintillo__contacto a{color:inherit;text-decoration:none;
     border-bottom:1px solid var(--borde)}
-  /* Justificado, con partición de palabras.
-     Sin partición, el justificado abre huecos enormes entre palabras en español,
-     que tiene palabras largas; con partición, el borde derecho queda recto y el
-     texto sigue respirando. El atributo lang del html es lo que le dice al
-     navegador con qué reglas partir. */
-  p{margin:0 0 .95rem;text-align:justify;hyphens:auto;
-    -webkit-hyphens:auto;hyphenate-limit-chars:7 3 3}
+  /* Justificado, pero sin partir palabras.
+     La partición automática dejaba cortes feos —cons-tante, téc-nicos,
+     regis-trar— que en un informe que se entrega a alguien cantan mucho. Se
+     quita, y el hueco que abre el justificado se compensa con text-wrap:pretty,
+     que reparte mejor las líneas y evita las últimas líneas de una palabra. */
+  p,li{hyphens:none;-webkit-hyphens:none;word-break:normal;overflow-wrap:normal}
+  p{margin:0 0 .95rem;text-align:justify;text-wrap:pretty}
   /* Lo que nunca se justifica: listas de datos, pies y cabeceras cortas, donde
      el justificado solo produce huecos. */
   .lectura__ref,.fuentes__papel,.senal__falta,.escala span,.fila__dato{text-align:left}
@@ -509,7 +509,11 @@ ${tipografias(opciones.marca)}
   .escala__eje{display:flex;justify-content:space-between}
   .escala__hueco{min-width:4.6rem}
 
-  .dominio{border-top:1px solid var(--borde);padding-top:1.4rem;margin-top:1.9rem;break-inside:avoid}
+  /* Un dominio NO lleva break-inside:avoid. Ocupa media página larga, y pedir
+     que no se parta obliga al navegador a empujarlo entero a la hoja siguiente
+     cada vez que no cabe: de ahí salían las páginas que acababan al 15 %. Lo que
+     no se puede partir son sus piezas —el gráfico, cada faceta—, no el bloque. */
+  .dominio{border-top:1px solid var(--borde);padding-top:1.4rem;margin-top:1.9rem}
   .dominio:first-of-type{border-top:0;padding-top:0;margin-top:.6rem}
   .dominio__cab{display:flex;align-items:baseline;gap:.6rem;margin-bottom:.5rem;flex-wrap:wrap}
   .dominio__dato{margin-left:auto;font-variant-numeric:tabular-nums;font-size:.95rem}
@@ -602,7 +606,7 @@ ${tipografias(opciones.marca)}
      recibia la persona no se parecia al que habia visto. Lo unico que se quita
      es el indice —en papel no se puede pulsar— y la banda de aviso. */
   @media print{
-    @page{size:A4 portrait;margin:16mm 15mm 15mm}
+    @page{size:A4 portrait;margin:15mm 16mm 17mm}
     /* Sin esto el navegador descarta TODOS los fondos y colores al imprimir, y
        las barras de puntuacion salen en blanco: justo lo que hay que ver. */
     *{-webkit-print-color-adjust:exact !important;print-color-adjust:exact !important}
@@ -627,17 +631,30 @@ ${tipografias(opciones.marca)}
     .papel td{display:table-cell}
     .papel__cab td{padding-bottom:5mm}
     .papel__pie td{padding-top:5mm}
-    /* Nada de lo que se lee como una pieza entera se parte entre dos páginas:
-       ni una tarjeta, ni un gráfico, ni el bloque de un dominio. */
-    .seccion,.dominio,.lectura,.paso,.fuentes li,.barras,.imagen,.aviso,
-    .vacio,.titular,.firma,.senales li{break-inside:avoid}
-    /* Un título al final de una página, con su texto en la siguiente, deja al
-       lector con el encabezado colgando. */
-    h2,h3,h4,.eyebrow{break-after:avoid}
-    p{orphans:3;widows:3}
+    /* Qué NO se puede partir: solo las piezas que se leen de una vez. Un gráfico
+       cortado por la mitad no se entiende, una tarjeta partida tampoco.
+       Una sección entera sí se puede partir, y tiene que poder: es la diferencia
+       entre un documento que fluye y uno lleno de páginas a medias. */
+    .barras,.escala,.lectura,.paso,.imagen,.aviso,.vacio,.titular,
+    .fuentes li,.senales li,.preguntas li,.firma{break-inside:avoid}
+    /* Y qué tiene que seguir junto a lo que viene detrás. Un título al final de
+       una página, con su texto en la siguiente, deja el encabezado colgando; un
+       gráfico separado de su escala se queda sin las cifras que lo explican. */
+    h2,h3,h4,.eyebrow,.dominio__cab,.barras,.lectura__cab,.lectura__def{break-after:avoid}
+    .escala{break-before:avoid}
+    p,li{orphans:3;widows:3}
     /* Las sombras se convierten en manchas grises en papel. */
     .dominio,.lectura,.paso,.bloque,.indice,.vacio{box-shadow:none}
     a{text-decoration:none;color:inherit}
+    /* El contacto y el copyright ya van en el pie de cada página. Repetirlos en
+       el cierre sería decir lo mismo dos veces en la misma hoja. En pantalla no
+       hay pie, así que allí el cierre los mantiene. */
+    .firma__linea,.firma__copy:not(.firma__quien){display:none}
+    .firma{margin-top:1.4rem;padding-top:1.2rem}
+    /* La bibliografía, algo más apretada: son entradas cortas y muy seguidas, y
+       el aire que va bien en un párrafo aquí solo estira la página. */
+    .fuentes{line-height:1.32}
+    .fuentes li{margin-bottom:.42rem}
   }
   @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>

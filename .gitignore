@@ -36,3 +36,8 @@ datos/*.prompt.md
 # el paquete de la skill se regenera con tools/gen-skill.mjs
 # (la carpeta skill/ SI se versiona: es texto y sus diffs se leen)
 skill/*.skill
+
+# la vista de contacto se regenera con tools/contacto-pdf.mjs
+vista-contacto.html
+vista-papel.html
+_v.pdf

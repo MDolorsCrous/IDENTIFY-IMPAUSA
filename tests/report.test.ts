@@ -259,3 +259,38 @@ test("la cabecera y el pie de página impresos se repiten", () => {
   assert.ok(pie.includes(`href="https://${recursos.marca.web}"`), "el web no es un enlace");
   assert.ok(html.includes(".cintillo__contacto{text-transform:none"), "el contacto sale en mayúsculas");
 });
+
+test("solo las piezas indivisibles se blindan contra el salto de página", () => {
+  // Un `break-inside: avoid` sobre una sección o un dominio entero obliga al
+  // navegador a empujar el bloque completo a la hoja siguiente en cuanto no
+  // cabe, y deja la anterior acabada al 15 %. Se blindan las piezas que se leen
+  // de una vez —un gráfico, una tarjeta, una referencia—, nunca los contenedores
+  // grandes. Esto se rompió una vez y costó dos páginas de blanco.
+  const recursos = cargarRecursos();
+  const respuestasEjemplo = Object.fromEntries(
+    Object.entries(fixture.responses).map(([k, v]) => [Number(k), v]),
+  ) as Responses;
+  const modelo = construirModelo(respuestasEjemplo, recursos, {});
+  const html = renderInforme(modelo, {} as any, recursos.labels, {
+    facetas: recursos.facetas,
+    metaforas: recursos.metaforas,
+    fuentes: recursos.fuentes,
+    marca: recursos.marca,
+    fecha: "1 de enero de 2026",
+  });
+
+  // El selector capturado arrastra el comentario que lo precede: fuera.
+  const bloques = [...html.matchAll(/([^{}]+)\{[^{}]*break-inside:\s*avoid[^{}]*\}/g)].map((m) =>
+    m[1].replace(/\/\*[\s\S]*?\*\//g, " ").replace(/\s+/g, " ").trim(),
+  );
+  const selectores = bloques.flatMap((r) => r.split(",").map((s) => s.trim()));
+  for (const grande of [".seccion", ".dominio", ".cuerpo", ".hoja", "section", ".preguntas", ".fuentes"]) {
+    assert.ok(!selectores.includes(grande), `${grande} no puede llevar break-inside: avoid`);
+  }
+  for (const pieza of [".barras", ".lectura", ".paso", ".imagen", ".fuentes li"]) {
+    assert.ok(selectores.includes(pieza), `${pieza} debería llevar break-inside: avoid`);
+  }
+
+  // Y nada de partir palabras: dejaba cortes como «cons-tante» o «téc-nicos».
+  assert.ok(!/hyphens:\s*auto/.test(html), "sigue partiendo palabras");
+});
