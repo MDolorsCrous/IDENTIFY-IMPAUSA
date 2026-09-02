@@ -70,6 +70,23 @@ function introSenales(modelo, labels) {
 }
 
 /**
+ * La cabecera de marca: la banda de color y el logotipo, arriba del todo.
+ *
+ * Misma composicion que los informes de Connect, para que los dos documentos de
+ * la casa se reconozcan como de la misma familia. El degradado es el del propio
+ * logotipo, el mismo que cierra el informe abajo.
+ */
+function cabeceraDeMarca(marca) {
+  if (!marca) return "";
+  return `
+  <header class="cabecera">
+    <div class="cabecera__banda" aria-hidden="true"></div>
+    <img class="cabecera__logo" src="${marca.logo.src}" alt="${esc(marca.logo.alt)}"
+      width="${marca.logo.ancho}" height="${marca.logo.alto}">
+  </header>`;
+}
+
+/**
  * El cierre de marca: logotipo, contacto y copyright.
  *
  * El logotipo va incrustado en base64 y no enlazado: el informe se manda por
@@ -336,6 +353,19 @@ const html = `<html lang="es">
   :focus-visible{outline:2px solid var(--naranja);outline-offset:3px;border-radius:2px}
 
   /* Portada — rotulo segun la norma de marca */
+  /* Cabecera de marca: la banda de color y el logotipo, arriba del todo.
+     Misma composición que los informes de Connect, para que los documentos de
+     la casa se reconozcan como de la misma familia. */
+  .cabecera{text-align:center;margin-bottom:.5rem}
+  .cabecera__banda{height:14px;border-radius:7px;margin-bottom:1.6rem;
+    background:linear-gradient(90deg,#EF8A4D 0%,#DFAE6B 33%,#B9BC72 66%,#7FAE79 100%)}
+  .cabecera__logo{width:340px;max-width:80%;height:auto;display:block;margin:0 auto}
+  @media print{
+    .cabecera{margin-bottom:0}
+    .cabecera__banda{height:10px;margin-bottom:1.1rem}
+    .cabecera__logo{width:260px}
+  }
+
   .portada{text-align:center;padding-block:clamp(.5rem,4vw,2.5rem) 0}
   .rotulo{font-family:"Playfair Display",Georgia,serif;font-weight:700;display:inline-block;
     font-size:clamp(3.2rem,14vw,5.5rem);line-height:.98;margin:0;color:var(--ink)}
@@ -458,10 +488,13 @@ const html = `<html lang="es">
     border-top:2px solid transparent;
     border-image:linear-gradient(90deg,#EF8A4D 0%,#DFAE6B 33%,#B9BC72 66%,#7FAE79 100%) 1}
   .firma__logo{width:320px;max-width:100%;height:auto;margin:0 auto 1.1rem;display:block}
-  /* Los párrafos del informe llevan un ancho máximo, y eso los dejaba más
-     estrechos que el bloque y pegados a la izquierda: el texto no cuadraba con
-     el eje del logotipo. Aquí ocupan todo el ancho y se centran de verdad. */
-  .firma p{max-width:none;text-align:center;hyphens:none}
+  /* Los párrafos del informe llevan un ancho máximo —una regla tipográfica: las
+     líneas muy largas se leen mal—, y eso los dejaba más estrechos que su bloque
+     y pegados a la izquierda. Centrar el texto dentro de una caja que ya está
+     desplazada no centra nada. Aquí ocupan todo el ancho y se centran de verdad.
+     Pasa en los dos sitios donde algo tiene que cuadrar con el eje del logotipo:
+     la cabecera de portada y la firma del final. */
+  .firma p,.portada p{max-width:none;text-align:center;hyphens:none}
   .firma__linea{margin:0 0 .5rem;font-size:.92rem}
   .firma__linea a{color:var(--verde-medio);text-decoration:none;font-weight:600}
   .firma__linea a:hover{text-decoration:underline}
@@ -504,6 +537,8 @@ const html = `<html lang="es">
 ${opciones.aviso ? '<div class="maqueta">' + esc(opciones.aviso) + "</div>" : conProsa ? "" : '<div class="maqueta">Informe sin la capa de redacción · los pasajes que escribe Claude van marcados como pendientes</div>'}
 
 <div class="hoja">
+
+  ${cabeceraDeMarca(opciones.marca)}
 
   <header class="portada">
     <h1 class="rotulo"><span id="rotulo-nombre">Identify</span><span class="rotulo__by" id="rotulo-by">by Impausa</span></h1>

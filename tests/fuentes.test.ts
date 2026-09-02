@@ -114,3 +114,26 @@ test("el informe se firma: logotipo, contacto y copyright", () => {
   assert.ok(html.includes('class="firma__logo" src="data:image/png;base64,'), "el logotipo no viaja dentro");
   assert.ok(!html.includes('firma__logo" src="http'), "el logotipo está enlazado en vez de incrustado");
 });
+
+test("el informe abre y cierra con la marca, y todo sobre el mismo eje", () => {
+  const recursos = cargarRecursos();
+  const respuestas = Object.fromEntries(
+    Object.entries(cargarEjemplo().responses).map(([k, v]) => [Number(k), v]),
+  );
+  const html = renderInforme(construirModelo(respuestas as any, recursos), {}, recursos.labels, {
+    facetas: recursos.facetas,
+    metaforas: recursos.metaforas,
+    fuentes: recursos.fuentes,
+    marca: recursos.marca,
+    fecha: "1 de enero de 2026",
+  });
+
+  // Cabecera: la banda de color y el logotipo, como en los informes de Connect.
+  assert.ok(html.includes('class="cabecera__banda"'), "falta la banda de la cabecera");
+  assert.ok(html.includes('class="cabecera__logo"'), "falta el logotipo de la cabecera");
+  assert.ok(html.indexOf('class="cabecera"') < html.indexOf('class="portada"'), "la cabecera no va primero");
+
+  // Y la regla que costó ver: los párrafos llevan un ancho máximo, así que en los
+  // bloques centrados hay que anularlo o el texto no cuadra con el eje del logo.
+  assert.ok(html.includes(".firma p,.portada p{max-width:none"), "el texto centrado volverá a irse a la izquierda");
+});
