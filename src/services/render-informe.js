@@ -285,7 +285,10 @@ const INDICE = [
   ["fuentes", "Fuentes y metodología"],
 ];
 
-const html = `<title>Informe Identify</title>
+// El <html lang> es lo que le dice al navegador con qué reglas partir las
+// palabras. Sin él, `hyphens:auto` no hace nada y el justificado abre huecos.
+const html = `<html lang="es">
+<title>Informe Identify</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,700&family=Source+Sans+3:ital,wght@0,400;0,600;1,400&display=swap">
@@ -314,7 +317,16 @@ const html = `<title>Informe Identify</title>
     -webkit-font-smoothing:antialiased}
   .hoja{max-width:44rem;margin:0 auto;padding:clamp(1.4rem,4vw,3rem) clamp(1.1rem,4vw,2rem) 5rem;
     display:flex;flex-direction:column;gap:3rem}
-  p{margin:0 0 .95rem;max-width:64ch}
+  /* Justificado, con partición de palabras.
+     Sin partición, el justificado abre huecos enormes entre palabras en español,
+     que tiene palabras largas; con partición, el borde derecho queda recto y el
+     texto sigue respirando. El atributo lang del html es lo que le dice al
+     navegador con qué reglas partir. */
+  p{margin:0 0 .95rem;max-width:64ch;text-align:justify;hyphens:auto;
+    -webkit-hyphens:auto;hyphenate-limit-chars:7 3 3}
+  /* Lo que nunca se justifica: listas de datos, pies y cabeceras cortas, donde
+     el justificado solo produce huecos. */
+  .lectura__ref,.fuentes__papel,.senal__falta,.escala span,.fila__dato{text-align:left}
   p:last-child{margin-bottom:0}
   h2,h3,h4{font-family:"Playfair Display",Georgia,serif;margin:0;text-wrap:balance;color:var(--titulo)}
   h2{font-size:clamp(1.55rem,4.3vw,2rem);font-weight:700;line-height:1.2}
@@ -445,7 +457,11 @@ const html = `<title>Informe Identify</title>
   .firma{margin-top:2.5rem;padding-top:2rem;text-align:center;
     border-top:2px solid transparent;
     border-image:linear-gradient(90deg,#EF8A4D 0%,#DFAE6B 33%,#B9BC72 66%,#7FAE79 100%) 1}
-  .firma__logo{width:160px;height:auto;margin:0 auto .9rem;display:block}
+  .firma__logo{width:320px;max-width:100%;height:auto;margin:0 auto 1.1rem;display:block}
+  /* Los párrafos del informe llevan un ancho máximo, y eso los dejaba más
+     estrechos que el bloque y pegados a la izquierda: el texto no cuadraba con
+     el eje del logotipo. Aquí ocupan todo el ancho y se centran de verdad. */
+  .firma p{max-width:none;text-align:center;hyphens:none}
   .firma__linea{margin:0 0 .5rem;font-size:.92rem}
   .firma__linea a{color:var(--verde-medio);text-decoration:none;font-weight:600}
   .firma__linea a:hover{text-decoration:underline}
