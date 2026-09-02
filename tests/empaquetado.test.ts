@@ -174,3 +174,18 @@ test("el fichero local dice por qué no puede redactar solo", () => {
   );
   assert.ok(pagina.includes("ábrelo en la web"), "el aviso no dice a dónde ir");
 });
+
+test("el informe se abre ya y la redacción arranca sola", () => {
+  // Antes había una pantalla de espera en blanco de más de un minuto. Ahora el
+  // informe se ve desde el primer segundo con todo lo que calcula el código, y
+  // los pasajes de coaching se rellenan cuando llegan.
+  const pagina = readFileSync(join(raiz, "test-identify.html"), "utf8");
+  assert.ok(pagina.includes("!conProsa && !yaPedida"), "la redacción no arranca sola");
+  assert.ok(
+    pagina.includes("Claude está redactando los pasajes de coaching"),
+    "no se avisa de que se está redactando",
+  );
+  // Y solo una vez: si se pidiera en cada dibujo, se pagaría varias veces.
+  assert.ok(pagina.includes("yaPedida = true"), "nada impide pedirla dos veces");
+  assert.ok(!pagina.includes("Redactando tu informe"), "queda la pantalla de espera vieja");
+});

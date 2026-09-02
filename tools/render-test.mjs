@@ -165,7 +165,11 @@ const html = `<title>Test Identify</title>
   .acciones{display:flex;gap:.8rem;flex-wrap:wrap}
   .boton--claro{background:var(--tarjeta);color:var(--ink);border:1px solid var(--borde)}
 
-  /* Mientras Claude escribe. Medio minuto en blanco parece que se ha colgado */
+  /* Mientras Claude escribe, con el informe ya delante */
+  .redactando{display:flex;align-items:center;gap:.6rem;font-size:.88rem;color:var(--ink-soft)}
+  .redactando .latido span{width:.45rem;height:.45rem}
+
+  /* Los puntitos. Un rato quieto parece que se ha colgado */
   .latido{display:flex;gap:.5rem}
   .latido span{width:.6rem;height:.6rem;border-radius:50%;background:var(--verde-medio);
     animation:latido 1.2s ease-in-out infinite}
@@ -262,6 +266,11 @@ let pantalla = "portada";
 let indice = 0;
 const respuestas = {};   // solo en memoria: no se guarda nada
 let persona = "";
+// Mientras Claude escribe, el informe ya se ve: se dibuja con todo lo que
+// calcula el codigo y los pasajes se rellenan cuando llegan. Un minuto mirando
+// una pantalla de espera es un minuto perdido; mirando tu propio informe, no.
+let redactando = false;
+let yaPedida = false;
 let prosa = {};          // la redaccion, si se pega
 const app = document.getElementById("app");
 // esc, num y pos ya vienen en el paquete del motor: no se redeclaran aqui,
@@ -270,7 +279,6 @@ const app = document.getElementById("app");
 function pintar(){
   if (pantalla === "portada") return portada();
   if (pantalla === "test") return pregunta();
-  if (pantalla === "redactando") return redactando();
   if (pantalla === "informe") return informe();
   return resultados();
 }
@@ -523,6 +531,7 @@ function resultados(){
   document.getElementById("reiniciar").onclick = () => {
     for (const k in respuestas) delete respuestas[k];
     persona = ""; prosa = {};
+    redactando = false; yaPedida = false; // otro test, otra redacción
     indice = 0; pantalla = "portada"; pintar();
   };
   // Lo que se copia son las RESPUESTAS, no las puntuaciones: quien genera el
@@ -543,30 +552,15 @@ function resultados(){
     e.target.textContent = caja.hidden ? "Ver el JSON" : "Ocultar el JSON";
     if (!caja.hidden) caja.select();
   };
-  document.getElementById("informe").onclick = async () => {
+  document.getElementById("informe").onclick = () => {
     persona = (document.getElementById("persona")?.value || "").trim();
-    // En la web, este botón hace lo que dice: sale el informe entero. El paso
-    // intermedio —abrir el informe con los pasajes pendientes y buscar otro
-    // botón arriba— parecía un final y no lo era: la gente se quedaba ahí.
-    if (HAY_SERVIDOR && !Object.keys(prosa).length) {
-      pantalla = "redactando"; pintar();
-      await redactarEnElServidor();
-    }
-    pantalla = "informe"; pintar();
+    // El informe se abre YA, con todo lo que calcula el código. La redacción
+    // arranca sola y se rellena cuando llega: el paso intermedio —abrir el
+    // informe y tener que buscar otro botón arriba— parecía un final y no lo
+    // era, y la pantalla de espera hacía perder un minuto mirando a la nada.
+    pantalla = "informe";
+    pintar();
   };
-}
-
-/** Mientras Claude escribe. Medio minuto en blanco parece que se ha colgado. */
-function redactando(){
-  app.innerHTML = \`
-    <div class="contenido portada">
-      <p class="etiqueta">Un momento</p>
-      <h2 style="font-size:1.9rem">Redactando tu informe</h2>
-      <p>Claude está escribiendo los pasajes de interpretación a partir de tus
-      puntuaciones. Suele tardar alrededor de medio minuto.</p>
-      <div class="latido" aria-hidden="true"><span></span><span></span><span></span></div>
-      <p class="ayuda">No cierres esta página.</p>
-    </div>\`;
 }
 
 function copiarEnBoton(boton, texto, etiqueta){
@@ -592,9 +586,15 @@ function informe(){
     <div class="barra-informe">
       <button class="enlace" id="volver">← Volver a las puntuaciones</button>
       <div class="acciones">
-        \${conProsa || !HAY_SERVIDOR ? "" : '<button class="boton" id="generar">Generar el informe completo</button>'}
-        \${conProsa || HAY_SERVIDOR ? "" : '<button class="boton boton--claro" id="encargo">Copiar el encargo</button><button class="enlace" id="encargoLargo" title="Para una conversación que no tenga cargada la skill identify-bfi2-knowledge">sin la skill</button>'}
-        \${HAY_SERVIDOR && !conProsa ? "" : '<button class="boton boton--claro" id="pegar">' + (conProsa ? "Cambiar la redacción" : "Pegar la redacción") + '</button>'}
+        \${
+          redactando
+            ? '<span class="redactando"><span class="latido" aria-hidden="true"><span></span><span></span><span></span></span>' +
+              'Claude está redactando los pasajes de coaching. Puedes ir leyendo.</span>'
+            : ""
+        }
+        \${conProsa || redactando || !HAY_SERVIDOR ? "" : '<button class="boton" id="generar">Generar el informe completo</button>'}
+        \${conProsa || redactando || HAY_SERVIDOR ? "" : '<button class="boton boton--claro" id="encargo">Copiar el encargo</button><button class="enlace" id="encargoLargo" title="Para una conversación que no tenga cargada la skill identify-bfi2-knowledge">sin la skill</button>'}
+        \${redactando || (HAY_SERVIDOR && !conProsa) ? "" : '<button class="boton boton--claro" id="pegar">' + (conProsa ? "Cambiar la redacción" : "Pegar la redacción") + '</button>'}
         <button class="boton boton--claro" id="imprimir">Imprimir</button>
       </div>
     </div>
@@ -602,6 +602,22 @@ function informe(){
 
   const marco = document.getElementById("marco");
   marco.srcdoc = html;
+
+  // La redacción arranca sola la primera vez que se abre el informe, y solo una
+  // vez: si vuelves a las puntuaciones y entras otra vez, la que ya está en
+  // marcha sigue su camino y no se pide —ni se paga— dos veces.
+  if (HAY_SERVIDOR && !conProsa && !yaPedida) {
+    yaPedida = true;
+    redactando = true;
+    pintar(); // para que salga el aviso de que se está redactando
+    redactarEnElServidor(null, modelo).then((salioBien) => {
+      redactando = false;
+      // Si ha ido bien, la prosa ya está puesta y el informe se redibuja con
+      // los pasajes dentro. Si no, se queda como está y el aviso desaparece.
+      if (pantalla === "informe" || salioBien) pintar();
+    });
+    return;
+  }
 
   document.getElementById("volver").onclick = () => { pantalla = "resultados"; pintar(); };
   document.getElementById("imprimir").onclick = () => marco.contentWindow?.print();
