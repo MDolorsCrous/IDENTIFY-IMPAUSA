@@ -421,12 +421,30 @@ const html = `<title>Informe Identify</title>
   .maqueta{position:sticky;top:0;z-index:5;background:#1A4A3A;color:#F7F2EB;
     font-size:.8rem;letter-spacing:.02em;text-align:center;padding:.5rem 1rem}
 
+  /* Impreso igual que en pantalla.
+     Antes se imprimia en blanco y negro sobre fondo blanco, y el documento que
+     recibia la persona no se parecia al que habia visto. Lo unico que se quita
+     es el indice —en papel no se puede pulsar— y la banda de aviso. */
   @media print{
-    @page{size:A4 portrait;margin:16mm}
+    @page{size:A4 portrait;margin:14mm}
+    /* Sin esto el navegador descarta TODOS los fondos y colores al imprimir, y
+       las barras de puntuacion salen en blanco: justo lo que hay que ver. */
+    *{-webkit-print-color-adjust:exact !important;print-color-adjust:exact !important}
+    /* En papel se imprime siempre la version clara, mande lo que mande el
+       sistema: un informe en modo oscuro gasta tinta y se lee peor. */
+    :root, :root[data-theme="dark"]{
+      --ground:#F7F2EB; --tarjeta:#FFFFFF; --ink:#1F2A25; --ink-soft:#5E6B64;
+      --borde:#E0D9D0; --track:#E7E0D6; --titulo:#1A4A3A; --verde-medio:#2D6B57;
+      --naranja-claro:#FDF0E4;
+    }
+    body{background:var(--ground);font-size:10.5pt}
     .maqueta,.indice{display:none}
-    body{background:#fff;font-size:11pt}
-    .hoja{max-width:none;padding:0;gap:1.6rem}
-    .seccion{break-inside:avoid-page}
+    .hoja{max-width:none;padding:0;gap:1.5rem}
+    .seccion,.dominio,.lectura,.paso,.fuentes li{break-inside:avoid}
+    h2,h3,h4{break-after:avoid}
+    /* Las sombras se convierten en manchas grises en papel. */
+    .dominio,.lectura,.paso,.bloque{box-shadow:none}
+    a{text-decoration:none;color:inherit}
   }
   @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
@@ -467,6 +485,24 @@ ${opciones.aviso ? '<div class="maqueta">' + esc(opciones.aviso) + "</div>" : co
       if(document.fonts&&document.fonts.ready) document.fonts.ready.then(ajustar);
       else window.addEventListener("load",ajustar);
       window.addEventListener("resize",ajustar);
+    })();
+
+    // El indice, sin navegar.
+    //
+    // Dentro del iframe de la pagina del test este documento no tiene direccion
+    // propia, asi que un enlace «#seccion» el navegador lo resuelve contra la
+    // direccion de la web y se lleva el iframe entero a cargarla. Y como el
+    // sitio manda X-Frame-Options: DENY, se queda en «ha rechazado la conexion»
+    // y el informe desaparece. Aqui se hace lo unico que se queria: desplazarse.
+    (function(){
+      document.addEventListener("click", function(e){
+        const a = e.target.closest && e.target.closest('a[href^="#"]');
+        if(!a) return;
+        const destino = document.getElementById(a.getAttribute("href").slice(1));
+        if(!destino) return;
+        e.preventDefault();
+        destino.scrollIntoView({behavior:"smooth", block:"start"});
+      });
     })();
   </script>
 
