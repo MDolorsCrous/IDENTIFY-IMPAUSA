@@ -251,4 +251,11 @@ test("la cabecera y el pie de página impresos se repiten", () => {
   assert.ok(html.includes('<tfoot class="papel__pie">'), "falta el pie repetido");
   assert.ok(html.includes(".papel__cab,.papel__pie{display:none}"), "los cintillos se ven en pantalla");
   assert.ok(html.includes(".papel__cab{display:table-header-group}"), "no se repiten al imprimir");
+
+  // El correo y el web del pie van en minúsculas y se pueden pulsar: son una
+  // dirección, no un rótulo. El resto del cintillo sí va en mayúsculas.
+  const pie = html.slice(html.indexOf("papel__pie"), html.indexOf("</tfoot>"));
+  assert.ok(pie.includes(`href="mailto:${recursos.marca.correo}"`), "el correo no es un enlace");
+  assert.ok(pie.includes(`href="https://${recursos.marca.web}"`), "el web no es un enlace");
+  assert.ok(html.includes(".cintillo__contacto{text-transform:none"), "el contacto sale en mayúsculas");
 });

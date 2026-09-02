@@ -401,6 +401,12 @@ ${tipografias(opciones.marca)}
     color:var(--ink-soft);text-transform:uppercase}
   .cintillo__marca{color:var(--verde);font-weight:700;letter-spacing:.1em}
   .cintillo__marca i{font-style:italic;font-weight:400}
+  /* El correo y el web, tal como se escriben: en minúsculas. Una dirección en
+     mayúsculas se lee peor y se copia mal, y aquí no es un rótulo sino algo que
+     alguien puede querer pulsar o teclear. */
+  .cintillo__contacto{text-transform:none;letter-spacing:0;font-size:8pt}
+  .cintillo__contacto a{color:inherit;text-decoration:none;
+    border-bottom:1px solid var(--borde)}
   /* Justificado, con partición de palabras.
      Sin partición, el justificado abre huecos enormes entre palabras en español,
      que tiene palabras largas; con partición, el borde derecho queda recto y el
@@ -647,7 +653,11 @@ ${opciones.aviso ? '<div class="maqueta">' + esc(opciones.aviso) + "</div>" : co
 </td></tr></thead>
 <tfoot class="papel__pie"><tr><td>
   <div class="cintillo cintillo--pie">
-    <span>${esc(opciones.marca?.correo ?? "")} · ${esc(opciones.marca?.web ?? "")}</span>
+    <span class="cintillo__contacto">
+      <a href="mailto:${esc(opciones.marca?.correo ?? "")}">${esc(opciones.marca?.correo ?? "")}</a>
+      <span aria-hidden="true"> · </span>
+      <a href="https://${esc(opciones.marca?.web ?? "")}">${esc(opciones.marca?.web ?? "")}</a>
+    </span>
     <span>${esc(opciones.marca?.copyright ?? "")}</span>
   </div>
 </td></tr></tfoot>
