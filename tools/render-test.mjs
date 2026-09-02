@@ -165,6 +165,14 @@ const html = `<title>Test Identify</title>
   .acciones{display:flex;gap:.8rem;flex-wrap:wrap}
   .boton--claro{background:var(--tarjeta);color:var(--ink);border:1px solid var(--borde)}
 
+  /* Mientras Claude escribe. Medio minuto en blanco parece que se ha colgado */
+  .latido{display:flex;gap:.5rem}
+  .latido span{width:.6rem;height:.6rem;border-radius:50%;background:var(--verde-medio);
+    animation:latido 1.2s ease-in-out infinite}
+  .latido span:nth-child(2){animation-delay:.2s}
+  .latido span:nth-child(3){animation-delay:.4s}
+  @keyframes latido{0%,60%,100%{opacity:.25;transform:translateY(0)}30%{opacity:1;transform:translateY(-.35rem)}}
+
   /* Aviso del fichero local: se parece al web pero no puede redactar solo */
   .nota--local{background:var(--tarjeta);border-left-color:var(--verde-medio);margin-bottom:1rem}
 
@@ -262,6 +270,7 @@ const app = document.getElementById("app");
 function pintar(){
   if (pantalla === "portada") return portada();
   if (pantalla === "test") return pregunta();
+  if (pantalla === "redactando") return redactando();
   if (pantalla === "informe") return informe();
   return resultados();
 }
@@ -534,10 +543,30 @@ function resultados(){
     e.target.textContent = caja.hidden ? "Ver el JSON" : "Ocultar el JSON";
     if (!caja.hidden) caja.select();
   };
-  document.getElementById("informe").onclick = () => {
+  document.getElementById("informe").onclick = async () => {
     persona = (document.getElementById("persona")?.value || "").trim();
+    // En la web, este botón hace lo que dice: sale el informe entero. El paso
+    // intermedio —abrir el informe con los pasajes pendientes y buscar otro
+    // botón arriba— parecía un final y no lo era: la gente se quedaba ahí.
+    if (HAY_SERVIDOR && !Object.keys(prosa).length) {
+      pantalla = "redactando"; pintar();
+      await redactarEnElServidor();
+    }
     pantalla = "informe"; pintar();
   };
+}
+
+/** Mientras Claude escribe. Medio minuto en blanco parece que se ha colgado. */
+function redactando(){
+  app.innerHTML = \`
+    <div class="contenido portada">
+      <p class="etiqueta">Un momento</p>
+      <h2 style="font-size:1.9rem">Redactando tu informe</h2>
+      <p>Claude está escribiendo los pasajes de interpretación a partir de tus
+      puntuaciones. Suele tardar alrededor de medio minuto.</p>
+      <div class="latido" aria-hidden="true"><span></span><span></span><span></span></div>
+      <p class="ayuda">No cierres esta página.</p>
+    </div>\`;
 }
 
 function copiarEnBoton(boton, texto, etiqueta){
@@ -618,13 +647,17 @@ const recuerdaCodigo = {
 };
 
 async function redactarEnElServidor(boton, modelo){
+  // El modelo se reconstruye aqui si no viene: cuando se llama desde el boton
+  // «Informe Identify» todavia no se ha dibujado ninguna pantalla de informe.
+  modelo = modelo ?? construirModelo(respuestas, D.recursos, { persona: persona || undefined });
   const codigo = recuerdaCodigo.leer() ||
     window.prompt("Código de acceso\\n\\nTe lo da quien te ha pasado el enlace.", "");
   if (!codigo) return;
 
-  const etiqueta = boton.textContent;
-  boton.disabled = true;
-  boton.textContent = "Redactando… medio minuto";
+  // Puede no haber boton: desde «Informe Identify» se llama con la pantalla de
+  // espera dibujada, no con un boton que cambiar.
+  const etiqueta = boton?.textContent;
+  if (boton) { boton.disabled = true; boton.textContent = "Redactando… medio minuto"; }
   try {
     const r = await fetch("/api/redactar", {
       method: "POST",
@@ -644,12 +677,11 @@ async function redactarEnElServidor(boton, modelo){
     if (fallos.length) { window.alert("La redacción ha llegado incompleta. Vuelve a intentarlo."); return; }
     recuerdaCodigo.guardar(codigo);
     prosa = datos.prosa;
-    pintar();
+    if (boton) pintar(); // sin botón, quien ha llamado dibuja el informe después
   } catch {
     window.alert("No se ha podido conectar. Comprueba la conexión y vuelve a intentarlo.");
   } finally {
-    boton.disabled = false;
-    boton.textContent = etiqueta;
+    if (boton) { boton.disabled = false; boton.textContent = etiqueta; }
   }
 }
 
