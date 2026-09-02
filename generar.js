@@ -168,6 +168,7 @@ const html = renderInforme(modelo, prosa, recursos.labels, {
   facetas: recursos.facetas,
   metaforas: recursos.metaforas,
   fuentes: recursos.fuentes,
+  marca: recursos.marca,
   fecha: fechaLarga(fecha),
 });
 

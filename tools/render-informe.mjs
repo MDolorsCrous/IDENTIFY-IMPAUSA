@@ -20,6 +20,7 @@ if (process.argv[1] && import.meta.url === `file:///${process.argv[1].replace(/\
     facetas: recursos.facetas,
     metaforas: recursos.metaforas,
     fuentes: recursos.fuentes,
+    marca: recursos.marca,
     fecha: "27 de agosto de 2026",
     aviso: "Maqueta · datos del caso de ejemplo del Excel oficial · los textos redactados son de muestra",
   });

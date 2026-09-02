@@ -70,6 +70,28 @@ function introSenales(modelo, labels) {
 }
 
 /**
+ * El cierre de marca: logotipo, contacto y copyright.
+ *
+ * El logotipo va incrustado en base64 y no enlazado: el informe se manda por
+ * correo, se guarda y se imprime, y tiene que verse igual sin conexion.
+ */
+function cierreDeMarca(marca) {
+  if (!marca) return "";
+  const { logo, correo, web, copyright, producto } = marca;
+  return `
+  <footer class="firma">
+    <img class="firma__logo" src="${logo.src}" alt="${esc(logo.alt)}" width="${logo.ancho}" height="${logo.alto}">
+    <p class="firma__linea">
+      <a href="mailto:${esc(correo)}">${esc(correo)}</a>
+      <span class="firma__sep" aria-hidden="true">·</span>
+      <a href="https://${esc(web)}">${esc(web)}</a>
+    </p>
+    <p class="firma__copy">${esc(copyright)}</p>
+    <p class="firma__copy">${esc(producto)} es una herramienta de IMPAUSA POWER, S.L.</p>
+  </footer>`;
+}
+
+/**
  * La bibliografia, al final del informe.
  *
  * Sale de src/config/fuentes.json, no de aqui: cada referencia esta verificada
@@ -418,6 +440,20 @@ const html = `<title>Informe Identify</title>
   .fuentes a{color:inherit}
   .fuentes__copy{margin:.2rem 0 0;font-size:.84rem}
 
+  /* Cierre de marca. Centrado y con aire: es una firma, no un bloque más.
+     El degradado repite el del rótulo de portada, que es el del propio logo. */
+  .firma{margin-top:2.5rem;padding-top:2rem;text-align:center;
+    border-top:2px solid transparent;
+    border-image:linear-gradient(90deg,#EF8A4D 0%,#DFAE6B 33%,#B9BC72 66%,#7FAE79 100%) 1}
+  .firma__logo{width:160px;height:auto;margin:0 auto .9rem;display:block}
+  .firma__linea{margin:0 0 .5rem;font-size:.92rem}
+  .firma__linea a{color:var(--verde-medio);text-decoration:none;font-weight:600}
+  .firma__linea a:hover{text-decoration:underline}
+  .firma__sep{color:var(--borde);margin:0 .5rem}
+  .firma__copy{margin:.15rem 0 0;font-size:.8rem;color:var(--ink-soft)}
+  /* En papel el logotipo va algo menor y el bloque nunca se parte. */
+  @media print{.firma{break-inside:avoid;margin-top:1.8rem}.firma__logo{width:130px}}
+
   .maqueta{position:sticky;top:0;z-index:5;background:#1A4A3A;color:#F7F2EB;
     font-size:.8rem;letter-spacing:.02em;text-align:center;padding:.5rem 1rem}
 
@@ -645,8 +681,9 @@ ${
     <p>Las facetas son escalas de cuatro ítems: sostienen menos peso que los dominios y conviene
     leerlas con más prudencia. Este informe es una herramienta de autoconocimiento y coaching; no es
     una prueba clínica ni de selección, y refleja cómo te describiste el día que lo respondiste.</p>
-    <p style="margin-bottom:0"><b>Identify by Impausa</b> · LivePausa</p>
   </footer>
+
+  ${cierreDeMarca(opciones.marca)}
 
 </div>
 `;

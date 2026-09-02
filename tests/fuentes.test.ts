@@ -90,3 +90,27 @@ test("el informe generado lleva la bibliografía entera", () => {
   }
   assert.ok(html.includes("Oliver P. John"), "el informe no atribuye el instrumento");
 });
+
+test("el informe se firma: logotipo, contacto y copyright", () => {
+  const recursos = cargarRecursos();
+  const respuestas = Object.fromEntries(
+    Object.entries(cargarEjemplo().responses).map(([k, v]) => [Number(k), v]),
+  );
+  const html = renderInforme(construirModelo(respuestas as any, recursos), {}, recursos.labels, {
+    facetas: recursos.facetas,
+    metaforas: recursos.metaforas,
+    fuentes: recursos.fuentes,
+    marca: recursos.marca,
+    fecha: "1 de enero de 2026",
+  });
+
+  assert.ok(html.includes("hola@impausa.com"), "falta el correo");
+  assert.ok(html.includes("www.impausa.com"), "falta la web");
+  assert.ok(html.includes("IMPAUSA POWER, S.L."), "falta la razón social");
+  assert.ok(html.includes("Todos los derechos reservados"), "falta la reserva de derechos");
+
+  // El logotipo va DENTRO del fichero, no enlazado: el informe se manda por
+  // correo, se guarda y se imprime, y tiene que verse igual sin conexión.
+  assert.ok(html.includes('class="firma__logo" src="data:image/png;base64,'), "el logotipo no viaja dentro");
+  assert.ok(!html.includes('firma__logo" src="http'), "el logotipo está enlazado en vez de incrustado");
+});

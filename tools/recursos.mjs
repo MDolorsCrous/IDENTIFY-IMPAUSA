@@ -20,6 +20,7 @@ import rules from "../src/config/interpretation/combinations.json" with { type: 
 import facetas from "../src/config/interpretation/facetas.json" with { type: "json" };
 import metaforas from "../src/config/interpretation/metaforas.json" with { type: "json" };
 import fuentes from "../src/config/fuentes.json" with { type: "json" };
+import marca from "../src/config/marca.json" with { type: "json" };
 
 /**
  * Lee un JSON del proyecto por su ruta. Solo para herramientas de Node: lo que
@@ -36,6 +37,7 @@ export function cargarRecursos() {
     facetas,
     metaforas,
     fuentes,
+    marca,
   };
 }
 
