@@ -24,11 +24,17 @@
   to = "/.netlify/functions/entrar"
   status = 200
 
-# La función redacta el informe con la clave de la API, que vive en las
-# variables de entorno del sitio y no baja nunca al navegador.
+# La redacción va en segundo plano: Netlify corta una función normal al minuto
+# y escribir el informe tarda más. Contesta 202 al instante y deja el resultado
+# en Blobs; la página lo recoge en /api/resultado.
 [[redirects]]
   from = "/api/redactar"
-  to = "/.netlify/functions/redactar"
+  to = "/.netlify/functions/redactar-background"
+  status = 200
+
+[[redirects]]
+  from = "/api/resultado"
+  to = "/.netlify/functions/resultado"
   status = 200
 
 [build.environment]

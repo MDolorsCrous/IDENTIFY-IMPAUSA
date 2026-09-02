@@ -652,34 +652,69 @@ async function redactarEnElServidor(boton, modelo){
   modelo = modelo ?? construirModelo(respuestas, D.recursos, { persona: persona || undefined });
   const codigo = recuerdaCodigo.leer() ||
     window.prompt("Código de acceso\\n\\nTe lo da quien te ha pasado el enlace.", "");
-  if (!codigo) return;
+  if (!codigo) return false;
 
   // Puede no haber boton: desde «Informe Identify» se llama con la pantalla de
   // espera dibujada, no con un boton que cambiar.
   const etiqueta = boton?.textContent;
-  if (boton) { boton.disabled = true; boton.textContent = "Redactando… medio minuto"; }
+  if (boton) { boton.disabled = true; boton.textContent = "Redactando…"; }
+
+  // Un nombre para este encargo. El servidor no puede devolver el informe por
+  // la misma conexion —tarda mas de lo que Netlify deja vivir una funcion— asi
+  // que lo deja guardado con este nombre y aqui se va a buscar.
+  const id = (crypto.randomUUID?.() ?? String(Date.now()) + Math.random().toString(36).slice(2));
+  const fallo = (m) => { window.alert(m); return false; };
+
   try {
-    const r = await fetch("/api/redactar", {
+    const arranque = await fetch("/api/redactar", {
       method: "POST",
       headers: { "content-type": "application/json" },
       // Van las RESPUESTAS, no el perfil: el servidor vuelve a puntuar con el
       // mismo motor. Asi no hay dos calculos que puedan discrepar, y el
       // endpoint no se puede usar para pedirle a Claude cualquier otra cosa.
-      body: JSON.stringify({ codigo, respuestas, persona }),
+      body: JSON.stringify({ id, codigo, respuestas, persona }),
     });
-    const datos = await r.json().catch(() => ({}));
-    if (!r.ok) {
-      if (r.status === 403) recuerdaCodigo.olvidar();
-      window.alert(datos.error || "No se ha podido generar el informe.");
-      return;
+    // Una funcion en segundo plano contesta 202 y nada mas: que haya arrancado
+    // no dice todavia si el codigo era bueno. Eso llega con el resultado.
+    if (!arranque.ok && arranque.status !== 202) {
+      return fallo("No se ha podido empezar el informe. Inténtalo de nuevo.");
     }
-    const fallos = validarProsa(datos.prosa, modelo);
-    if (fallos.length) { window.alert("La redacción ha llegado incompleta. Vuelve a intentarlo."); return; }
-    recuerdaCodigo.guardar(codigo);
-    prosa = datos.prosa;
-    if (boton) pintar(); // sin botón, quien ha llamado dibuja el informe después
+
+    // A buscarlo. Se pregunta cada tres segundos durante cuatro minutos: el
+    // informe suele tardar entre uno y dos.
+    const hasta = Date.now() + 4 * 60 * 1000;
+    while (Date.now() < hasta) {
+      await new Promise((r) => setTimeout(r, 3000));
+      let datos;
+      try {
+        const r = await fetch("/api/resultado", {
+          method: "POST",
+          headers: { "content-type": "application/json" },
+          body: JSON.stringify({ id, codigo }),
+        });
+        datos = await r.json().catch(() => ({}));
+        if (r.status === 403) { recuerdaCodigo.olvidar(); return fallo(datos.error || "Código incorrecto."); }
+      } catch {
+        continue; // un fallo suelto de red no tiene por que tirar la espera
+      }
+
+      if (datos.estado === "trabajando") continue;
+      if (datos.estado === "error") {
+        if (datos.que === "codigo") recuerdaCodigo.olvidar();
+        return fallo(datos.error || "No se ha podido generar el informe.");
+      }
+      if (datos.estado === "listo") {
+        const fallos = validarProsa(datos.prosa, modelo);
+        if (fallos.length) return fallo("La redacción ha llegado incompleta. Vuelve a intentarlo.");
+        recuerdaCodigo.guardar(codigo);
+        prosa = datos.prosa;
+        if (boton) pintar(); // sin botón, quien ha llamado dibuja el informe después
+        return true;
+      }
+    }
+    return fallo("El informe está tardando demasiado. Vuelve a intentarlo en un momento.");
   } catch {
-    window.alert("No se ha podido conectar. Comprueba la conexión y vuelve a intentarlo.");
+    return fallo("No se ha podido conectar. Comprueba la conexión y vuelve a intentarlo.");
   } finally {
     if (boton) { boton.disabled = false; boton.textContent = etiqueta; }
   }

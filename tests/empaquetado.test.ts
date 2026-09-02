@@ -119,9 +119,12 @@ test("la página web pide la redacción al servidor, y le manda las respuestas",
   const pagina = readFileSync(join(raiz, "test-identify.html"), "utf8");
   assert.ok(pagina.includes("/api/redactar"), "la página no llama a la función");
   assert.ok(
-    pagina.includes("JSON.stringify({ codigo, respuestas, persona })"),
+    pagina.includes("JSON.stringify({ id, codigo, respuestas, persona })"),
     "lo que se manda al servidor ha cambiado: revísalo, es la defensa del endpoint",
   );
+  // La redacción tarda más de lo que Netlify deja vivir una función, así que va
+  // en segundo plano y el resultado se recoge aparte.
+  assert.ok(pagina.includes("/api/resultado"), "la página no va a buscar el resultado");
   // Y ni el código de acceso ni la clave pueden estar en algo que se publica.
   for (const prohibido of ["CODIGO_ACCESO", "ANTHROPIC_API_KEY", "sk-ant"]) {
     assert.ok(!pagina.includes(prohibido), `la página lleva «${prohibido}»`);
