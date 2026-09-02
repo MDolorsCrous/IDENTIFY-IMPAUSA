@@ -293,3 +293,17 @@ test("la pantalla se puede usar con el teclado y en un móvil", () => {
     assert.ok(/aria-hidden="true"|role="img"/.test(svg), `un dibujo sin aria-hidden: ${svg.slice(0, 60)}`);
   }
 });
+
+test("solo se queda abierto un pliegue a la vez", () => {
+  // Con varios abiertos la pila crecía hasta nueve mil píxeles y se perdía justo
+  // lo que se venía a buscar: ver los ocho titulares de una vez. La prueba no
+  // puede pulsar nada —aquí no hay navegador—, así que comprueba que el código
+  // que cierra los demás sigue estando y que hay un solo sitio que pliega.
+  const pagina = readFileSync(join(raiz, "test-identify.html"), "utf8");
+  assert.match(
+    pagina,
+    /querySelectorAll\('\.desplegable__cab\[aria-expanded="true"\]'\)/,
+    "al abrir un pliegue ya no se cierran los otros",
+  );
+  assert.match(pagina, /const plegar = \(cab, abrir\)/, "falta la función que pliega");
+});

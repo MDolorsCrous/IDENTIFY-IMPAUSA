@@ -392,16 +392,36 @@ function portada(){
 
   // Los desplegables. Se abren y se cierran con el mismo boton, y el estado va
   // en aria-expanded para que un lector de pantalla lo cante igual que se ve.
+  //
+  // Solo uno abierto a la vez: con varios abiertos la pila crecia hasta nueve
+  // mil pixeles y se perdia justo lo que se venia a buscar, que es ver los ocho
+  // titulares de una vez. Al abrir uno se cierran los demas.
+  const plegar = (cab, abrir) => {
+    const cuerpo = document.getElementById(cab.getAttribute("aria-controls"));
+    cab.setAttribute("aria-expanded", String(abrir));
+    cuerpo.hidden = !abrir;
+    // El pliegue abierto se marca tambien en el contenedor: asi el numero cambia
+    // de color y el borde se enciende, y se ve cual esta abierto sin tener que
+    // mirar la flecha.
+    cab.closest(".desplegable").setAttribute("data-abierto", abrir ? "si" : "no");
+  };
+
   for (const cab of document.querySelectorAll(".desplegable__cab")) {
     cab.onclick = () => {
-      const cuerpo = document.getElementById(cab.getAttribute("aria-controls"));
       const abierto = cab.getAttribute("aria-expanded") === "true";
-      cab.setAttribute("aria-expanded", String(!abierto));
-      cuerpo.hidden = abierto;
-      // El pliegue abierto se marca tambien en el contenedor: asi el numero
-      // cambia de color y el borde se enciende, y se ve cual esta abierto sin
-      // tener que mirar la flecha.
-      cab.closest(".desplegable").setAttribute("data-abierto", abierto ? "no" : "si");
+      for (const otro of document.querySelectorAll('.desplegable__cab[aria-expanded="true"]')) {
+        if (otro !== cab) plegar(otro, false);
+      }
+      plegar(cab, !abierto);
+      // Al cerrarse los de arriba, la pagina se acorta y el pliegue recien
+      // abierto puede quedar fuera de la pantalla. Se le lleva la vista, que es
+      // lo que la persona acaba de pedir mirar.
+      if (!abierto) {
+        const arriba = cab.getBoundingClientRect().top;
+        if (arriba < 0 || arriba > window.innerHeight - 120) {
+          cab.scrollIntoView({ behavior: "smooth", block: "start" });
+        }
+      }
     };
   }
 
