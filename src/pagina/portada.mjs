@@ -259,9 +259,9 @@ function plegable({ id, numero, titulo, resumen, cuerpo }) {
  * empieza, o se va. Plegada, los seis titulares y sus seis frases caben de una
  * vez, y quien quiera el detalle lo abre.
  *
- * Lo que NO se pliega: el aviso de cómo leer los resultados. Esconder los
- * límites detrás de un clic sería justo lo contrario de lo que hacen falta que
- * digan — y son la parte que más se agradece haber leído antes, no después.
+ * Los límites de lo que mide van en el pliegue 7, y no sueltos: ella los quiso
+ * ahí. Van antes de la letra pequeña de las referencias y con su titular a la
+ * vista, que es lo que importa — quien recorre la pila los lee de todos modos.
  *
  * @param {object} recursos Lo que devuelve cargarRecursos(): config, labels y marca.
  * @returns {string} HTML con los huecos MARCA_* sin rellenar.
@@ -423,8 +423,34 @@ export function paginaDeInicio(recursos) {
     }),
 
     plegable({
-      id: "baseCientifica",
+      id: "comoLeer",
       numero: "7",
+      titulo: "Un mapa para conocerte, no una etiqueta",
+      resumen:
+        "Qué mide y qué no mide: los límites de lo que puede decirte un cuestionario que respondes tú.",
+      cuerpo: `
+          <div class="lectura">
+            <ul class="lista">
+              <li>Identify mide <b>tendencias que describe la propia persona</b>: refleja cómo te
+              describiste al responder.</li>
+              <li>Esas tendencias son relativamente estables, <b>pero no fijas</b>, y pueden expresarse de
+              manera distinta según el contexto.</li>
+              <li><b>No hay puntuaciones buenas ni malas.</b> Una tendencia puede ayudar o estorbar según la
+              situación, y una puntuación intermedia suele indicar flexibilidad.</li>
+              <li><b>No es un diagnóstico</b> ni una prueba clínica.</li>
+              <li>No mide inteligencia ni capacidad, y <b>no determina idoneidad</b> para un puesto.</li>
+              <li>No predice exactamente lo que vas a hacer, ni sustituye el criterio de un profesional.</li>
+              <li>Las bandas indican tu posición <b>dentro de la escala del cuestionario</b>. No son una
+              comparación con la población general: este informe no utiliza percentiles normativos.</li>
+              <li>Las facetas son escalas de cuatro ítems: <b>sostienen menos peso que los dominios</b> y
+              conviene leerlas con más prudencia.</li>
+            </ul>
+          </div>`,
+    }),
+
+    plegable({
+      id: "baseCientifica",
+      numero: "8",
       titulo: "Conoce la base científica de Identify",
       resumen: "Modelo, instrumento, estructura, adaptación española y referencias con su DOI.",
       cuerpo: `
@@ -477,33 +503,9 @@ export function paginaDeInicio(recursos) {
     <div class="ancho">
       <p class="ojo">Antes de empezar</p>
       <h2>Qué es Identify y qué vas a recibir</h2>
-      <p class="entradilla">Siete apartados, por si quieres saber dónde te metes. Ábrelos si te apetece; el
+      <p class="entradilla">Ocho apartados, por si quieres saber dónde te metes. Ábrelos si te apetece; el
       test funciona igual sin leer ninguno.</p>
       <div class="pila">${pliegues}</div>
-    </div>
-  </section>
-
-  <section class="banda banda--menta">
-    <div class="ancho ancho--estrecho">
-      <p class="ojo">Cómo leer los resultados</p>
-      <h2>Un mapa para conocerte, no una etiqueta</h2>
-      <div class="lectura">
-        <ul class="lista">
-          <li>Identify mide <b>tendencias que describe la propia persona</b>: refleja cómo te describiste al
-          responder.</li>
-          <li>Esas tendencias son relativamente estables, <b>pero no fijas</b>, y pueden expresarse de manera
-          distinta según el contexto.</li>
-          <li><b>No hay puntuaciones buenas ni malas.</b> Una tendencia puede ayudar o estorbar según la
-          situación, y una puntuación intermedia suele indicar flexibilidad.</li>
-          <li><b>No es un diagnóstico</b> ni una prueba clínica.</li>
-          <li>No mide inteligencia ni capacidad, y <b>no determina idoneidad</b> para un puesto.</li>
-          <li>No predice exactamente lo que vas a hacer, ni sustituye el criterio de un profesional.</li>
-          <li>Las bandas indican tu posición <b>dentro de la escala del cuestionario</b>. No son una
-          comparación con la población general: este informe no utiliza percentiles normativos.</li>
-          <li>Las facetas son escalas de cuatro ítems: <b>sostienen menos peso que los dominios</b> y conviene
-          leerlas con más prudencia.</li>
-        </ul>
-      </div>
     </div>
   </section>
 

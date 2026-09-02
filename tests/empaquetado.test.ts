@@ -280,12 +280,13 @@ test("la pantalla se puede usar con el teclado y en un móvil", () => {
   // sitio tiene que existir. Un aria-controls que apunta a nada es peor que no
   // ponerlo: un lector de pantalla anuncia algo que luego no encuentra.
   const controlados = [...inicio.matchAll(/aria-controls="([^"]+)"/g)].map((m) => m[1]);
-  assert.equal(controlados.length, 7, "no hay siete pliegues");
+  assert.equal(controlados.length, 8, "no hay ocho pliegues");
   for (const id of controlados) {
     assert.ok(inicio.includes(`id="${id}"`), `aria-controls apunta a «${id}», que no existe`);
   }
   assert.ok(controlados.includes("baseCientifica"), "falta el pliegue de la base científica");
   assert.ok(controlados.includes("informe"), "falta el pliegue del informe");
+  assert.ok(controlados.includes("comoLeer"), "falta el pliegue de los límites");
   // Los dibujos decorativos no se leen en voz alta.
   const svgs = inicio.match(/<svg[^>]*>/g) ?? [];
   for (const svg of svgs) {
