@@ -17,6 +17,8 @@ import { fileURLToPath } from "node:url";
 import { construirModelo } from "../src/services/pipeline.ts";
 import { empaquetarMotor } from "./empaquetar.mjs";
 import { cargarRecursos, cargarEjemplo, cargarIdioma, leer } from "./recursos.mjs";
+import { paginaDeInicio, MARCA_CTA_HERO, MARCA_CTA_FINAL, MARCA_IDIOMAS, MARCA_AVISO } from "../src/pagina/portada.mjs";
+import { estilosPortada } from "../src/pagina/portada-estilos.mjs";
 
 const recursos = cargarRecursos();
 const es = cargarIdioma();
@@ -49,15 +51,42 @@ const datos = {
   },
 };
 
-const html = `<title>Test Identify</title>
+/**
+ * Montserrat y Lato, incrustadas en la propia pagina.
+ *
+ * Las mismas que el informe, y por la misma razon: asi la pantalla se ve igual
+ * el dia que Google Fonts no conteste. El rotulo conserva Playfair, que sigue
+ * viniendo por enlace porque solo lo usan seis palabras.
+ */
+function tipografiasDeLaCasa(){
+  const t = recursos.marca?.tipografias;
+  if (!t) return "";
+  const cara = (familia, peso, b64) =>
+    '@font-face{font-family:"' + familia + '";font-style:normal;font-weight:' + peso +
+    ';font-display:swap;src:url(data:font/woff2;base64,' + b64 + ') format("woff2")}';
+  return "<style>" + cara("Montserrat", "400 700", t.montserrat) +
+    cara("Lato", "400", t.lato400) + cara("Lato", "700", t.lato700) + "</style>";
+}
+
+const html = `<!doctype html>
+<html lang="es">
+<meta charset="utf-8">
+<!-- Sin esto el movil dibuja la pagina en un lienzo de 980 px y la aleja hasta
+     que cabe: el texto sale diminuto y ninguna media query de movil llega a
+     dispararse. Faltaba desde el principio, y afectaba al cuestionario entero,
+     no solo a esta pantalla. -->
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Test Identify</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,700&family=Source+Sans+3:wght@0,400;0,600&display=swap">
+${tipografiasDeLaCasa()}
 <style>
   :root{
-    --verde:#1A4A3A; --verde-medio:#2D6B57; --naranja:#E8842A; --naranja-claro:#FDF0E4;
-    --ground:#F7F2EB; --tarjeta:#FFFFFF; --ink:#1F2A25; --ink-soft:#5E6B64;
-    --borde:#E0D9D0; --track:#E7E0D6; --titulo:#1A4A3A;
+    --verde:#27624F; --verde-medio:#5F927D; --naranja:#F47A20; --naranja-claro:#FDF0E4;
+    --dorado:#D5B447; --menta:#EAF3E5; --melocoton:#FBEFE7; --verde-suave-borde:#CBDCD2;
+    --ground:#F7F4EE; --tarjeta:#FFFDFC; --ink:#302A26; --ink-soft:#6E6862;
+    --borde:#E4DDD5; --track:#E7E0D6; --titulo:#27624F;
     --sombra:0 1px 3px rgba(26,74,58,.07); --sombra-alta:0 6px 24px rgba(26,74,58,.10);
   }
   @media (prefers-color-scheme:dark){
@@ -65,16 +94,18 @@ const html = `<title>Test Identify</title>
       --ground:#10201A; --tarjeta:#162C24; --ink:#EDE6DA; --ink-soft:#A9B8B0;
       --borde:#2C4238; --track:#22382F; --titulo:#8FCBB2; --verde-medio:#5FA588;
       --naranja-claro:#2A2119; --sombra:0 1px 3px rgba(0,0,0,.35); --sombra-alta:0 6px 24px rgba(0,0,0,.4);
+      --menta:#16302A; --melocoton:#2A2119; --verde-suave-borde:#2C4238;
     }
   }
   :root[data-theme="dark"]{
     --ground:#10201A; --tarjeta:#162C24; --ink:#EDE6DA; --ink-soft:#A9B8B0;
     --borde:#2C4238; --track:#22382F; --titulo:#8FCBB2; --verde-medio:#5FA588;
     --naranja-claro:#2A2119; --sombra:0 1px 3px rgba(0,0,0,.35); --sombra-alta:0 6px 24px rgba(0,0,0,.4);
+    --menta:#16302A; --melocoton:#2A2119; --verde-suave-borde:#2C4238;
   }
   *{box-sizing:border-box}
   body{margin:0;background:var(--ground);color:var(--ink);
-    font-family:"Source Sans 3",system-ui,sans-serif;font-size:17px;line-height:1.65;
+    font-family:"Lato","Source Sans 3",system-ui,sans-serif;font-size:17px;line-height:1.55;
     -webkit-font-smoothing:antialiased}
   h1,h2,h3{font-family:"Playfair Display",Georgia,serif;margin:0;color:var(--titulo);text-wrap:balance}
   button{font:inherit;color:inherit}
@@ -226,6 +257,7 @@ const html = `<title>Test Identify</title>
   .json{width:100%;min-height:9rem;margin-top:.9rem;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;
     font-size:.8rem;line-height:1.5;background:var(--ground);color:var(--ink-soft);
     border:1px solid var(--borde);border-radius:5px;padding:.7rem;resize:vertical}
+${estilosPortada}
 </style>
 
 <div class="marco" id="app"></div>
@@ -236,6 +268,11 @@ ${paquete}
 
 <script>
 const D = ${JSON.stringify(datos)};
+const PORTADA = ${JSON.stringify(paginaDeInicio(recursos))};
+const HUECO_CTA_HERO = ${JSON.stringify(MARCA_CTA_HERO)};
+const HUECO_CTA_FINAL = ${JSON.stringify(MARCA_CTA_FINAL)};
+const HUECO_IDIOMAS = ${JSON.stringify(MARCA_IDIOMAS)};
+const HUECO_AVISO = ${JSON.stringify(MARCA_AVISO)};
 const CFG = D.recursos.config;
 const puntuar = respuestas => {
   const s = score(respuestas, CFG);
@@ -296,44 +333,84 @@ function pintar(){
 }
 
 function portada(){
-  app.innerHTML = \`
-    <div class="contenido portada">
-      <p class="etiqueta">Modelo OCEAN · Autoconocimiento</p>
-      <h1 class="rotulo"><span id="rn">Identify</span><span class="rotulo__by" id="rb">by Impausa</span></h1>
-      <p>Un cuestionario que describe tu perfil en cinco grandes rasgos de personalidad y sus quince facetas. Responde con lo primero que te encaje: no hay respuestas correctas.</p>
-      <div class="datos">
-        <span class="dato">60 preguntas</span>
-        <span class="dato">8–10 minutos</span>
-        <span class="dato">Sin registro</span>
-        <span class="dato">Se calcula en tu navegador</span>
-      </div>
-      \${
-        HAY_SERVIDOR && !recuerdaCodigo.leer()
-          ? \`<form class="puerta" id="puerta">
-               <label class="campo" for="codigo">Código de acceso
-                 <span>Te lo da quien te ha pasado el enlace</span>
-               </label>
-               <div class="puerta__fila">
-                 <input id="codigo" name="codigo" type="text" autocomplete="off"
-                        autocapitalize="off" spellcheck="false" required>
-                 <button class="boton" type="submit">Entrar</button>
-               </div>
-               <p class="puerta__error" id="puertaError" role="alert" hidden></p>
-             </form>\`
-          : '<button class="boton" id="empezar">Empezar cuestionario</button>'
-      }
-      <div class="idiomas">
-        <button class="idioma" aria-current="true">ES</button><span>·</span>
-        <button class="idioma" data-idioma="ca">CA</button><span>·</span>
-        <button class="idioma" data-idioma="en">EN</button>
-      </div>
-      \${FALLOS.length ? '<div class="fallo">Aviso: la autocomprobación del cálculo no coincide en: ' + FALLOS.join(", ") + '. No uses estos resultados.</div>' : ""}
-    </div>
-    <dialog class="panel" id="panelIdioma" aria-labelledby="panelIdiomaT">
-      <h2 id="panelIdiomaT"></h2>
-      <div id="panelIdiomaC"></div>
-      <button class="boton" id="panelIdiomaX"></button>
-    </dialog>\`;
+  // La pantalla de inicio se monta al generar la pagina (src/pagina/portada.mjs)
+  // y llega aqui con dos huecos: el boton del hero y el del cierre. Lo que va
+  // dentro depende de algo que solo se sabe aqui —si hay servidor y si esta
+  // persona ya ha entrado el codigo—, y por eso no puede decidirse al generar.
+  //
+  // Sin comillas invertidas en toda la funcion: este texto viaja dentro de una
+  // plantilla y una comilla suelta la parte por la mitad.
+  const puertaCerrada = HAY_SERVIDOR && !recuerdaCodigo.leer();
+  const laPuerta =
+    '<form class="puerta" id="puerta">' +
+      '<label class="campo" for="codigo">Código de acceso' +
+        '<span>Te lo da quien te ha pasado el enlace</span>' +
+      '</label>' +
+      '<div class="puerta__fila">' +
+        '<input id="codigo" name="codigo" type="text" autocomplete="off" ' +
+               'autocapitalize="off" spellcheck="false" required>' +
+        '<button class="cta" type="submit">Entrar</button>' +
+      '</div>' +
+      '<p class="puerta__error" id="puertaError" role="alert" hidden></p>' +
+    '</form>';
+  // Los dos botones se escriben enteros, con su id a la vista, y no se arman
+  // pegando trozos: asi quien lea este fichero —o la prueba que comprueba que el
+  // fichero local tiene por donde empezar— encuentra lo que busca.
+  const botonHero = '<button class="cta" id="empezar" type="button">' +
+    'Comenzar el test ahora <span aria-hidden="true">→</span></button>';
+  const botonCierre = '<button class="cta" id="empezar2" type="button">' +
+    'Comenzar el test ahora <span aria-hidden="true">→</span></button>';
+
+  // Con la puerta puesta, el boton del cierre no puede empezar el test: lleva
+  // al codigo, que es lo unico que abre. Mandar a alguien hasta abajo y dejarlo
+  // ahi sin decirle por que no pasa nada seria peor que no poner boton.
+  const alCierre = puertaCerrada
+    ? '<button class="cta" id="alaPuerta" type="button">Introducir el código de acceso ' +
+      '<span aria-hidden="true">↑</span></button>'
+    : botonCierre;
+
+  const selectorDeIdiomas =
+    '<div class="idiomas">' +
+      '<button class="idioma" aria-current="true">ES</button><span aria-hidden="true">·</span>' +
+      '<button class="idioma" data-idioma="ca">CA</button><span aria-hidden="true">·</span>' +
+      '<button class="idioma" data-idioma="en">EN</button>' +
+    '</div>';
+
+  app.innerHTML = PORTADA
+    .replace(HUECO_CTA_HERO, puertaCerrada ? laPuerta : botonHero)
+    .replace(HUECO_CTA_FINAL, alCierre)
+    .replace(HUECO_IDIOMAS, selectorDeIdiomas)
+    .replace(HUECO_AVISO, FALLOS.length
+      ? '<div class="fallo">Aviso: la autocomprobación del cálculo no coincide en: ' +
+        FALLOS.join(", ") + '. No uses estos resultados.</div>'
+      : "")
+    + '<dialog class="panel" id="panelIdioma" aria-labelledby="panelIdiomaT">' +
+        '<h2 id="panelIdiomaT"></h2>' +
+        '<div id="panelIdiomaC"></div>' +
+        '<button class="boton" id="panelIdiomaX"></button>' +
+      '</dialog>';
+
+  // Los desplegables. Se abren y se cierran con el mismo boton, y el estado va
+  // en aria-expanded para que un lector de pantalla lo cante igual que se ve.
+  for (const cab of document.querySelectorAll(".desplegable__cab")) {
+    cab.onclick = () => {
+      const cuerpo = document.getElementById(cab.getAttribute("aria-controls"));
+      const abierto = cab.getAttribute("aria-expanded") === "true";
+      cab.setAttribute("aria-expanded", String(!abierto));
+      cuerpo.hidden = abierto;
+    };
+  }
+
+  const empezar2 = document.getElementById("empezar2");
+  if (empezar2) empezar2.onclick = () => { pantalla = "test"; pintar(); };
+
+  const alaPuerta = document.getElementById("alaPuerta");
+  if (alaPuerta) alaPuerta.onclick = () => {
+    const campo = document.getElementById("codigo");
+    campo.scrollIntoView({ behavior: "smooth", block: "center" });
+    campo.focus({ preventScroll: true });
+  };
+
   const empezar = document.getElementById("empezar");
   if (empezar) empezar.onclick = () => { pantalla = "test"; pintar(); };
 

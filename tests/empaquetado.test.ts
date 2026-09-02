@@ -15,6 +15,7 @@ import { empaquetarMotor } from "../tools/empaquetar.mjs";
 import { construirModelo } from "../src/services/pipeline.ts";
 import { renderInforme } from "../src/services/render-informe.js";
 import { cargarRecursos, cargarEjemplo } from "../tools/recursos.mjs";
+import { paginaDeInicio } from "../src/pagina/portada.mjs";
 import type { Responses } from "../src/services/scoring.ts";
 
 const raiz = join(dirname(fileURLToPath(import.meta.url)), "..");
@@ -189,4 +190,97 @@ test("el informe se abre ya y la redacción arranca sola", () => {
   // Y solo una vez: si se pidiera en cada dibujo, se pagaría varias veces.
   assert.ok(pagina.includes("yaPedida = true"), "nada impide pedirla dos veces");
   assert.ok(!pagina.includes("Redactando tu informe"), "queda la pantalla de espera vieja");
+});
+
+test("la pantalla de inicio dice lo que el motor calcula de verdad", () => {
+  // Lo que la portada afirma sobre el instrumento tiene que salir de los mismos
+  // datos que usa el motor, no de lo que alguien recordara al escribirla. Si un
+  // día cambia el número de ítems o el nombre de una faceta, esto se pone rojo.
+  const pagina = readFileSync(join(raiz, "test-identify.html"), "utf8");
+  const recursos = cargarRecursos();
+
+  const inicio = paginaDeInicio(recursos);
+  assert.ok(inicio.includes("60 ítems"), "no dice cuántos ítems tiene");
+  assert.ok(pagina.includes("60 ítems"), "el texto no llega a la página");
+  assert.equal(recursos.config.questions.length, 60, "ya no son 60 ítems");
+  assert.equal(recursos.config.facets.length, 15);
+  assert.equal(recursos.config.domains.length, 5);
+
+  // Los cinco dominios y las quince facetas, con el nombre que usa el informe.
+  for (const d of recursos.config.domains) {
+    assert.ok(inicio.includes(recursos.labels.domains[d.id]), `falta ${d.id}`);
+  }
+  for (const f of recursos.config.facets) {
+    assert.ok(inicio.includes(recursos.labels.facets[f.id]), `falta la faceta ${f.id}`);
+  }
+
+  // El acrónimo y el instrumento son cosas distintas, y la pantalla lo dice.
+  assert.ok(inicio.includes("Big Five/OCEAN"), "no nombra el modelo");
+  assert.ok(inicio.includes("Big Five Inventory-2"), "no nombra el instrumento");
+  assert.ok(inicio.includes("BFI-2 © Oliver P. John y Christopher J. Soto"), "falta la atribución");
+  for (const doi of [recursos.fuentes.instrumento.doi, recursos.fuentes.adaptacion.doi]) {
+    assert.ok(inicio.includes(doi), `falta el DOI ${doi}`);
+  }
+});
+
+test("la pantalla de inicio no promete lo que el test no puede dar", () => {
+  // Las bandas de este informe salen de la escala, no de una muestra normativa.
+  // Decir «percentil» o «por encima de la media» sería anunciar algo que no se
+  // calcula. Y el determinismo es la otra forma fácil de mentir aquí.
+  const inicio = paginaDeInicio(cargarRecursos());
+
+  // «Percentil» a secas no vale como prohibida: la pantalla dice, y tiene que
+  // decir, que este informe NO usa percentiles normativos. Lo que no puede
+  // aparecer es la afirmación de una comparación que nadie ha calculado.
+  const prohibidas = [
+    "perteneces al percentil", "estás en el percentil", "por encima del",
+    "superas a la media", "comparado con la población",
+    "100% fiable", "100% científico", "infalible", "garantiza", "predice exactamente",
+    "define quién eres", "descubre quién eres", "tu verdadera personalidad", "avalado por",
+  ];
+  // Negadas sí valen —y hacen falta: «no predice exactamente lo que vas a
+  // hacer» es justo lo que hay que decir. Lo que se busca es la afirmación.
+  const texto = inicio.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").toLowerCase();
+  for (const frase of prohibidas) {
+    let i = texto.indexOf(frase.toLowerCase());
+    while (i !== -1) {
+      const antes = texto.slice(Math.max(0, i - 4), i);
+      assert.ok(/\bno $/.test(antes), `la pantalla afirma «${frase}»`);
+      i = texto.indexOf(frase.toLowerCase(), i + 1);
+    }
+  }
+
+  // Y sí dice lo que hay que decir.
+  for (const debe of ["No es un diagnóstico", "no utiliza percentiles normativos", "más prudencia"]) {
+    assert.ok(inicio.includes(debe), `falta «${debe}»`);
+  }
+});
+
+test("la pantalla de inicio no enseña el perfil de nadie", () => {
+  // La vista previa del informe lleva cifras inventadas y lo dice. Poner las de
+  // una persona real en la puerta de entrada sería publicar su perfil.
+  const pagina = readFileSync(join(raiz, "test-identify.html"), "utf8");
+  const inicio = paginaDeInicio(cargarRecursos());
+  assert.ok(inicio.includes("Ejemplo visual · cifras inventadas"), "la muestra no se identifica como ejemplo");
+  assert.ok(pagina.includes("Ejemplo visual"), "la muestra no llega a la página");
+  for (const rastro of ["Maria Dolors", "Dolors Crous", "Persona de ejemplo"]) {
+    assert.ok(!inicio.includes(rastro), `la pantalla enseña «${rastro}»`);
+  }
+});
+
+test("la pantalla se puede usar con el teclado y en un móvil", () => {
+  const pagina = readFileSync(join(raiz, "test-identify.html"), "utf8");
+  // Sin esto el móvil dibuja la página a 980 px y la aleja hasta que cabe.
+  assert.ok(pagina.includes('name="viewport"'), "falta la etiqueta viewport");
+  assert.ok(pagina.includes('<html lang="es">'), "la página no declara su idioma");
+  // Los desplegables son botones de verdad y cantan su estado.
+  const inicio = paginaDeInicio(cargarRecursos());
+  assert.ok(inicio.includes('aria-expanded="false"'), "los desplegables no dicen si están abiertos");
+  assert.ok(inicio.includes('aria-controls="quePuedeAportar"'), "el desplegable no dice qué controla");
+  assert.ok(inicio.includes('aria-controls="baseCientifica"'), "el acordeón no dice qué controla");
+  // Los dibujos decorativos no se leen en voz alta.
+  const svgs = inicio.match(/<svg[^>]*>/g) ?? [];
+  for (const svg of svgs) {
+    assert.ok(/aria-hidden="true"|role="img"/.test(svg), `un dibujo sin aria-hidden: ${svg.slice(0, 60)}`);
+  }
 });
