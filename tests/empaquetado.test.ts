@@ -142,3 +142,19 @@ test("la portada ofrece los tres idiomas y explica los dos que faltan", () => {
   assert.ok(pagina.includes("English is on the way"), "falta la explicación en inglés");
   assert.ok(pagina.includes("<dialog"), "las explicaciones no se abren en un panel");
 });
+
+test("la puerta pregunta el código al servidor, nunca lo lleva dentro", () => {
+  // Si la página comprobara el código ella misma tendría que llevarlo, y quien
+  // abriera el código fuente lo vería: la puerta dejaría de ser una puerta.
+  // Por eso hay una función que lo valida y aquí solo viaja la respuesta.
+  const pagina = readFileSync(join(raiz, "test-identify.html"), "utf8");
+  assert.ok(pagina.includes('id="puerta"'), "no hay pantalla de entrada");
+  assert.ok(pagina.includes("/api/entrar"), "la puerta no pregunta al servidor");
+  assert.ok(
+    pagina.includes('id="empezar"'),
+    "el fichero local se quedaría sin forma de empezar: ahí no hay puerta",
+  );
+  for (const prohibido of ["CODIGO_ACCESO", "process.env"]) {
+    assert.ok(!pagina.includes(prohibido), `la página lleva «${prohibido}»`);
+  }
+});

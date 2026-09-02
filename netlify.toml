@@ -18,6 +18,12 @@
 [functions]
   node_bundler = "esbuild"
 
+# La puerta: comprueba el código de acceso. No cuesta nada y no llama a la API.
+[[redirects]]
+  from = "/api/entrar"
+  to = "/.netlify/functions/entrar"
+  status = 200
+
 # La función redacta el informe con la clave de la API, que vive en las
 # variables de entorno del sitio y no baja nunca al navegador.
 [[redirects]]

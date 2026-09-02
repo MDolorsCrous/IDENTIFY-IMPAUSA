@@ -165,6 +165,16 @@ const html = `<title>Test Identify</title>
   .acciones{display:flex;gap:.8rem;flex-wrap:wrap}
   .boton--claro{background:var(--tarjeta);color:var(--ink);border:1px solid var(--borde)}
 
+  /* La puerta. El código lo valida el servidor, no esta página */
+  .puerta{display:flex;flex-direction:column;gap:.2rem;align-items:center;width:100%;max-width:22rem}
+  .puerta .campo{margin-bottom:.1rem;text-align:center;align-items:center}
+  .puerta__fila{display:flex;gap:.5rem;width:100%}
+  .puerta__fila input{flex:1;font:inherit;color:inherit;background:var(--tarjeta);
+    border:1px solid var(--borde);border-radius:5px;padding:.7rem .8rem;min-width:0}
+  .puerta__fila .boton{padding:.7rem 1.4rem;white-space:nowrap}
+  .puerta__error{margin:.5rem 0 0;font-size:.88rem;color:#B03030}
+  @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .puerta__error{color:#E88}}
+
   /* Idiomas: no cambian la lengua, explican por qué el test está en una sola */
   .idiomas{display:flex;gap:.15rem;align-items:center;font-size:.82rem;color:var(--ink-soft)}
   .idioma{background:none;border:0;padding:.3rem .5rem;border-radius:4px;cursor:pointer;
@@ -265,7 +275,21 @@ function portada(){
         <span class="dato">Sin registro</span>
         <span class="dato">Se calcula en tu navegador</span>
       </div>
-      <button class="boton" id="empezar">Empezar cuestionario</button>
+      \${
+        HAY_SERVIDOR && !recuerdaCodigo.leer()
+          ? \`<form class="puerta" id="puerta">
+               <label class="campo" for="codigo">Código de acceso
+                 <span>Te lo da quien te ha pasado el enlace</span>
+               </label>
+               <div class="puerta__fila">
+                 <input id="codigo" name="codigo" type="text" autocomplete="off"
+                        autocapitalize="off" spellcheck="false" required>
+                 <button class="boton" type="submit">Entrar</button>
+               </div>
+               <p class="puerta__error" id="puertaError" role="alert" hidden></p>
+             </form>\`
+          : '<button class="boton" id="empezar">Empezar cuestionario</button>'
+      }
       <div class="idiomas">
         <button class="idioma" aria-current="true">ES</button><span>·</span>
         <button class="idioma" data-idioma="ca">CA</button><span>·</span>
@@ -278,7 +302,49 @@ function portada(){
       <div id="panelIdiomaC"></div>
       <button class="boton" id="panelIdiomaX"></button>
     </dialog>\`;
-  document.getElementById("empezar").onclick = () => { pantalla = "test"; pintar(); };
+  const empezar = document.getElementById("empezar");
+  if (empezar) empezar.onclick = () => { pantalla = "test"; pintar(); };
+
+  // La puerta. El código lo comprueba el servidor: si lo comprobara esta página
+  // tendría que llevarlo dentro, y quien mirase el código fuente lo vería.
+  const puerta = document.getElementById("puerta");
+  if (puerta) puerta.onsubmit = async (e) => {
+    e.preventDefault();
+    const campo = document.getElementById("codigo");
+    const aviso = document.getElementById("puertaError");
+    const boton = puerta.querySelector("button");
+    const codigo = campo.value.trim();
+    if (!codigo) return;
+
+    aviso.hidden = true;
+    boton.disabled = true;
+    const etiqueta = boton.textContent;
+    boton.textContent = "Comprobando…";
+    try {
+      const r = await fetch("/api/entrar", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ codigo }),
+      });
+      if (r.ok) {
+        recuerdaCodigo.guardar(codigo);
+        pantalla = "test";
+        pintar();
+        return;
+      }
+      const datos = await r.json().catch(() => ({}));
+      aviso.textContent = datos.error || "No se ha podido comprobar el código.";
+      aviso.hidden = false;
+      campo.select();
+    } catch {
+      aviso.textContent = "No se ha podido conectar. Comprueba la conexión.";
+      aviso.hidden = false;
+    } finally {
+      boton.disabled = false;
+      boton.textContent = etiqueta;
+    }
+  };
+
   for (const b of document.querySelectorAll("[data-idioma]")) {
     b.onclick = () => abrirPanelIdioma(b.dataset.idioma);
   }
