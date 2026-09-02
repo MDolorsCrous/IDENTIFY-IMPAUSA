@@ -165,9 +165,20 @@ const html = `<title>Test Identify</title>
   .acciones{display:flex;gap:.8rem;flex-wrap:wrap}
   .boton--claro{background:var(--tarjeta);color:var(--ink);border:1px solid var(--borde)}
 
-  /* Mientras Claude escribe, con el informe ya delante */
-  .redactando{display:flex;align-items:center;gap:.6rem;font-size:.88rem;color:var(--ink-soft)}
-  .redactando .latido span{width:.45rem;height:.45rem}
+  /* Mientras Claude escribe, con el informe ya delante.
+     Va fija abajo a la derecha: el aviso pequeño en la barra de arriba pasaba
+     desapercibido y la gente se quedaba sin saber si estaba pasando algo. */
+  .trabajando{position:fixed;right:1.25rem;bottom:1.25rem;z-index:10;width:min(22rem,calc(100vw - 2.5rem));
+    background:var(--tarjeta);border:1px solid var(--borde);border-left:3px solid var(--naranja);
+    border-radius:8px;padding:1rem 1.1rem;box-shadow:var(--sombra-alta)}
+  .trabajando__t{margin:0 0 .3rem;font-weight:600;color:var(--titulo)}
+  .trabajando__d{margin:0 0 .8rem;font-size:.88rem;color:var(--ink-soft)}
+  .trabajando__barra{height:6px;background:var(--track);border-radius:3px;overflow:hidden}
+  .trabajando__barra span{display:block;height:100%;width:0;border-radius:3px;
+    background:linear-gradient(90deg,#EF8A4D,#B9BC72,#7FAE79);transition:width .9s linear}
+  .trabajando__pie{margin:.5rem 0 0;font-size:.8rem;color:var(--ink-soft);
+    font-variant-numeric:tabular-nums}
+  @media print{.trabajando{display:none}}
 
   /* Los puntitos. Un rato quieto parece que se ha colgado */
   .latido{display:flex;gap:.5rem}
@@ -271,6 +282,7 @@ let persona = "";
 // una pantalla de espera es un minuto perdido; mirando tu propio informe, no.
 let redactando = false;
 let yaPedida = false;
+let empezoLaRedaccion = 0;
 let prosa = {};          // la redaccion, si se pega
 const app = document.getElementById("app");
 // esc, num y pos ya vienen en el paquete del motor: no se redeclaran aqui,
@@ -586,19 +598,25 @@ function informe(){
     <div class="barra-informe">
       <button class="enlace" id="volver">← Volver a las puntuaciones</button>
       <div class="acciones">
-        \${
-          redactando
-            ? '<span class="redactando"><span class="latido" aria-hidden="true"><span></span><span></span><span></span></span>' +
-              'Claude está redactando los pasajes de coaching. Puedes ir leyendo.</span>'
-            : ""
-        }
         \${conProsa || redactando || !HAY_SERVIDOR ? "" : '<button class="boton" id="generar">Generar el informe completo</button>'}
         \${conProsa || redactando || HAY_SERVIDOR ? "" : '<button class="boton boton--claro" id="encargo">Copiar el encargo</button><button class="enlace" id="encargoLargo" title="Para una conversación que no tenga cargada la skill identify-bfi2-knowledge">sin la skill</button>'}
         \${redactando || (HAY_SERVIDOR && !conProsa) ? "" : '<button class="boton boton--claro" id="pegar">' + (conProsa ? "Cambiar la redacción" : "Pegar la redacción") + '</button>'}
         <button class="boton boton--claro" id="imprimir">Imprimir</button>
       </div>
     </div>
-    <iframe id="marco" title="Informe Identify"></iframe>\`;
+    <iframe id="marco" title="Informe Identify"></iframe>
+    \${
+      redactando
+        ? \`<aside class="trabajando" role="status" aria-live="polite">
+             <p class="trabajando__t">Claude está redactando</p>
+             <p class="trabajando__d">Los pasajes de coaching de tu informe. Mientras tanto
+             puedes ir leyendo las puntuaciones y las lecturas de cada faceta.</p>
+             <div class="trabajando__barra"><span id="barraProgreso"></span></div>
+             <p class="trabajando__pie"><span id="barraTiempo">0 s</span> · suele tardar
+             poco más de un minuto</p>
+           </aside>\`
+        : ""
+    }\`;
 
   const marco = document.getElementById("marco");
   marco.srcdoc = html;
@@ -606,9 +624,12 @@ function informe(){
   // La redacción arranca sola la primera vez que se abre el informe, y solo una
   // vez: si vuelves a las puntuaciones y entras otra vez, la que ya está en
   // marcha sigue su camino y no se pide —ni se paga— dos veces.
+  if (redactando) moverLaBarra();
+
   if (HAY_SERVIDOR && !conProsa && !yaPedida) {
     yaPedida = true;
     redactando = true;
+    empezoLaRedaccion = Date.now();
     pintar(); // para que salga el aviso de que se está redactando
     redactarEnElServidor(null, modelo).then((salioBien) => {
       redactando = false;
@@ -661,6 +682,29 @@ const recuerdaCodigo = {
   guardar(c){ try { sessionStorage.setItem("identify-codigo", c); } catch {} },
   olvidar(){ try { sessionStorage.removeItem("identify-codigo"); } catch {} },
 };
+
+/**
+ * La barra de la tarjeta de espera.
+ *
+ * No hay progreso real que medir —la API no lo da— asi que se muestra el tiempo
+ * transcurrido contra lo que suele tardar, y se frena en el 92%: llegar al 100%
+ * y quedarse ahi seria mentir. Los segundos que se ven al lado son de verdad.
+ */
+const TARDA_HABITUALMENTE = 85;
+
+function moverLaBarra(){
+  const barra = document.getElementById("barraProgreso");
+  const reloj = document.getElementById("barraTiempo");
+  if (!barra || !reloj) return;
+  const tic = () => {
+    if (!redactando) return;
+    const s = (Date.now() - empezoLaRedaccion) / 1000;
+    barra.style.width = Math.min(92, (s / TARDA_HABITUALMENTE) * 92).toFixed(1) + "%";
+    reloj.textContent = Math.round(s) + " s";
+    setTimeout(tic, 1000);
+  };
+  tic();
+}
 
 async function redactarEnElServidor(boton, modelo){
   // El modelo se reconstruye aqui si no viene: cuando se llama desde el boton

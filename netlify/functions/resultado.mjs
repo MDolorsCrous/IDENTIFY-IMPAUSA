@@ -43,7 +43,13 @@ export default async function handler(peticion) {
 
   let guardado;
   try {
-    guardado = await getStore(ALMACEN).get(id, { type: "json" });
+    // `consistency: "strong"` no es opcional aqui, aunque lo parezca. Netlify
+    // Blobs lee con consistencia EVENTUAL por defecto, y eso significa que una
+    // lectura puede no ver todavia lo que se acaba de escribir. Paso de verdad:
+    // el informe estaba redactado y guardado a los 83 segundos, esto seguia
+    // contestando «trabajando», y la pagina se rendia a los cuatro minutos
+    // diciendo que tardaba demasiado. Con lectura fuerte, en cuanto esta, esta.
+    guardado = await getStore(ALMACEN).get(id, { type: "json", consistency: "strong" });
   } catch (e) {
     console.error("No se ha podido leer el resultado:", e?.message);
     return json(502, { error: "No se ha podido recuperar el informe." });

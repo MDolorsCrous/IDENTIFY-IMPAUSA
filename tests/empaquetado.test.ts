@@ -181,10 +181,11 @@ test("el informe se abre ya y la redacción arranca sola", () => {
   // los pasajes de coaching se rellenan cuando llegan.
   const pagina = readFileSync(join(raiz, "test-identify.html"), "utf8");
   assert.ok(pagina.includes("!conProsa && !yaPedida"), "la redacción no arranca sola");
-  assert.ok(
-    pagina.includes("Claude está redactando los pasajes de coaching"),
-    "no se avisa de que se está redactando",
-  );
+  assert.ok(pagina.includes("Claude está redactando"), "no se avisa de que se está redactando");
+  // El aviso va en una tarjeta fija con su barra: el que estaba en la barra de
+  // arriba pasaba desapercibido y la gente no sabia si estaba pasando algo.
+  assert.ok(pagina.includes('class="trabajando"'), "el aviso no está en su tarjeta");
+  assert.ok(pagina.includes("barraProgreso"), "la tarjeta no lleva barra de avance");
   // Y solo una vez: si se pidiera en cada dibujo, se pagaría varias veces.
   assert.ok(pagina.includes("yaPedida = true"), "nada impide pedirla dos veces");
   assert.ok(!pagina.includes("Redactando tu informe"), "queda la pantalla de espera vieja");
