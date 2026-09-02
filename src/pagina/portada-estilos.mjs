@@ -107,8 +107,36 @@ export const estilosPortada = `
   .desplegable__flecha{flex:none;font-size:1.5rem;line-height:1;color:var(--verde-medio);
     transition:transform .2s ease}
   .desplegable__cab[aria-expanded="true"] .desplegable__flecha{transform:rotate(90deg)}
-  .desplegable__cuerpo{padding:0 1.4rem 1.4rem}
+  .desplegable__cuerpo{padding:0 1.4rem 1.6rem}
   .desplegable__cuerpo .lista{margin-top:0}
+  .desplegable__cuerpo > p:first-child{margin-top:0}
+
+  /* ---- La pila de pliegues ---- */
+  /* Cerrada, la pila tiene que seguir contando algo: por eso cada cabecera lleva
+     su numero, su titulo y una linea de resumen. Quien pasa de largo se lleva
+     los siete titulares; quien quiera el detalle, lo abre. */
+  .pila{display:flex;flex-direction:column;gap:.7rem}
+  .pliegue{background:var(--ground);border:1px solid var(--borde);border-radius:14px;
+    transition:border-color .14s ease, box-shadow .14s ease}
+  .banda--blanca .pliegue{background:var(--ground)}
+  .pliegue:hover{border-color:var(--verde-suave-borde);box-shadow:0 4px 14px rgba(39,98,79,.07)}
+  .pliegue .desplegable__cab{align-items:flex-start;gap:.9rem;padding:1.1rem 1.3rem}
+  .pliegue__n{flex:none;display:grid;place-items:center;width:1.9rem;height:1.9rem;
+    border-radius:50%;background:var(--menta);color:var(--verde);font-weight:700;
+    font-family:"Montserrat",system-ui,sans-serif;font-size:.86rem;margin-top:.1rem}
+  .pliegue__texto{flex:1;min-width:0}
+  .pliegue .desplegable__flecha{margin-top:.1rem}
+  .pliegue[data-abierto="si"]{border-color:var(--verde-suave-borde)}
+  .pliegue[data-abierto="si"] .pliegue__n{background:var(--verde);color:#FFFDFC}
+  /* Dentro de un pliegue, las tarjetas van sobre el papel de la pagina para que
+     se distingan del fondo del propio pliegue. */
+  .pliegue .tarjeta,.pliegue .confianza > div,.pliegue .pasos li,.pliegue .ocean,
+  .pliegue .recorrido li{background:var(--tarjeta)}
+  .pliegue__sub{font-family:"Montserrat",system-ui,sans-serif;font-weight:600;
+    font-size:1.12rem;color:var(--titulo);margin:2.2rem 0 .8rem;
+    padding-top:1.4rem;border-top:1px solid var(--borde)}
+  .pliegue .apartados{margin-bottom:0}
+  .pliegue .oceanes{justify-content:flex-start}
 
   .lista{margin:0 0 1rem;padding-left:1.15rem;display:flex;flex-direction:column;gap:.5rem}
   .lista li{max-width:64ch}

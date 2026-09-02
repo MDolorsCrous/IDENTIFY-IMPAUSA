@@ -276,8 +276,16 @@ test("la pantalla se puede usar con el teclado y en un móvil", () => {
   // Los desplegables son botones de verdad y cantan su estado.
   const inicio = paginaDeInicio(cargarRecursos());
   assert.ok(inicio.includes('aria-expanded="false"'), "los desplegables no dicen si están abiertos");
-  assert.ok(inicio.includes('aria-controls="quePuedeAportar"'), "el desplegable no dice qué controla");
-  assert.ok(inicio.includes('aria-controls="baseCientifica"'), "el acordeón no dice qué controla");
+  // Los siete pliegues de la pila: cada botón tiene que decir qué abre, y ese
+  // sitio tiene que existir. Un aria-controls que apunta a nada es peor que no
+  // ponerlo: un lector de pantalla anuncia algo que luego no encuentra.
+  const controlados = [...inicio.matchAll(/aria-controls="([^"]+)"/g)].map((m) => m[1]);
+  assert.equal(controlados.length, 7, "no hay siete pliegues");
+  for (const id of controlados) {
+    assert.ok(inicio.includes(`id="${id}"`), `aria-controls apunta a «${id}», que no existe`);
+  }
+  assert.ok(controlados.includes("baseCientifica"), "falta el pliegue de la base científica");
+  assert.ok(controlados.includes("informe"), "falta el pliegue del informe");
   // Los dibujos decorativos no se leen en voz alta.
   const svgs = inicio.match(/<svg[^>]*>/g) ?? [];
   for (const svg of svgs) {

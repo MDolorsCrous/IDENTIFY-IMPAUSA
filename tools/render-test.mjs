@@ -398,6 +398,10 @@ function portada(){
       const abierto = cab.getAttribute("aria-expanded") === "true";
       cab.setAttribute("aria-expanded", String(!abierto));
       cuerpo.hidden = abierto;
+      // El pliegue abierto se marca tambien en el contenedor: asi el numero
+      // cambia de color y el borde se enciende, y se ve cual esta abierto sin
+      // tener que mirar la flecha.
+      cab.closest(".desplegable").setAttribute("data-abierto", abierto ? "no" : "si");
     };
   }
 
