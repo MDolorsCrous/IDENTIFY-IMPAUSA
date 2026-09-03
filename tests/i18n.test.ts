@@ -15,7 +15,7 @@ import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 
-import { cargarRecursos } from "../tools/recursos.mjs";
+import { cargarRecursos, cargarIdioma } from "../tools/recursos.mjs";
 
 const raiz = join(dirname(fileURLToPath(import.meta.url)), "..");
 const leer = (rel: string) => JSON.parse(readFileSync(join(raiz, rel), "utf8"));
@@ -101,5 +101,62 @@ test("la estructura no lleva prosa: ni resúmenes ni lecturas en los ficheros ne
 });
 
 test("cargarRecursos rechaza un idioma que no existe", () => {
+  // Ojo: en.json (los ítems del test) ya existe, pero la capa de interpretación
+  // inglesa todavía no; cargarRecursos("en") debe seguir fallando hasta la fase 4.
   assert.throws(() => cargarRecursos("en" as any), /no hay textos para el idioma/);
+});
+
+// ---- El cuestionario en inglés (fase 3): los ítems oficiales y su costura ----
+
+const esIdioma = leer("src/i18n/es.json");
+const enIdioma = leer("src/i18n/en.json");
+const oficialesEn = leer("src/config/enunciados-oficiales-en.json");
+const preguntas = leer("src/config/questions.json") as { id: number }[];
+
+test("los 60 enunciados ingleses visibles son los del apéndice oficial", () => {
+  // La fuente es el apéndice de Soto & John (2017), transcrito y verificado por
+  // tres vías en docs/bfi2-form-en.md. Si en.json se aparta de ahí, se rompe.
+  for (let n = 1; n <= 60; n++) {
+    assert.ok(oficialesEn.oficiales[n], `falta el enunciado oficial ${n}`);
+    assert.equal(enIdioma.questions[n], oficialesEn.enunciados[n], `el ítem ${n} no coincide con el oficial`);
+  }
+});
+
+test("los enunciados ingleses solo se apartan del oficial si lo declaran", () => {
+  // Mismo contrato que el español: hoy no hay desviaciones, y si un día las hay,
+  // van declaradas con su motivo.
+  const declaradas = new Set(oficialesEn.desviaciones.map((d: { item: number }) => String(d.item)));
+  for (let n = 1; n <= 60; n++) {
+    const oficial = oficialesEn.oficiales[n];
+    const mostrado = oficialesEn.enunciados[n];
+    if (declaradas.has(String(n))) {
+      assert.notEqual(mostrado, oficial, `el ítem ${n} está declarado como desviación y no lo es`);
+    } else {
+      assert.equal(mostrado, oficial, `el ítem ${n} se aparta del oficial sin declararlo`);
+    }
+  }
+  for (const d of oficialesEn.desviaciones) {
+    assert.ok(d.motivo?.length > 15, `la desviación del ítem ${d.item} no explica por qué`);
+  }
+});
+
+test("es.json y en.json cubren los mismos 60 ítems, la misma escala y las mismas etiquetas", () => {
+  const ids = preguntas.map((q) => String(q.id)).sort();
+  for (const [nombre, idioma] of [["es", esIdioma], ["en", enIdioma]] as const) {
+    assert.deepEqual(Object.keys(idioma.questions).sort(), ids, `${nombre}.json no cubre exactamente los 60 ítems`);
+    assert.deepEqual(Object.keys(idioma.scale).sort(), ["1", "2", "3", "4", "5"], `${nombre}.json: la escala no es 1-5`);
+    assert.ok(idioma.stem.length > 0, `${nombre}.json no tiene enunciado introductorio`);
+    for (const [n, texto] of Object.entries(idioma.questions)) {
+      assert.ok((texto as string).trim().length > 3, `${nombre}.json: el ítem ${n} está vacío`);
+    }
+  }
+  assert.deepEqual(Object.keys(enIdioma.domains).sort(), Object.keys(esIdioma.domains).sort(), "dominios distintos entre idiomas");
+  assert.deepEqual(Object.keys(enIdioma.facets).sort(), Object.keys(esIdioma.facets).sort(), "facetas distintas entre idiomas");
+});
+
+test("cargarIdioma('en') carga el cuestionario inglés", () => {
+  const en = cargarIdioma("en");
+  assert.equal(Object.keys(en.questions).length, 60);
+  assert.equal(en.scale["1"], "Disagree strongly");
+  assert.equal(en.scale["5"], "Agree strongly");
 });
