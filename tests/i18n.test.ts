@@ -20,7 +20,7 @@ import { cargarRecursos, cargarIdioma } from "../tools/recursos.mjs";
 const raiz = join(dirname(fileURLToPath(import.meta.url)), "..");
 const leer = (rel: string) => JSON.parse(readFileSync(join(raiz, rel), "utf8"));
 
-const IDIOMAS = ["es"];
+const IDIOMAS = ["es", "en"];
 
 const reglas = leer("src/config/interpretation/combinations.json") as { id: string }[];
 const fichas = leer("src/config/interpretation/facetas.json") as Record<string, unknown>;
@@ -101,10 +101,44 @@ test("la estructura no lleva prosa: ni resúmenes ni lecturas en los ficheros ne
 });
 
 test("cargarRecursos rechaza un idioma que no existe", () => {
-  // Ojo: el cuestionario (en.json) y la interfaz (en-textos, en-informe) ya
-  // existen, pero la capa de interpretación inglesa todavía no; cargarRecursos("en")
-  // debe seguir fallando hasta la fase 5.
-  assert.throws(() => cargarRecursos("en" as any), /no hay textos para el idioma/);
+  assert.throws(() => cargarRecursos("fr" as any), /no hay textos para el idioma/);
+});
+
+test("cargarRecursos('en') devuelve la interpretación completa, con la misma forma que el español", () => {
+  const es = cargarRecursos("es");
+  const en = cargarRecursos("en");
+
+  // La estructura mezclada tiene que ser un calco: mismas claves en cada árbol.
+  const fallos: string[] = [];
+  compararEstructura(
+    { rules: es.rules, facetas: es.facetas, fuentes: es.fuentes, labels: es.labels },
+    { rules: en.rules, facetas: en.facetas, fuentes: en.fuentes, labels: en.labels },
+    "recursos",
+    fallos,
+  );
+  assert.deepEqual(fallos, []);
+
+  // La configuración del motor es LA MISMA referencia: nada psicométrico se duplica.
+  assert.equal(en.config.questions, es.config.questions, "questions duplicadas entre idiomas");
+  assert.equal(en.config.facets, es.config.facets, "facets duplicadas entre idiomas");
+  assert.equal(en.config.domains, es.config.domains, "domains duplicados entre idiomas");
+  assert.equal(en.marca, es.marca, "marca duplicada entre idiomas");
+
+  // Lo neutro que viaja dentro de cada regla no puede divergir entre idiomas.
+  for (let i = 0; i < es.rules.length; i++) {
+    const a = es.rules[i] as any, b = en.rules[i] as any;
+    assert.equal(b.id, a.id);
+    assert.equal(b.evidence, a.evidence, `la evidencia de «${a.id}» diverge entre idiomas`);
+    assert.deepEqual(b.conditions, a.conditions, `las condiciones de «${a.id}» divergen`);
+    assert.deepEqual(b.references, a.references, `las citas de «${a.id}» divergen`);
+  }
+
+  // Y las metáforas inglesas cubren las mismas categorías que las españolas.
+  assert.deepEqual(
+    Object.keys(en.metaforas.categorias).sort(),
+    Object.keys(es.metaforas.categorias).sort(),
+    "las categorías de metáforas no coinciden entre idiomas",
+  );
 });
 
 // ---- La interfaz en inglés (fase 4): misma estructura, mismos huecos ----

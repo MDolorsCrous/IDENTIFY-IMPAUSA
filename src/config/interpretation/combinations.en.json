@@ -1,0 +1,158 @@
+{
+  "burnout-aislamiento": {
+    "effect": "Elevated risk of professional burnout",
+    "summary": "Little inclination to socialize, little available energy, distrust toward colleagues and a tendency toward sadness. At work, this combination is associated with a notably higher likelihood of severe physical and emotional exhaustion.",
+    "scope": "work",
+    "evidence": "E2"
+  },
+  "compromiso-y-estatus-social": {
+    "effect": "High occupational commitment and social status",
+    "summary": "Predicts pride in one's professional activity and commitment to work. Interpersonally, high social status, popularity and ease at taking on leadership roles.",
+    "scope": "work",
+    "evidence": "E2"
+  },
+  "ciudadania-organizacional": {
+    "effect": "Organizational citizenship behavior (OCB)",
+    "summary": "Going beyond strict obligations: helping colleagues, contributing ideas for improvement, sustaining team morale and speaking well of the organization.",
+    "scope": "work",
+    "evidence": "E2"
+  },
+  "orientacion-prosocial": {
+    "effect": "Prosocial orientation and volunteering",
+    "summary": "An active interest in relating to others joined with genuine concern for their well-being. It is associated with helping behaviors, altruism, volunteering and satisfying family and couple relationships.",
+    "scope": "interpersonal",
+    "evidence": "E2"
+  },
+  "orientacion-al-poder": {
+    "effect": "Orientation toward power and manipulation",
+    "summary": "Wanting to lead and prevail without empathy for other people's suffering and with no qualms about breaking courtesy. It is the combination that best predicts power-seeking behaviors and a readiness to use others as instruments.",
+    "scope": "interpersonal",
+    "evidence": "E2"
+  },
+  "proposito-y-autoaceptacion": {
+    "effect": "Sense of life purpose and self-acceptance",
+    "summary": "Vitality and enthusiasm, the capacity to meet goals steadily and a mood far from dejection. It predicts clarity of direction in life and satisfaction with one's own worth.",
+    "scope": "personal",
+    "evidence": "E2"
+  },
+  "crecimiento-personal": {
+    "effect": "High personal growth",
+    "summary": "Enthusiasm for exploring, a will to learn in depth and a desire to empathize with one's surroundings. These people feel they evolve and mature over time.",
+    "scope": "personal",
+    "evidence": "E2"
+  },
+  "conexion-social": {
+    "effect": "Strong social and community connection",
+    "summary": "Enthusiasm and social activity while keeping courtesy and respect for norms. It predicts more solid community, friendship and companionship bonds.",
+    "scope": "interpersonal",
+    "evidence": "E2"
+  },
+  "benevolencia": {
+    "effect": "Benevolent behavior",
+    "summary": "Emotional empathy, belief in other people's goodness and an open mind. It predicts everyday prosocial behaviors: lending, supporting, caring for one's close circle.",
+    "scope": "interpersonal",
+    "evidence": "E2"
+  },
+  "proteccion-frente-al-conflicto": {
+    "effect": "Protection against conflict and quitting",
+    "summary": "Good beliefs about colleagues together with empathy work as a workplace protector: they raise satisfaction and reduce the wish to leave the work environment.",
+    "scope": "work",
+    "evidence": "E2"
+  },
+  "orientacion-a-la-seguridad": {
+    "effect": "Orientation toward safety and the predictable",
+    "summary": "Values oriented toward avoiding risk, toward personal safety and keeping surroundings predictable. Profiles that move away from stimulation-seeking and from breaking routines.",
+    "scope": "personal",
+    "evidence": "E2"
+  },
+  "salud-global": {
+    "effect": "Better self-perceived overall health",
+    "summary": "The capacity to sustain orderly, healthy life habits while keeping emotional and interpersonal balance. The three facets together independently predict better perceived health.",
+    "scope": "health",
+    "evidence": "E2"
+  },
+  "rendimiento-global": {
+    "effect": "High overall performance",
+    "summary": "The whole Conscientiousness domain: designing orderly systems, having the persistence to execute them and a dutiful commitment toward the team.",
+    "scope": "work",
+    "evidence": "E2"
+  },
+  "dominio-del-entorno": {
+    "effect": "Environmental mastery",
+    "summary": "Being resolute and goal-focused while keeping one's mood far from dejection. It is among the strongest predictors of feeling competent to manage the demands of daily life.",
+    "scope": "personal",
+    "evidence": "E2"
+  },
+  "hedonismo": {
+    "effect": "Orientation toward immediate gratification",
+    "summary": "Little work discipline and a low sense of duty together with a desire to be with others. It favors putting leisure and short-term gratification ahead of long-term goals.",
+    "scope": "personal",
+    "evidence": "E2"
+  },
+  "autonomia": {
+    "effect": "High psychological autonomy",
+    "summary": "Meeting one's own duties, the mental flexibility to generate solutions and managing tension without anguish. It predicts independent decisions, little influenced by what others do or think.",
+    "scope": "personal",
+    "evidence": "E2"
+  },
+  "busqueda-de-estimulacion": {
+    "effect": "Stimulation seeking",
+    "summary": "Keeping one's word, high social energy and tolerance for disorder. It leads to actively seeking stimulating situations that break the routine.",
+    "scope": "personal",
+    "evidence": "E2"
+  },
+  "resistencia-al-estres": {
+    "effect": "High stress resistance",
+    "summary": "Managing tension without anguish and sustaining an even mood. It is the strongest predictor that colleagues and external evaluators will describe someone as stress-resistant.",
+    "scope": "work",
+    "evidence": "E2"
+  },
+  "falta-de-proposito": {
+    "effect": "Low sense of life direction",
+    "summary": "Frequent sadness or insecurity, a lack of vitality and difficulty committing to one's own obligations. It is associated with the lowest levels of life meaning and clear goals.",
+    "scope": "personal",
+    "evidence": "E2"
+  },
+  "relaciones-positivas": {
+    "effect": "Positive relationships and self-acceptance",
+    "summary": "An absence of dejection together with a desire to connect and empathic tenderness. It predicts satisfying interpersonal relationships and acceptance of one's own identity.",
+    "scope": "interpersonal",
+    "evidence": "E2"
+  },
+  "hostilidad-y-conflicto": {
+    "effect": "Risk of hostility and interpersonal conflict",
+    "summary": "Reacting with quick irritation on a base of little courtesy and little empathy. It is associated with dissatisfaction, confrontational behavior and severe conflict both in couples and at work.",
+    "scope": "interpersonal",
+    "evidence": "E2"
+  },
+  "burnout-irritabilidad": {
+    "effect": "Elevated risk of professional burnout",
+    "summary": "An unstable mood joined with little interest in connecting with colleagues and, therefore, little social support available. It is one of the direct routes to severe professional burnout.",
+    "scope": "work",
+    "evidence": "E2"
+  },
+  "autodireccion": {
+    "effect": "Strong self-direction",
+    "summary": "A hunger for knowledge joined with the capacity to generate new visions. It defines exploratory profiles that investigate and act outside the norm out of intrinsic motivation.",
+    "scope": "personal",
+    "evidence": "E2"
+  },
+  "universalismo": {
+    "effect": "Orientation toward universalism",
+    "summary": "Valuing beauty and one's surroundings together with a positive belief in others. It is associated with concern for the general well-being and with behaviors supporting collective and environmental causes.",
+    "scope": "personal",
+    "evidence": "E2"
+  },
+  "apertura-plena": {
+    "effect": "Full openness to experience",
+    "summary": "The whole Open-Mindedness domain: a preference for a wide, complex range of perceptual, cognitive and affective experiences, actively seeking novelty.",
+    "scope": "personal",
+    "evidence": "E2"
+  },
+  "conformidad-y-tradicion": {
+    "effect": "Conformity and tradition",
+    "summary": "Little interest in generating new alternatives, rigid respect for norms and authority figures, and little pursuit of the social spotlight. It predicts conformist behavior and attachment to established rules.",
+    "scope": "personal",
+    "evidence": "E2"
+  }
+}

@@ -1,0 +1,671 @@
+{
+  "categorias": {
+    "11": {
+      "nombre": "Emotional Regulation",
+      "metaforas": [
+        {
+          "nombre": "Tightrope Walker",
+          "texto": "Managing emotions is like walking a tightrope, requiring attention and balance."
+        },
+        {
+          "nombre": "Ocean Waves",
+          "texto": "Emotions come and go like the waves of the sea, requiring awareness and acceptance."
+        },
+        {
+          "nombre": "Facing the Storm",
+          "texto": "Regulating emotions helps you face turbulent moments with more strength."
+        },
+        {
+          "nombre": "Sailing Boat",
+          "texto": "A boat adjusting its sails symbolizes the adaptation needed for emotional balance."
+        },
+        {
+          "nombre": "Safe Harbor",
+          "texto": "A calm harbor represents a safe space to process and deal with emotions."
+        },
+        {
+          "nombre": "Careful Gardener",
+          "texto": "A gardener tends their plants, just as you can tend your emotional well-being."
+        }
+      ]
+    },
+    "16": {
+      "nombre": "Hope and Optimism",
+      "metaforas": [
+        {
+          "nombre": "Rising Sun",
+          "texto": "It symbolizes new beginnings and the promise of brighter days."
+        },
+        {
+          "nombre": "Light at the End of the Tunnel",
+          "texto": "Hope shines like a light at the end of the tunnel, guiding you forward."
+        },
+        {
+          "nombre": "Spring Sprout",
+          "texto": "It represents the potential for growth and renewal in difficult times."
+        },
+        {
+          "nombre": "Starry Sky",
+          "texto": "It reminds you that, even in darkness, there is beauty and hope."
+        },
+        {
+          "nombre": "Open Door",
+          "texto": "It symbolizes new opportunities and the possibility of change."
+        },
+        {
+          "nombre": "Winding Road",
+          "texto": "Life follows a road full of bends, leading to hope and discoveries."
+        }
+      ]
+    },
+    "18": {
+      "nombre": "Impulse Control",
+      "metaforas": [
+        {
+          "nombre": "Bouncing Ball",
+          "texto": "Impulsive decisions can bounce back, leading to unexpected results."
+        },
+        {
+          "nombre": "Speed Bump",
+          "texto": "Just as a bump slows the car down, a pause can help brake your impulses."
+        },
+        {
+          "nombre": "Wild Horse",
+          "texto": "An unbridled horse represents runaway impulses; learn to master them for more control."
+        },
+        {
+          "nombre": "Frayed Rope",
+          "texto": "A worn rope symbolizes the delicate balance needed to manage impulsive behavior."
+        },
+        {
+          "nombre": "Open Flame",
+          "texto": "An open flame catches quickly; in the same way, impulsive decisions can cause emotional \"burns\"."
+        },
+        {
+          "nombre": "Tightrope Balancer",
+          "texto": "Keeping your balance on a rope takes focus, just like controlling your impulses in daily life."
+        }
+      ]
+    },
+    "20": {
+      "nombre": "Leadership",
+      "metaforas": [
+        {
+          "nombre": "Guiding Star",
+          "texto": "Imagine being a guiding star, lighting the way for those who seek your direction."
+        },
+        {
+          "nombre": "Strong Oak",
+          "texto": "Like a sturdy oak, true leaders stand firm and offer support to those around them."
+        },
+        {
+          "nombre": "Beacon of Light",
+          "texto": "A lighthouse shines brightly, representing the clarity and vision leaders bring to their teams."
+        },
+        {
+          "nombre": "Steering Wheel",
+          "texto": "Picture yourself at the wheel, guiding your team toward shared goals."
+        },
+        {
+          "nombre": "Compass of Integrity",
+          "texto": "A compass pointing to true north helps make ethical decisions in leadership."
+        },
+        {
+          "nombre": "Ship Under Way",
+          "texto": "A ship facing rough seas symbolizes the courage needed to lead in hard times."
+        }
+      ]
+    },
+    "22": {
+      "nombre": "Mindfulness and Presence",
+      "metaforas": [
+        {
+          "nombre": "Still Water",
+          "texto": "Like still water, mindfulness lets you reflect without the distractions around you."
+        },
+        {
+          "nombre": "Gentle Breeze",
+          "texto": "A gentle breeze invites you to feel the present moment, touching your soul softly."
+        },
+        {
+          "nombre": "Lotus Flower",
+          "texto": "The lotus flower blooms beautifully, symbolizing the awakening of inner awareness."
+        },
+        {
+          "nombre": "Footprints in the Sand",
+          "texto": "Each footprint in the sand recalls the importance of being present on life's journey."
+        },
+        {
+          "nombre": "Open Book",
+          "texto": "An open book represents the importance of staying receptive to life's experiences."
+        },
+        {
+          "nombre": "Dancing Leaves",
+          "texto": "Leaves dancing in the wind illustrate the beauty of being in the moment and letting go."
+        }
+      ]
+    },
+    "23": {
+      "nombre": "Motivation and Procrastination",
+      "metaforas": [
+        {
+          "nombre": "Turtle's Pace",
+          "texto": "Progress can feel slow, like a turtle's, but every small step counts toward your goals."
+        },
+        {
+          "nombre": "Stuck Car",
+          "texto": "A car stuck in the mud symbolizes how procrastination can block your progress."
+        },
+        {
+          "nombre": "Mountain Climb",
+          "texto": "Climbing a mountain takes effort, but every step brings you closer to the top."
+        },
+        {
+          "nombre": "Dancing Flames",
+          "texto": "Dancing flames represent the spark of motivation that drives action when it is fed."
+        },
+        {
+          "nombre": "Open Door",
+          "texto": "An open door symbolizes the opportunities waiting for you once you overcome hesitation."
+        },
+        {
+          "nombre": "Bicycle Ride",
+          "texto": "Riding a bicycle requires steady pedaling; in the same way, motivation arises with continuous effort."
+        }
+      ]
+    },
+    "26": {
+      "nombre": "Perfectionism",
+      "metaforas": [
+        {
+          "nombre": "Imperfect Puzzle",
+          "texto": "Not every piece has to fit perfectly to create something beautiful."
+        },
+        {
+          "nombre": "Broken Mirror",
+          "texto": "A broken mirror symbolizes the distortion caused by chasing unattainable standards."
+        },
+        {
+          "nombre": "Rough Draft",
+          "texto": "Life is a draft; it is fine to erase and start again while you find your way."
+        },
+        {
+          "nombre": "Faded Photograph",
+          "texto": "A faded photograph captures the beauty of imperfect moments and memories."
+        },
+        {
+          "nombre": "Weathered Stone",
+          "texto": "A weathered stone tells a story, revealing the beauty that comes from imperfections."
+        },
+        {
+          "nombre": "Aged Canvas",
+          "texto": "An aged canvas invites you to make art without fear of making mistakes."
+        }
+      ]
+    },
+    "27": {
+      "nombre": "Problem Solving",
+      "metaforas": [
+        {
+          "nombre": "Puzzle Pieces",
+          "texto": "Each piece represents a part of the problem which, when fitted, reveals the whole picture."
+        },
+        {
+          "nombre": "Complex Maze",
+          "texto": "A maze illustrates the complexity of challenges, but there is always a way out."
+        },
+        {
+          "nombre": "Toolbox",
+          "texto": "It represents the resources available to solve problems in different ways."
+        },
+        {
+          "nombre": "Lighthouse Beam",
+          "texto": "A lighthouse lights the way through the fog, helping to find clarity in solutions."
+        },
+        {
+          "nombre": "Recipe Book",
+          "texto": "It shows that solving problems requires combining the right ingredients to get good results."
+        },
+        {
+          "nombre": "Open Door",
+          "texto": "It symbolizes new opportunities and perspectives in the face of challenges."
+        }
+      ]
+    },
+    "28": {
+      "nombre": "Relationship Issues",
+      "metaforas": [
+        {
+          "nombre": "Intertwined Vines",
+          "texto": "Like intertwined vines, relationships grow stronger with connection and support."
+        },
+        {
+          "nombre": "Bridge of Trust",
+          "texto": "Building a bridge of trust is essential to overcome challenges in relationships."
+        },
+        {
+          "nombre": "Tapestry of Stories",
+          "texto": "Relationships form a tapestry, where each thread represents shared experiences."
+        },
+        {
+          "nombre": "Heart Connection",
+          "texto": "A true connection strengthens the bonds between people."
+        },
+        {
+          "nombre": "Guiding Star",
+          "texto": "A guiding star steers conversations toward greater understanding between partners."
+        },
+        {
+          "nombre": "Mirror of Reflection",
+          "texto": "Reflecting on your partner's attitudes reveals lessons and ways to draw closer."
+        }
+      ]
+    },
+    "29": {
+      "nombre": "Resilience",
+      "metaforas": [
+        {
+          "nombre": "Bamboo in the Wind",
+          "texto": "Bamboo bends but does not break, illustrating the strength found in resilience."
+        },
+        {
+          "nombre": "Phoenix Rising",
+          "texto": "Like the phoenix rising from the ashes, resilience is born from overcoming challenges."
+        },
+        {
+          "nombre": "Strong Oak",
+          "texto": "An oak withstands the storms, representing the durability of the resilient."
+        },
+        {
+          "nombre": "Mountain Ascent",
+          "texto": "Climbing a mountain takes persistence, symbolizing the journey of resilience."
+        },
+        {
+          "nombre": "Bridge of Strength",
+          "texto": "The bridge connects two sides, showing how resilience helps overcome obstacles."
+        },
+        {
+          "nombre": "Rolling Waves",
+          "texto": "The waves strike, but they always draw back, reflecting the ebb and flow of resilience."
+        }
+      ]
+    },
+    "30": {
+      "nombre": "Self-Compassion",
+      "metaforas": [
+        {
+          "nombre": "Soft Blanket",
+          "texto": "A soft blanket wraps you in comfort, reflecting the warmth of self-compassion."
+        },
+        {
+          "nombre": "Gentle Breeze",
+          "texto": "A gentle breeze carries kindness, inviting you to treat yourself with care."
+        },
+        {
+          "nombre": "Warm Embrace",
+          "texto": "A warm embrace symbolizes the caring support you can offer yourself."
+        },
+        {
+          "nombre": "Healing Waters",
+          "texto": "Calm waters soothe the spirit, representing the power of self-compassion."
+        },
+        {
+          "nombre": "Tender Heart",
+          "texto": "A tender heart illustrates the gentleness you can direct toward yourself."
+        },
+        {
+          "nombre": "Radiant Sun",
+          "texto": "The sun shines strongly, symbolizing the warmth of self-love and acceptance."
+        }
+      ]
+    },
+    "31": {
+      "nombre": "Self-Discovery",
+      "metaforas": [
+        {
+          "nombre": "Blank Pages",
+          "texto": "Life is an unwritten book; each day is a new chance to create a chapter."
+        },
+        {
+          "nombre": "Hidden Garden",
+          "texto": "A hidden garden symbolizes parts of you still waiting to bloom."
+        },
+        {
+          "nombre": "Winding River",
+          "texto": "A winding river reflects the flowing journey of self-discovery, full of bends and adaptations."
+        },
+        {
+          "nombre": "Broken Compass",
+          "texto": "A broken compass illustrates the confusion of searching for your true direction in life."
+        },
+        {
+          "nombre": "Light Through the Trees",
+          "texto": "Light filtering through the trees represents moments of clarity during your inner exploration."
+        },
+        {
+          "nombre": "Emerging Butterfly",
+          "texto": "Like a butterfly leaving its cocoon, self-discovery reveals your true colors."
+        }
+      ]
+    },
+    "36": {
+      "nombre": "Stress Management",
+      "metaforas": [
+        {
+          "nombre": "Heavy Backpack",
+          "texto": "Imagine setting down a backpack full of worries, embracing lighter days."
+        },
+        {
+          "nombre": "Tightrope Balancer",
+          "texto": "Think of a tightrope walker's grace, balancing life's demands with focus and calm."
+        },
+        {
+          "nombre": "Overflowing Glass",
+          "texto": "Picture a glass overflowing—taking time to relieve stress keeps it from building up."
+        },
+        {
+          "nombre": "Quiet River",
+          "texto": "Imagine a river flowing gently, representing serenity amid challenges."
+        },
+        {
+          "nombre": "Pressure Cooker",
+          "texto": "Think of a pressure cooker releasing steam; letting stress out prevents overload."
+        },
+        {
+          "nombre": "Storm Clouds",
+          "texto": "Picture dark clouds breaking up, remembering that stress is temporary."
+        }
+      ]
+    },
+    "37": {
+      "nombre": "Time Management",
+      "metaforas": [
+        {
+          "nombre": "Jigsaw Puzzle",
+          "texto": "Fitting the pieces of a puzzle together represents the art of organizing tasks efficiently."
+        },
+        {
+          "nombre": "Balancing Act",
+          "texto": "Mastering the balance between priorities keeps your life in harmony."
+        },
+        {
+          "nombre": "Clockwork",
+          "texto": "A clockwork mechanism runs well when every piece is in its right place."
+        },
+        {
+          "nombre": "Golden Hourglass",
+          "texto": "Each grain of sand falling through the hourglass recalls the value of time."
+        },
+        {
+          "nombre": "Flowing River",
+          "texto": "A flowing river symbolizes the passage of time and how we navigate through it."
+        },
+        {
+          "nombre": "Daily Map",
+          "texto": "A daily map traces the route between your tasks, helping you keep your focus."
+        }
+      ]
+    },
+    "39": {
+      "nombre": "Trust and Vulnerability",
+      "metaforas": [
+        {
+          "nombre": "Fragile Bridge",
+          "texto": "A fragile bridge symbolizes the delicate balance between trust and vulnerability in relationships."
+        },
+        {
+          "nombre": "Open Door",
+          "texto": "An open door invites others in, illustrating the willingness to be vulnerable with those you trust."
+        },
+        {
+          "nombre": "Glass Jar",
+          "texto": "A glass jar holds precious moments, representing the care needed to protect your vulnerabilities."
+        },
+        {
+          "nombre": "Trust Fall",
+          "texto": "Trusting others is like leaning into a trust fall, demanding courage to rely on someone."
+        },
+        {
+          "nombre": "Branches in the Wind",
+          "texto": "Swaying branches show the flexibility needed to trust others without losing your balance."
+        },
+        {
+          "nombre": "Woven Fabric",
+          "texto": "A woven fabric illustrates the connections created through trust and shared experiences."
+        }
+      ]
+    },
+    "40": {
+      "nombre": "Work-Life Balance",
+      "metaforas": [
+        {
+          "nombre": "Seesaw Dynamics",
+          "texto": "Balancing on a seesaw highlights the need to give equal attention to work and personal life."
+        },
+        {
+          "nombre": "Daily Juggling",
+          "texto": "Life feels like a juggling act; it is essential to keep everything moving without letting anything drop."
+        },
+        {
+          "nombre": "Tightrope Path",
+          "texto": "Walking a tightrope illustrates the care needed to keep your balance."
+        },
+        {
+          "nombre": "Colorful Mosaic",
+          "texto": "The different facets of life come together to create harmony."
+        },
+        {
+          "nombre": "Everyday Scales",
+          "texto": "Weighing work obligations against personal needs highlights the importance of balance."
+        },
+        {
+          "nombre": "Caretaker's Garden",
+          "texto": "Tending the different areas of your life leads to growth and flourishing."
+        }
+      ]
+    },
+    "02": {
+      "nombre": "Anxiety",
+      "metaforas": [
+        {
+          "nombre": "Walking the Tightrope",
+          "texto": "Life is like walking a tightrope: each step requires balance, but with practice it grows steadier."
+        },
+        {
+          "nombre": "Overactive Alarm",
+          "texto": "Anxiety is like an overactive car alarm, going off at the slightest touch."
+        },
+        {
+          "nombre": "Storm Clouds",
+          "texto": "Thoughts swirl like storm clouds, darkening your mind even when the sky is clear."
+        },
+        {
+          "nombre": "Running in Place",
+          "texto": "You run as fast as you can, yet you never seem to move forward."
+        },
+        {
+          "nombre": "Heavy Backpack",
+          "texto": "Carrying anxiety is like hauling a heavy backpack: every task feels harder than it should be."
+        },
+        {
+          "nombre": "Tangled Wires",
+          "texto": "Your thoughts are like tangled wires, all confused and impossible to sort out quickly."
+        }
+      ]
+    },
+    "04": {
+      "nombre": "Boundaries",
+      "metaforas": [
+        {
+          "nombre": "Protective Fence",
+          "texto": "Boundaries protect your personal space, keeping negative influences at bay."
+        },
+        {
+          "nombre": "Personal Fortress",
+          "texto": "Your inner strength shields your peace from the chaos outside."
+        },
+        {
+          "nombre": "Open-Door Policy",
+          "texto": "Healthy boundaries make room for trusting relationships and keep intruders out."
+        },
+        {
+          "nombre": "Invisible Line",
+          "texto": "It draws a clear border between what is safe and what is threatening."
+        },
+        {
+          "nombre": "Traffic Signals",
+          "texto": "Traffic signals guide interactions, showing when to stop and when to move ahead."
+        },
+        {
+          "nombre": "Safe Harbor",
+          "texto": "A safe harbor offers shelter from emotional storms."
+        }
+      ]
+    },
+    "05": {
+      "nombre": "Burnout and Work-Life Balance",
+      "metaforas": [
+        {
+          "nombre": "Running on Empty",
+          "texto": "You cannot keep driving without refueling; your energy needs to be renewed."
+        },
+        {
+          "nombre": "Balancing Act",
+          "texto": "Life is a juggling act, requiring balance between work and personal time."
+        },
+        {
+          "nombre": "Overloaded Circuit",
+          "texto": "An overloaded circuit is bound to fail; manage your energy wisely."
+        },
+        {
+          "nombre": "Drowning in Tasks",
+          "texto": "It feels like drowning in a sea of tasks without a lifeline."
+        },
+        {
+          "nombre": "Stretched Rubber Band",
+          "texto": "A stretched rubber band is close to snapping; know your limits."
+        },
+        {
+          "nombre": "Burning Candle",
+          "texto": "A lit candle brightens the room, but it burns out quickly without care."
+        }
+      ]
+    },
+    "06": {
+      "nombre": "Change and Growth",
+      "metaforas": [
+        {
+          "nombre": "Caterpillar to Butterfly",
+          "texto": "Transformation takes time, but it can result in something beautiful."
+        },
+        {
+          "nombre": "Unfolding Leaf",
+          "texto": "Just as a leaf unfolds, growth happens little by little as you take in light."
+        },
+        {
+          "nombre": "Evolving Tree",
+          "texto": "A tree adapts to its environment, showing strength through the seasons."
+        },
+        {
+          "nombre": "Phoenix Rising",
+          "texto": "Every obstacle is a chance to be reborn stronger."
+        },
+        {
+          "nombre": "Chrysalis Stage",
+          "texto": "Going through uncomfortable moments is essential for growth."
+        },
+        {
+          "nombre": "Mosaic Making",
+          "texto": "Every experience, good or bad, builds the mosaic of who you are."
+        }
+      ]
+    },
+    "07": {
+      "nombre": "Communication Skills",
+      "metaforas": [
+        {
+          "nombre": "Bridge of Words",
+          "texto": "Effective communication builds a bridge that connects hearts and minds."
+        },
+        {
+          "nombre": "Open Book",
+          "texto": "Being an open book invites transparency and strengthens trust in relationships."
+        },
+        {
+          "nombre": "Two-Way Street",
+          "texto": "Communication is a two-way street, where both must take part."
+        },
+        {
+          "nombre": "Clear Channel",
+          "texto": "A clear channel ensures messages are understood without noise."
+        },
+        {
+          "nombre": "Sound Waves",
+          "texto": "Words travel like sound waves, reaching and touching whoever listens."
+        },
+        {
+          "nombre": "Puzzle Pieces",
+          "texto": "Each conversation fits like puzzle pieces, completing the picture."
+        }
+      ]
+    },
+    "08": {
+      "nombre": "Conflict Resolution",
+      "metaforas": [
+        {
+          "nombre": "Bridge Over Troubled Water",
+          "texto": "Building a bridge helps cross intense emotions and misunderstandings."
+        },
+        {
+          "nombre": "Tangled Thread",
+          "texto": "A conflict is like a tangled thread; it takes patience to undo it and bring clarity."
+        },
+        {
+          "nombre": "Shared Path",
+          "texto": "Finding common ground requires both to walk together toward the solution."
+        },
+        {
+          "nombre": "Light in the Fog",
+          "texto": "Conflict resolution acts like a light in the fog, guiding through uncertainty."
+        },
+        {
+          "nombre": "Notes in Harmony",
+          "texto": "Resolving conflict is like harmonizing musical notes to create a pleasing sound."
+        },
+        {
+          "nombre": "Calm Waters",
+          "texto": "Seeking calm waters helps lower the tension and eases a productive dialogue."
+        }
+      ]
+    },
+    "09": {
+      "nombre": "Creativity",
+      "metaforas": [
+        {
+          "nombre": "Blank Canvas",
+          "texto": "A blank canvas offers endless possibilities to create and express yourself."
+        },
+        {
+          "nombre": "Flowing River",
+          "texto": "Creativity flows like a river, changing course when it needs to."
+        },
+        {
+          "nombre": "Color Palette",
+          "texto": "A color palette represents the emotions and ideas waiting to be explored."
+        },
+        {
+          "nombre": "Mosaic of Ideas",
+          "texto": "Each idea is a piece of a mosaic, creating a vibrant picture when they come together."
+        },
+        {
+          "nombre": "Seed of Inspiration",
+          "texto": "A small inspiration can grow into a great idea with care."
+        },
+        {
+          "nombre": "Kitchen Experiment",
+          "texto": "Creating in the kitchen means mixing unexpected ingredients to surprise the senses."
+        }
+      ]
+    }
+  }
+}

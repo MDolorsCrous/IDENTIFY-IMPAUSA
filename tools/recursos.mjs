@@ -34,7 +34,14 @@ import facetasEs from "../src/config/interpretation/facetas.es.json" with { type
 import metaforasEs from "../src/config/interpretation/metaforas.es.json" with { type: "json" };
 import fuentesEs from "../src/config/fuentes.es.json" with { type: "json" };
 
-/** La capa de cada idioma. El ingles se anade aqui cuando exista (fase 4+). */
+import labelsEn from "../src/i18n/en-informe.json" with { type: "json" };
+import textosEn from "../src/i18n/en-textos.json" with { type: "json" };
+import reglasEn from "../src/config/interpretation/combinations.en.json" with { type: "json" };
+import facetasEn from "../src/config/interpretation/facetas.en.json" with { type: "json" };
+import metaforasEn from "../src/config/interpretation/metaforas.en.json" with { type: "json" };
+import fuentesEn from "../src/config/fuentes.en.json" with { type: "json" };
+
+/** La capa de cada idioma: las mismas seis piezas, en su lengua. */
 const IDIOMAS = {
   es: {
     labels: labelsEs,
@@ -43,6 +50,14 @@ const IDIOMAS = {
     facetas: facetasEs,
     metaforas: metaforasEs,
     fuentes: fuentesEs,
+  },
+  en: {
+    labels: labelsEn,
+    textos: textosEn,
+    reglas: reglasEn,
+    facetas: facetasEn,
+    metaforas: metaforasEn,
+    fuentes: fuentesEn,
   },
 };
 

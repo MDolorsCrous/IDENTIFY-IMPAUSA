@@ -1,0 +1,77 @@
+{
+  "sociability": {
+    "definicion": "Enjoyment of other people's company and a tendency to seek social interaction.",
+    "bajo": "Suggests a preference for solitude, autonomous work and a lower need for social stimulation. You can interact effectively when it is called for, but you do not usually seek to surround yourself with people or socialize for the sheer pleasure of it. Worth keeping in mind in settings that demand constant interaction: there, this profile is associated with a higher risk of burnout.",
+    "alto": "Suggests a marked desire to approach and connect with others. It usually comes with ease at weaving networks of contacts and a preference for settings where interaction is constant, along with ease at being accepted among peers and making friends. At work it is associated with high levels of satisfaction and engagement."
+  },
+  "assertiveness": {
+    "definicion": "An inclination to speak up with confidence, exercise leadership and take social initiative.",
+    "bajo": "Suggests a preference for letting others take control and the initiative. Influencing the group's decisions may cost you, and you probably feel more comfortable in supporting roles than imposing your view.",
+    "alto": "Suggests a clear tendency to take the initiative and act as a reference point. It usually shows up as voicing your own opinions with confidence, feeling comfortable taking the lead and finding it easy to influence and persuade."
+  },
+  "energy_level": {
+    "definicion": "A tendency to feel lively, enthusiastic and active.",
+    "bajo": "Suggests a preference for a calmer, more reflective pace. You rarely feel impatient to act, and your general activity level tends to be lower than most people's. At its extreme it can edge toward demotivation, and there it is worth checking whether low mood comes with it.",
+    "alto": "Suggests a marked tendency toward activity and enthusiasm. It usually shows up as living and working at a fast pace, getting involved early in whatever comes up and rarely staying passive, with a notable capacity to deploy physical and mental energy."
+  },
+  "compassion": {
+    "definicion": "A tendency to show empathy, care about others and act with kindness.",
+    "bajo": "Suggests a more pragmatic, less affective reading of situations. You may feel little emotional resonance with other people's distress, and your way of approaching their problems may be more objective than warm.",
+    "alto": "Suggests a clear inclination toward empathy, tenderness and altruism. It usually comes with a readiness to help without expecting anything in return and a genuine concern for what happens to the people close to you."
+  },
+  "respectfulness": {
+    "definicion": "Consideration for social norms, good manners and courtesy.",
+    "bajo": "Suggests fewer qualms about confrontation and about skipping the formalities. It can show up as getting into arguments easily and finding it hard to hold back an antagonistic reaction when something does not sit right.",
+    "alto": "Suggests a marked inclination to be polite and considerate. It usually shows up as avoiding confrontation, keeping up the courtesies even reluctantly and finding it easy to contain the urge to confront."
+  },
+  "trust": {
+    "definicion": "A tendency to trust other people's intentions and see them as benevolent.",
+    "bajo": "Suggests a vigilant, skeptical stance. You may tend to look for hidden motives, find it hard to take other people's good faith for granted, and take longer to forgive.",
+    "alto": "Suggests an underlying belief that people are good by nature. It usually shows up as assuming the best of others, trusting their intentions easily and having a character quick to forgive."
+  },
+  "organization": {
+    "definicion": "A tendency to be methodical, orderly and structured.",
+    "bajo": "Suggests tolerance for disorder and little inclination to plan. It can show up as neglecting your physical surroundings or the order of your tasks, and finding it hard to sustain stable systems and routines.",
+    "alto": "Suggests a clear tendency toward the methodical and systematic. It usually comes with a preference for keeping your surroundings in order, enjoying planning and following clear procedures, with considerable attention to detail."
+  },
+  "productiveness": {
+    "definicion": "The capacity to stay focused and efficient on tasks and goals.",
+    "bajo": "Suggests difficulty getting started and sustaining effort. It can show up as putting off the start of tasks and finding day-to-day consistency harder than you would like.",
+    "alto": "Suggests a firm work ethic and considerable self-discipline. It usually shows up as being efficient and persistent, working until what you started is finished and sustaining a high level of effort toward what you set out to do."
+  },
+  "responsibility": {
+    "definicion": "Adherence to one's own values, honesty and a sense of duty.",
+    "bajo": "Suggests a looser relationship with the commitments you take on. It can show up as breaking promises somewhat easily and being less predictable for the people who count on you.",
+    "alto": "Suggests reliability and steadiness. It usually shows up as rigorously honoring what you promise and taking on your duty toward others, so the people around you know they can count on you when it matters."
+  },
+  "anxiety": {
+    "definicion": "A tendency to worry easily and to feel nervousness or tension.",
+    "bajo": "Suggests stability under pressure and ease at staying calm. Disproportionate fears or worries rarely appear, and you tend to manage stress feeling secure even in demanding settings.",
+    "alto": "Suggests a marked tendency toward worry and tension. It usually shows up as frequent episodes of feeling on alert, turning problems over and over, and finding it hard to switch off in stressful situations."
+  },
+  "depression": {
+    "definicion": "A tendency to register sadness and low mood easily.",
+    "bajo": "Suggests self-assurance and a resilient attitude toward setbacks. You tend to feel comfortable with who you are, and prolonged periods of low mood rarely appear.",
+    "alto": "Suggests a tendency to register discouragement more easily than most. Sustaining optimism after a failure may be hard, and moments of not feeling entirely comfortable or secure with yourself may appear."
+  },
+  "emotional_volatility": {
+    "definicion": "How easily your mood shifts in the face of setbacks.",
+    "bajo": "Suggests emotional stability and self-control. It usually shows up as keeping calm under pressure and not reacting disproportionately even when the situation is adverse.",
+    "alto": "Suggests a tendency to get worked up easily. It can show up as frequent mood swings and, when a setback hits, in emotion taking the lead before you can channel it."
+  },
+  "intellectual_curiosity": {
+    "definicion": "An inclination to think deeply, analyze and explore ideas.",
+    "bajo": "Suggests a preference for the practical and little interest in the abstract. It can show up as finding theoretical discussions of little use and preferring concrete, applicable information.",
+    "alto": "Suggests a marked inclination toward deep thinking and exploring new ideas. It usually shows up as curiosity about very different subjects and enjoying intellectual conversations and abstract topics."
+  },
+  "aesthetic_sensitivity": {
+    "definicion": "Appreciation of art, music, nature and beauty.",
+    "bajo": "Suggests few artistic interests. It can show up as finding expressions like poetry or theater unappealing, and preferring more practical settings and experiences, without giving much weight to the aesthetic.",
+    "alto": "Suggests a clear attraction to art, music and literature. It usually comes with valuing beauty and enjoying aesthetic experiences and cultural expressions."
+  },
+  "creative_imagination": {
+    "definicion": "A tendency to think imaginatively and generate new ideas.",
+    "bajo": "Suggests a preference for the practical and for well-trodden paths. Imagining solutions never seen before may be hard, and falling back on familiar methods and routines may feel more comfortable than contributing something original.",
+    "alto": "Suggests a marked tendency toward originality. It usually shows up as ease at imagining scenarios and solutions, enjoying contributing new ideas and finding unconventional ways of doing things."
+  }
+}
