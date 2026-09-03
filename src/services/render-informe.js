@@ -470,15 +470,18 @@ ${tipografias(opciones.marca)}
   .cintillo__contacto{text-transform:none;letter-spacing:0;font-size:8pt}
   .cintillo__contacto a{color:inherit;text-decoration:none;
     border-bottom:1px solid var(--borde)}
-  /* Justificado, pero sin partir palabras.
-     La partición automática dejaba cortes feos —cons-tante, téc-nicos,
-     regis-trar— que en un informe que se entrega a alguien cantan mucho. Se
-     quita, y el hueco que abre el justificado se compensa con text-wrap:pretty,
-     que reparte mejor las líneas y evita las últimas líneas de una palabra. */
+  /* Sin partir palabras: la partición automática dejaba cortes feos
+     —cons-tante, téc-nicos, regis-trar— que en un informe que se entrega a
+     alguien cantan mucho. */
   p,li{hyphens:none;-webkit-hyphens:none;word-break:normal;overflow-wrap:normal}
-  p{margin:0 0 .95rem;text-align:justify;text-wrap:pretty}
-  /* Lo que nunca se justifica: listas de datos, pies y cabeceras cortas, donde
-     el justificado solo produce huecos. */
+  /* En pantalla, bandera; el justificado queda para el papel (más abajo, en
+     @media print). Justificar sin partir palabras abre huecos entre palabras,
+     y text-wrap:pretty los agrandaba: al bajar una palabra para que la última
+     línea no quedara corta, la línea de arriba se estiraba. En la columna A4
+     el justificado aguanta; en una pantalla, no. */
+  p{margin:0 0 .95rem;text-align:left;text-wrap:pretty}
+  /* Lo que tampoco se justifica en papel: listas de datos, pies y cabeceras
+     cortas, donde el justificado solo produce huecos. */
   .lectura__ref,.fuentes__papel,.senal__falta,.escala span,.fila__dato{text-align:left}
   p:last-child{margin-bottom:0}
   h2,h3,h4{font-family:"Montserrat",system-ui,sans-serif;font-weight:600;margin:0;
@@ -688,6 +691,10 @@ ${tipografias(opciones.marca)}
       --dorado:#D8B34D; --naranja:#F29A4A; --naranja-claro:#FDF0E4;
     }
     body{background:#FFFFFF;font-size:10.4pt;line-height:1.55}
+    /* En papel sí se justifica: la columna A4 es ancha y el justificado no
+       abre huecos. Los centrados (.firma p, .portada p) y las listas de datos
+       ganan por especificidad, como hasta ahora. */
+    p{text-align:justify}
     .maqueta,.indice{display:none}
     .hoja{max-width:none;padding:0}
     .cuerpo{gap:1.5rem}
