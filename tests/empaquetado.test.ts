@@ -70,6 +70,7 @@ test("el informe del paquete es idéntico al del motor", () => {
   // dos personas con el mismo perfil recibirian informes distintos.
   const opciones = {
     facetas: recursos.facetas,
+    textos: recursos.textos.informe,
     metaforas: recursos.metaforas,
     fuentes: recursos.fuentes,
     fecha: "1 de enero de 2026",

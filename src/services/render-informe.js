@@ -20,14 +20,20 @@ const esc = (s) =>
 const num = (v) => v.toFixed(2).replace(".", ",");
 /** Posicion de una puntuacion 1-5 sobre el eje, en porcentaje. */
 const pos = (v) => ((v - 1) / 4) * 100;
+/**
+ * Rellena los huecos {asi} de una cadena de src/i18n con valores ya preparados.
+ * Los valores llegan escapados por quien llama; la plantilla puede llevar <b>.
+ */
+const rellena = (plantilla, valores) =>
+  plantilla.replace(/\{(\w+)\}/g, (_, clave) => valores[clave]);
 
-function fila(item, destacada, color) {
+function fila(item, destacada, color, t) {
   return `
       <div class="fila${destacada ? " fila--destacada" : ""}"${color ? ` style="--dominio:${color}"` : ""}>
         <div class="fila__nombre">${esc(item.label)}${
-          destacada ? '<span class="marca">se separa del resto</span>' : ""
+          destacada ? `<span class="marca">${t.seSepara}</span>` : ""
         }</div>
-        <div class="eje${destacada ? " eje--acento" : ""}" role="img" aria-label="${esc(item.label)}: ${num(item.score)} sobre 5, banda ${item.band}">
+        <div class="eje${destacada ? " eje--acento" : ""}" role="img" aria-label="${rellena(t.aria, { nombre: esc(item.label), valor: num(item.score), banda: item.band })}">
           <div class="eje__medio"></div>
           <div class="eje__relleno" style="width:${pos(item.score)}%"></div>
           <div class="eje__punto" style="left:${pos(item.score)}%"></div>
@@ -36,14 +42,8 @@ function fila(item, destacada, color) {
       </div>`;
 }
 
-const escala = `<div class="escala"><div></div><div class="escala__eje"><span>1</span><span>3 · punto medio</span><span>5</span></div><div class="escala__hueco"></div></div>`;
-
-/**
- * Hueco de redaccion. Se marca en vez de dejarse en blanco: un vacio parece un
- * error, y esto dice exactamente que falta y quien lo escribe.
- */
-const hueco = (que) =>
-  `<p class="pendiente"><b>Pendiente de redacción</b> — ${esc(que)}. Este pasaje lo escribe Claude a partir de las puntuaciones de arriba.</p>`;
+const lineaEscala = (t) =>
+  `<div class="escala"><div></div><div class="escala__eje"><span>1</span><span>${t.medio}</span><span>5</span></div><div class="escala__hueco"></div></div>`;
 
 /**
  * Un pasaje de Claude, partido en parrafos.
@@ -72,24 +72,24 @@ function parrafos(texto) {
  * banda esta. Ademas es el apartado donde mas facil seria afirmar como hecho una
  * combinacion que NO se ha cumplido; escrito por el codigo, eso no puede pasar.
  */
-function introSenales(modelo, labels) {
+function introSenales(modelo, labels, t) {
   const n = modelo.nearMisses.length;
   if (!n) {
-    return `<p>Ninguna de las 26 combinaciones se queda cerca de cumplirse en tu perfil.
-      No hay nada en esta sección, y es una respuesta tan válida como cualquier otra.</p>`;
+    return `<p>${t.ninguna}</p>`;
   }
-  const cuantas = n === 1 ? "Una combinación se queda" : `${n} combinaciones se quedan`;
+  const cuantas = n === 1 ? t.una : rellena(t.varias, { n });
   const faltan = new Set(modelo.nearMisses.flatMap((m) => m.unmet.map((u) => u.condition.facet)));
   const nombres = [...faltan].map((id) => esc((labels.facets?.[id] ?? id).toLowerCase()));
   const cuales =
     nombres.length === 1
-      ? `Todas dependen de una sola faceta: <b>${nombres[0]}</b>.`
-      : `Las facetas que las dejan fuera son ${nombres.slice(0, -1).map((x) => `<b>${x}</b>`).join(", ")} y <b>${nombres.at(-1)}</b>.`;
+      ? rellena(t.unaFaceta, { faceta: nombres[0] })
+      : rellena(t.variasFacetas, {
+          lista: nombres.slice(0, -1).map((x) => `<b>${x}</b>`).join(", "),
+          ultima: nombres.at(-1),
+        });
 
-  return `<p>${cuantas} <b>a una sola condición</b> de cumplirse. ${cuales}</p>
-    <p>Por eso van en condicional y sin cita: <b>no describen tu perfil de hoy</b>. Lo que
-    señalan es por dónde se movería si una pieza cambiara — que es justo el tipo de cosa
-    que conviene mirar en una conversación de coaching.</p>`;
+  return `<p>${rellena(t.entrada, { cuantas, cuales })}</p>
+    <p>${t.porEso}</p>`;
 }
 
 /**
@@ -138,7 +138,7 @@ function cabeceraDeMarca(marca) {
  * El logotipo va incrustado en base64 y no enlazado: el informe se manda por
  * correo, se guarda y se imprime, y tiene que verse igual sin conexion.
  */
-function cierreDeMarca(marca) {
+function cierreDeMarca(marca, t) {
   if (!marca) return "";
   const { logo, correo, web, copyright, producto } = marca;
   return `
@@ -150,7 +150,7 @@ function cierreDeMarca(marca) {
       <a href="https://${esc(web)}">${esc(web)}</a>
     </p>
     <p class="firma__copy">${esc(copyright)}</p>
-    <p class="firma__copy firma__quien">${esc(producto)} es una herramienta de IMPAUSA POWER, S.L.</p>
+    <p class="firma__copy firma__quien">${rellena(t.quien, { producto: esc(producto) })}</p>
   </footer>`;
 }
 
@@ -186,15 +186,13 @@ function bibliografia(fuentes) {
  * No es interpretacion, es descripcion: dice lo que pone el numero. Por eso puede
  * ir en el informe aunque no haya capa de redaccion.
  */
-function lineaDatos(d) {
-  const partes = [`<b>${esc(d.label)}: ${num(d.score)}</b> sobre 5, en la banda ${esc(d.band)}.`];
+function lineaDatos(d, t) {
+  const partes = [rellena(t.linea, { nombre: esc(d.label), valor: num(d.score), banda: esc(d.band) })];
   if (d.divergentFacet) {
     const f = d.divergentFacet;
-    partes.push(
-      `De sus tres facetas, la que más se separa de las otras dos es <b>${esc(f.label)}</b>, con ${num(f.score)}.`,
-    );
+    partes.push(rellena(t.divergente, { nombre: esc(f.label), valor: num(f.score) }));
   } else {
-    partes.push("Sus tres facetas van juntas: ninguna se separa del resto.");
+    partes.push(t.juntas);
   }
   return `<p>${partes.join(" ")}</p>`;
 }
@@ -206,7 +204,7 @@ function lineaDatos(d) {
  * mismo texto que su polo pero avisando de que la puntuación está cerca del
  * punto medio: la lectura orienta, no describe un extremo que no se ha dado.
  */
-function lecturasFacetas(dominio, facetas) {
+function lecturasFacetas(dominio, facetas, t) {
   if (!facetas) return "";
   const bloques = dominio.facets
     .map((f) => {
@@ -222,7 +220,7 @@ function lecturasFacetas(dominio, facetas) {
             <span>${num(f.score)} · ${esc(f.band)}</span>
           </div>
           ${ficha.definicion ? `<p class="lectura__def">${esc(ficha.definicion)}</p>` : ""}
-          <p>${matizada ? '<em class="matiz">Cerca del punto medio, así que en versión suave:</em> ' : ""}${esc(lectura.texto)}</p>
+          <p>${matizada ? `<em class="matiz">${t.matiz}</em> ` : ""}${esc(lectura.texto)}</p>
           ${lectura.referencias?.length ? `<p class="lectura__ref">${esc(lectura.referencias.join(" · "))}</p>` : ""}
         </div>`;
     })
@@ -283,6 +281,8 @@ export function metaforasParaInforme(modelo, metaforas) {
 }
 
 export function renderInforme(modelo, prosa = {}, labels, opciones = {}) {
+  const textos = opciones.textos;
+  if (!textos) throw new Error("renderInforme necesita opciones.textos: el grupo «informe» de src/i18n/*-textos.json");
   const facetas = opciones.facetas;
   const colores = opciones.marca?.dominios;
   const metaforas = metaforasParaInforme(modelo, opciones.metaforas);
@@ -290,7 +290,15 @@ export function renderInforme(modelo, prosa = {}, labels, opciones = {}) {
   const fecha = opciones.fecha ?? "";
   const persona = modelo.meta.generatedFor ?? "";
 
-  const resumenVisual = `<div class="barras">${modelo.domains.map((d) => fila(d, false, colores?.[d.id])).join("")}</div>${escala}`;
+  const escala = lineaEscala(textos.escala);
+  /**
+   * Hueco de redaccion. Se marca en vez de dejarse en blanco: un vacio parece
+   * un error, y esto dice exactamente que falta y quien lo escribe.
+   */
+  const hueco = (que) =>
+    `<p class="pendiente"><b>${textos.pendiente.titulo}</b> — ${esc(que)}. ${textos.pendiente.cola}</p>`;
+
+  const resumenVisual = `<div class="barras">${modelo.domains.map((d) => fila(d, false, colores?.[d.id], textos.fila)).join("")}</div>${escala}`;
 
   const dominios = modelo.domains
     .map((d) => {
@@ -302,11 +310,11 @@ export function renderInforme(modelo, prosa = {}, labels, opciones = {}) {
         <h3>${esc(d.label)}</h3>
         <span class="dominio__dato">${num(d.score)} <em>${esc(d.band)}</em></span>
       </header>
-      <div class="barras">${d.facets.map((f) => fila(f, d.divergentFacet?.id === f.id, colores?.[d.id])).join("")}</div>
+      <div class="barras">${d.facets.map((f) => fila(f, d.divergentFacet?.id === f.id, colores?.[d.id], textos.fila)).join("")}</div>
       ${escala}
-      ${lineaDatos(d)}
-      ${lecturasFacetas(d, facetas)}
-      ${texto ? parrafos(texto) : hueco("la lectura conjunta de este dominio")}
+      ${lineaDatos(d, textos.datos)}
+      ${lecturasFacetas(d, facetas, textos.lectura)}
+      ${texto ? parrafos(texto) : hueco(textos.huecos.dominio)}
       ${nota ? `<p class="nota">${esc(nota)}</p>` : ""}
     </section>`;
     })
@@ -334,15 +342,13 @@ const combinacionesHtml = modelo.fired
     // investigación, no a la persona, y llevan al lado qué hacer con eso.
     const cuidado =
       m.rule.safety === "clinico"
-        ? `<span class="combi__aviso">Esto describe un patrón observado en la investigación, no un
-           diagnóstico ni una afirmación sobre ti. Si se parece a lo que estás viviendo, hablarlo
-           con un profesional es lo razonable.</span>`
+        ? `<span class="combi__aviso">${textos.combis.avisoClinico}</span>`
         : "";
     return `
       <li>
         <b>${esc(m.rule.effect)}</b>
         <span>${esc(m.rule.summary)}</span>
-        <span class="combi__quien">Se cumple por ${esc(quien)}. ${esc(m.rule.references.join(" · "))}</span>
+        <span class="combi__quien">${rellena(textos.combis.seCumplePor, { quien: esc(quien) })} ${esc(m.rule.references.join(" · "))}</span>
         ${cuidado}
       </li>`;
   })
@@ -350,22 +356,17 @@ const combinacionesHtml = modelo.fired
 
 /** La entradilla de las combinaciones, escrita por el código igual que la de las señales. */
 function introCombinaciones(modelo) {
+  const t = textos.combis;
   const n = modelo.fired.length;
   if (!n) {
     return `<div class="vacio">
-      <p>Tu perfil <b>no activa ninguna</b> de las ${modelo.reglasTotales ?? 26} combinaciones descritas
-      en la literatura científica sobre este cuestionario.</p>
-      <p style="margin-bottom:0;color:var(--ink-soft)">No es una carencia: esas combinaciones exigen
-      varias puntuaciones extremas a la vez, y la mayoría de perfiles no las reúnen. Lo característico
-      de este perfil está en el recorrido faceta a faceta.</p>
+      <p>${rellena(t.vacio1, { total: modelo.reglasTotales ?? 26 })}</p>
+      <p style="margin-bottom:0;color:var(--ink-soft)">${t.vacio2}</p>
     </div>`;
   }
-  const cuantas =
-    n === 1 ? "Una de las combinaciones descritas se cumple" : `${n} de las combinaciones descritas se cumplen`;
-  return `<p>${cuantas} <b>entera</b> en tu perfil: todas sus condiciones, no algunas. Por eso van
-    afirmadas y con su cita, a diferencia de las señales del apartado siguiente.</p>
-    <p>Describen <b>patrones observados en la investigación</b>, no a ti. Que una combinación se
-    cumpla dice por dónde suele moverse un perfil como el tuyo, no lo que vas a hacer.</p>
+  const cuantas = n === 1 ? t.una : rellena(t.varias, { n });
+  return `<p>${rellena(t.entera, { cuantas })}</p>
+    <p>${t.describen}</p>
     <ul class="senales combis">${combinacionesHtml}</ul>`;
 }
 
@@ -375,41 +376,42 @@ const senalesHtml = senales
   .map((m) => {
     const f = m.unmet[0];
     const nombre = labels.facets[f.condition.facet] ?? f.condition.facet;
-    const pedido = f.condition.level === "high" ? "alta" : "baja";
+    const pedido = f.condition.level === "high" ? textos.senales.alta : textos.senales.baja;
     return `
       <li>
         <b>${esc(m.rule.effect)}</b>
         <span>${esc(m.rule.summary)}</span>
-        <span class="senal__falta">Se daría con una ${esc(nombre.toLowerCase())} ${pedido}; en tu perfil queda ${esc(f.band)}. ${esc(m.rule.references.join(" · "))}</span>
+        <span class="senal__falta">${rellena(textos.senales.falta, { nombre: esc(nombre.toLowerCase()), pedido, banda: esc(f.band) })} ${esc(m.rule.references.join(" · "))}</span>
       </li>`;
   })
   .join("");
 
 const leyenda = modelo.legend.length
-  ? `<h4>Equivalencias de nombres</h4><ul>${modelo.legend
-      .map((e) => `<li><b>${esc(e.label)}</b> — nombre técnico: ${esc(e.technicalLabel)}</li>`)
+  ? `<h4>${textos.leyenda.titulo}</h4><ul>${modelo.legend
+      .map((e) => `<li>${rellena(textos.leyenda.entrada, { nombre: esc(e.label), tecnico: esc(e.technicalLabel) })}</li>`)
       .join("")}</ul>`
   : "";
 
+// Los apartados del índice: el ancla del documento y su clave en los textos.
 const INDICE = [
-  ["como-leer", "Cómo leer este informe"],
-  ["resumen", "Resumen del perfil"],
-  ["vistazo", "Resultado de un vistazo"],
-  ["dominios", "Los cinco dominios en detalle"],
-  ["combinaciones", "Combinaciones del perfil"],
-  ["senales", "Señales de atención"],
-  ["trabajo", "En el trabajo"],
-  ["preguntas", "Preguntas poderosas"],
-  ["plan", "Plan de acción"],
-  ["imagenes", "Tres imágenes"],
-  ["conclusiones", "Conclusiones"],
-  ["fuentes", "Fuentes y metodología"],
+  ["como-leer", "comoLeer"],
+  ["resumen", "resumen"],
+  ["vistazo", "vistazo"],
+  ["dominios", "dominios"],
+  ["combinaciones", "combinaciones"],
+  ["senales", "senales"],
+  ["trabajo", "trabajo"],
+  ["preguntas", "preguntas"],
+  ["plan", "plan"],
+  ["imagenes", "imagenes"],
+  ["conclusiones", "conclusiones"],
+  ["fuentes", "fuentes"],
 ];
 
 // El <html lang> es lo que le dice al navegador con qué reglas partir las
 // palabras. Sin él, `hyphens:auto` no hace nada y el justificado abre huecos.
 const html = `<html lang="es">
-<title>Informe Identify</title>
+<title>${textos.titulo}</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700&display=swap">
@@ -722,13 +724,13 @@ ${tipografias(opciones.marca)}
   @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 
-${opciones.aviso ? '<div class="maqueta">' + esc(opciones.aviso) + "</div>" : conProsa ? "" : '<div class="maqueta">Informe sin la capa de redacción · los pasajes que escribe Claude van marcados como pendientes</div>'}
+${opciones.aviso ? '<div class="maqueta">' + esc(opciones.aviso) + "</div>" : conProsa ? "" : '<div class="maqueta">' + textos.maqueta + "</div>"}
 
 <div class="hoja">
 <table class="papel"><thead class="papel__cab"><tr><td>
   <div class="cintillo">
     <span class="cintillo__marca">Identify <i>by Impausa</i></span>
-    <span>Informe individual · BFI-2</span>
+    <span>${textos.cintilloTipo}</span>
   </div>
 </td></tr></thead>
 <tfoot class="papel__pie"><tr><td>
@@ -748,7 +750,7 @@ ${opciones.aviso ? '<div class="maqueta">' + esc(opciones.aviso) + "</div>" : co
 
   <header class="portada">
     <h1 class="rotulo"><span id="rotulo-nombre">Identify</span><span class="rotulo__by" id="rotulo-by">by Impausa</span></h1>
-    <p class="portada__pie">Informe individual · BFI-2 · 60 ítems${persona || fecha ? "<br>" + esc([persona, fecha].filter(Boolean).join(" · ")) : ""}</p>
+    <p class="portada__pie">${textos.portadaPie}${persona || fecha ? "<br>" + esc([persona, fecha].filter(Boolean).join(" · ")) : ""}</p>
   </header>
 
   <script>
@@ -799,79 +801,72 @@ ${opciones.aviso ? '<div class="maqueta">' + esc(opciones.aviso) + "</div>" : co
     })();
   </script>
 
-  <nav class="indice" aria-label="Índice del informe">
-    <p class="eyebrow" style="margin-bottom:0">Contenido</p>
-    <ol>${INDICE.map(([id, t]) => `<li><a href="#${id}">${esc(t)}</a></li>`).join("")}</ol>
+  <nav class="indice" aria-label="${textos.indice.aria}">
+    <p class="eyebrow" style="margin-bottom:0">${textos.indice.titulo}</p>
+    <ol>${INDICE.map(([id, clave]) => `<li><a href="#${id}">${esc(textos.indice.secciones[clave])}</a></li>`).join("")}</ol>
   </nav>
 
   <section class="seccion" id="como-leer">
-    <p class="eyebrow">Aviso importante</p>
-    <h2>Cómo leer este informe</h2>
-    <p>Este cuestionario mide <b>tendencias de comportamiento</b> que tú mismo describes. Son
-    estables, pero no fijas: cambian con el tiempo y con el contexto.</p>
+    <p class="eyebrow">${textos.comoLeer.eyebrow}</p>
+    <h2>${textos.comoLeer.titulo}</h2>
+    <p>${textos.comoLeer.intro}</p>
     <div class="aviso">
-      <p><b>Lo que este informe no es:</b></p>
+      <p><b>${textos.comoLeer.noEsTitulo}</b></p>
       <ul>
-        <li>No es un diagnóstico. Nada de lo que leas aquí es una condición clínica.</li>
-        <li>No mide inteligencia, ni capacidad, ni idoneidad para un puesto.</li>
-        <li>No predice lo que vas a hacer.</li>
+        ${textos.comoLeer.noEs.map((linea) => `<li>${linea}</li>`).join("\n        ")}
       </ul>
-      <p style="margin-top:.6rem"><b>Contra qué se compara:</b> ${esc(modelo.meta.comparisonNotice)}</p>
+      <p style="margin-top:.6rem"><b>${textos.comoLeer.comparacion}</b> ${esc(modelo.meta.comparisonNotice)}</p>
     </div>
-    <p style="margin-top:1rem">No hay puntuaciones buenas ni malas. Son tendencias que ayudan o
-    estorban según el contexto, y una puntuación intermedia suele indicar flexibilidad.</p>
+    <p style="margin-top:1rem">${textos.comoLeer.cierre}</p>
   </section>
 
   <section class="seccion" id="resumen">
-    <p class="eyebrow">Resumen del perfil</p>
+    <p class="eyebrow">${textos.resumen.eyebrow}</p>
     ${prosa.titular ? '<p class="titular">' + esc(prosa.titular) + "</p>" : ""}
-    ${prosa.perfilEnUnaFrase ? parrafos(prosa.perfilEnUnaFrase) : hueco("el resumen del perfil")}
+    ${prosa.perfilEnUnaFrase ? parrafos(prosa.perfilEnUnaFrase) : hueco(textos.huecos.resumen)}
   </section>
 
   <section class="seccion" id="vistazo">
-    <p class="eyebrow">De un vistazo</p>
-    <h2>Los cinco dominios</h2>
+    <p class="eyebrow">${textos.vistazo.eyebrow}</p>
+    <h2>${textos.vistazo.titulo}</h2>
     ${resumenVisual}
   </section>
 
   <section class="seccion" id="dominios">
-    <p class="eyebrow">En detalle</p>
-    <h2>Los cinco dominios, faceta a faceta</h2>
-    <p style="color:var(--ink-soft);font-size:.95rem">Cada dominio se compone de tres facetas. Dos
-    personas con la misma puntuación general pueden tenerlas repartidas de forma muy distinta, y ahí
-    está lo característico de cada perfil. Cuando una faceta se separa claramente de las otras dos,
-    va señalada en naranja.</p>
+    <p class="eyebrow">${textos.dominios.eyebrow}</p>
+    <h2>${textos.dominios.titulo}</h2>
+    <p style="color:var(--ink-soft);font-size:.95rem">${textos.dominios.intro}</p>
     ${dominios}
   </section>
 
   <section class="seccion" id="combinaciones">
-    <p class="eyebrow">Combinaciones del perfil</p>
-    <h2>Lo que aparece al cruzar las facetas</h2>
+    <p class="eyebrow">${textos.combinaciones.eyebrow}</p>
+    <h2>${textos.combinaciones.titulo}</h2>
     ${introCombinaciones(modelo)}
   </section>
 
   <section class="seccion" id="senales">
-    <p class="eyebrow">Cerca, pero no</p>
-    <h2>Señales de atención</h2>
-    ${introSenales(modelo, labels)}
+    <p class="eyebrow">${textos.senalesSeccion.eyebrow}</p>
+    <h2>${textos.senalesSeccion.titulo}</h2>
+    ${introSenales(modelo, labels, textos.senales)}
     <ul class="senales">${senalesHtml}</ul>
   </section>
 
   <section class="seccion" id="trabajo">
-    <p class="eyebrow">Aplicación</p>
-    <h2>En el trabajo</h2>
-    ${prosa.enElTrabajo ? parrafos(prosa.enElTrabajo) : hueco("la lectura en clave laboral")}
+    <p class="eyebrow">${textos.trabajo.eyebrow}</p>
+    <h2>${textos.trabajo.titulo}</h2>
+    ${prosa.enElTrabajo ? parrafos(prosa.enElTrabajo) : hueco(textos.huecos.trabajo)}
   </section>
 
   <section class="seccion" id="preguntas">
-    <p class="eyebrow">Para pensar</p>
-    <h2>Preguntas poderosas</h2>
-    ${prosa.preguntas?.length ? '<ul class="preguntas">' + prosa.preguntas.map((q) => "<li>" + esc(q) + "</li>").join("") + "</ul>" : hueco("las preguntas poderosas")}
+    <p class="eyebrow">${textos.preguntas.eyebrow}</p>
+    <h2>${textos.preguntas.titulo}</h2>
+    ${prosa.preguntas?.length ? '<ul class="preguntas">' + prosa.preguntas.map((q) => "<li>" + esc(q) + "</li>").join("") + "</ul>" : hueco(textos.huecos.preguntas)}
   </section>
 
   <section class="seccion" id="plan">
-    <p class="eyebrow">Para hacer</p>
-    <h2>Plan de acción</h2>
+    <p class="eyebrow">${textos.plan.eyebrow}</p>
+    <h2>${textos.plan.titulo}</h2>
     <div class="plan">
       ${
         pasosDelPlan(prosa.planAccion).length
@@ -880,11 +875,11 @@ ${opciones.aviso ? '<div class="maqueta">' + esc(opciones.aviso) + "</div>" : co
                 (e) => `<article class="paso">
         <h4>${esc(e.titulo)}</h4>
         <p>${esc(e.texto)}</p>
-        <p class="paso__ind"><b>Cómo sabrás si sirve:</b> ${esc(e.indicador)}</p>
+        <p class="paso__ind"><b>${textos.plan.indicador}</b> ${esc(e.indicador)}</p>
       </article>`,
               )
               .join("")
-          : hueco("los tres pasos del plan, cada uno con su indicador")
+          : hueco(textos.huecos.plan)
       }
     </div>
   </section>
@@ -892,49 +887,42 @@ ${
   metaforas
     ? `
   <section class="seccion" id="imagenes">
-    <p class="eyebrow">Para recordarlo</p>
-    <h2>Tres imágenes</h2>
-    <p style="color:var(--ink-soft);font-size:.95rem">Las ideas se olvidan; las imágenes se
-    quedan. Estas salen de las puntuaciones que más se apartan del centro en tu perfil,
-    y están para volver a ellas entre sesiones.</p>
+    <p class="eyebrow">${textos.imagenes.eyebrow}</p>
+    <h2>${textos.imagenes.titulo}</h2>
+    <p style="color:var(--ink-soft);font-size:.95rem">${textos.imagenes.intro}</p>
     ${metaforas.imagenes
       .map(
         (m) => `<figure class="imagen">
       <blockquote>${esc(m.texto)}</blockquote>
-      <figcaption><b>${esc(m.nombre)}</b> · por tu ${esc(m.etiqueta.toLowerCase())} ${esc(m.banda)}</figcaption>
+      <figcaption><b>${esc(m.nombre)}</b> · ${rellena(textos.imagenes.porTu, { faceta: esc(m.etiqueta.toLowerCase()), banda: esc(m.banda) })}</figcaption>
     </figure>`,
       )
       .join("")}
     <figure class="imagen imagen--ancla">
-      <p class="imagen__etiqueta">Si te quedas con una</p>
+      <p class="imagen__etiqueta">${textos.imagenes.ancla}</p>
       <blockquote>${esc(metaforas.ancla.texto)}</blockquote>
-      <figcaption><b>${esc(metaforas.ancla.nombre)}</b> · por tu ${esc(metaforas.ancla.etiqueta.toLowerCase())} ${esc(metaforas.ancla.banda)}</figcaption>
+      <figcaption><b>${esc(metaforas.ancla.nombre)}</b> · ${rellena(textos.imagenes.porTu, { faceta: esc(metaforas.ancla.etiqueta.toLowerCase()), banda: esc(metaforas.ancla.banda) })}</figcaption>
     </figure>
   </section>`
     : ""
 }
 
   <section class="seccion" id="conclusiones">
-    <p class="eyebrow">Para cerrar</p>
-    <h2>Conclusiones</h2>
-    ${prosa.conclusion ? parrafos(prosa.conclusion) : hueco("las conclusiones")}
+    <p class="eyebrow">${textos.conclusiones.eyebrow}</p>
+    <h2>${textos.conclusiones.titulo}</h2>
+    ${prosa.conclusion ? parrafos(prosa.conclusion) : hueco(textos.huecos.conclusion)}
   </section>
 
   <footer class="pie" id="fuentes">
-    <h4>Fuentes y metodología</h4>
-    <p>Instrumento: <b>BFI-2</b>, Big Five Inventory-2, en su adaptación española. 60 ítems, escala
-    de 1 a 5, cinco dominios y quince facetas. Cada faceta es la media de sus cuatro ítems; cada
-    dominio, la media de sus doce. Las combinaciones proceden de la base de conocimiento de IMPAUSA
-    sobre el BFI-2, construida sobre los trabajos que se listan a continuación.</p>
+    <h4>${textos.fuentesSeccion.titulo}</h4>
+    <p>${textos.fuentesSeccion.intro}</p>
     ${bibliografia(opciones.fuentes)}
     ${leyenda}
-    <h4>Aviso importante</h4>
-    <p>Las facetas son escalas de cuatro ítems: sostienen menos peso que los dominios y conviene
-    leerlas con más prudencia. Este informe es una herramienta de autoconocimiento y coaching; no es
-    una prueba clínica ni de selección, y refleja cómo te describiste el día que lo respondiste.</p>
+    <h4>${textos.fuentesSeccion.avisoTitulo}</h4>
+    <p>${textos.fuentesSeccion.aviso}</p>
   </footer>
 
-  ${cierreDeMarca(opciones.marca)}
+  ${cierreDeMarca(opciones.marca, textos.firma)}
 
 </div>
 </td></tr></tbody></table>

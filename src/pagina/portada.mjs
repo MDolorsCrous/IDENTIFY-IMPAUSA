@@ -25,45 +25,16 @@ const esc = (s) =>
  * El orden OCEAN, que es el del acrónimo internacional y no el que usa el
  * informe. Aquí se presenta el modelo; allí se presentan los resultados.
  *
- * De cada dominio solo se guarda lo que no está en los datos: su letra, su
- * nombre en inglés y la frase que explica qué explora. El nombre en español y
- * sus tres facetas se leen de la configuración.
+ * De cada dominio solo se guarda lo que no cambia con el idioma: su letra y su
+ * nombre en inglés. El nombre en español y sus tres facetas se leen de la
+ * configuración, y la frase que explica qué explora, de los textos de idioma.
  */
 const OCEAN = [
-  {
-    id: "open_mindedness",
-    letra: "O",
-    ingles: "Openness",
-    explica:
-      "Explora tu inclinación a profundizar en ideas, apreciar la belleza e imaginar posibilidades nuevas.",
-  },
-  {
-    id: "conscientiousness",
-    letra: "C",
-    ingles: "Conscientiousness",
-    explica: "Observa cómo estructuras, ejecutas y sostienes tareas, objetivos y compromisos.",
-  },
-  {
-    id: "extraversion",
-    letra: "E",
-    ingles: "Extraversion",
-    explica:
-      "Ayuda a comprender cuánto tiendes a buscar interacción, tomar la iniciativa y mantener un ritmo activo.",
-  },
-  {
-    id: "agreeableness",
-    letra: "A",
-    ingles: "Agreeableness",
-    explica:
-      "Observa cómo consideras las necesidades de otras personas, cuidas las relaciones y confías en sus intenciones.",
-  },
-  {
-    id: "negative_emotionality",
-    letra: "N",
-    ingles: "Negative Emotionality",
-    explica:
-      "Explora con qué facilidad registras preocupación, desánimo o cambios emocionales ante las dificultades.",
-  },
+  { id: "open_mindedness", letra: "O", ingles: "Openness" },
+  { id: "conscientiousness", letra: "C", ingles: "Conscientiousness" },
+  { id: "extraversion", letra: "E", ingles: "Extraversion" },
+  { id: "agreeableness", letra: "A", ingles: "Agreeableness" },
+  { id: "negative_emotionality", letra: "N", ingles: "Negative Emotionality" },
 ];
 
 /** Iconos de trazo, dibujados aquí para no depender de ninguna librería. */
@@ -132,7 +103,7 @@ function tintaSobre(hex) {
  * letra, su nombre y sus tres facetas escritas. Quien no distinga los colores
  * recibe exactamente la misma información.
  */
-function tarjetasOcean(recursos) {
+function tarjetasOcean(recursos, t) {
   const { labels, config, marca } = recursos;
   return OCEAN.map((d) => {
     const facetas = config.facets
@@ -145,11 +116,11 @@ function tarjetasOcean(recursos) {
           <span class="ocean__letra" aria-hidden="true">${d.letra}</span>
           <div>
             <h3>${esc(labels.domains[d.id])}</h3>
-            <p class="ocean__ingles"><span class="oculto">Término internacional: </span>${d.ingles}</p>
+            <p class="ocean__ingles"><span class="oculto">${t.oculto}</span>${d.ingles}</p>
           </div>
         </div>
         <p class="ocean__facetas">${facetas.join(" <span aria-hidden=\"true\">·</span> ")}</p>
-        <p class="ocean__texto">${esc(d.explica)}</p>
+        <p class="ocean__texto">${esc(t.explica[d.id])}</p>
       </article>`;
   }).join("");
 }
@@ -160,13 +131,13 @@ function tarjetasOcean(recursos) {
  * Las cifras son inventadas y van marcadas como ejemplo. Poner aquí las de
  * alguien real seria publicar el perfil de una persona en la página de entrada.
  */
-function vistaPrevia(recursos) {
+function vistaPrevia(recursos, t) {
   const ejemplo = [
-    { id: "extraversion", valor: 3.4, banda: "media-alta" },
-    { id: "agreeableness", valor: 4.1, banda: "alta" },
-    { id: "conscientiousness", valor: 2.8, banda: "media-baja" },
-    { id: "negative_emotionality", valor: 3.1, banda: "media-alta" },
-    { id: "open_mindedness", valor: 3.9, banda: "alta" },
+    { id: "extraversion", valor: 3.4 },
+    { id: "agreeableness", valor: 4.1 },
+    { id: "conscientiousness", valor: 2.8 },
+    { id: "negative_emotionality", valor: 3.1 },
+    { id: "open_mindedness", valor: 3.9 },
   ];
   const { labels, marca } = recursos;
   const barras = ejemplo
@@ -177,47 +148,42 @@ function vistaPrevia(recursos) {
         <div class="muestra__fila">
           <span class="muestra__nombre">${esc(labels.domains[d.id])}</span>
           <span class="muestra__eje"><span class="muestra__relleno" style="width:${pct}%;background:${color}"></span></span>
-          <span class="muestra__dato">${d.valor.toFixed(1).replace(".", ",")} <em>${d.banda}</em></span>
+          <span class="muestra__dato">${d.valor.toFixed(1).replace(".", ",")} <em>${t.bandas[d.id]}</em></span>
         </div>`;
     })
     .join("");
 
   return `
-    <div class="muestra" role="group" aria-label="Ejemplo visual de un informe, con cifras inventadas">
-      <p class="muestra__sello">Ejemplo visual · cifras inventadas</p>
+    <div class="muestra" role="group" aria-label="${t.aria}">
+      <p class="muestra__sello">${t.sello}</p>
       <div class="muestra__hoja">
-        <p class="ojo">Resultado de un vistazo</p>
-        <h4>Los cinco dominios</h4>
+        <p class="ojo">${t.ojo}</p>
+        <h4>${t.titulo}</h4>
         ${barras}
-        <p class="muestra__escala"><span>1</span><span>3 · punto medio</span><span>5</span></p>
+        <p class="muestra__escala"><span>1</span><span>${t.escalaMedio}</span><span>5</span></p>
         <div class="muestra__bloques">
-          <div class="muestra__bloque">
-            <p class="ojo">Interpretación</p>
-            <p>Cada dominio se explica con su definición, la lectura de tus tres facetas y las
-            tensiones que pueden aparecer.</p>
-          </div>
-          <div class="muestra__bloque">
-            <p class="ojo">Preguntas poderosas</p>
-            <p>Preguntas escritas a partir de tus resultados, para llevar a una conversación
-            o a un cuaderno.</p>
-          </div>
-          <div class="muestra__bloque">
-            <p class="ojo">Plan de acción</p>
-            <p>Tres acciones concretas, cada una con una señal que te dice si está funcionando.</p>
-          </div>
+          ${t.bloques
+            .map(
+              (b) => `<div class="muestra__bloque">
+            <p class="ojo">${b.ojo}</p>
+            <p>${b.texto}</p>
+          </div>`,
+            )
+            .join("\n          ")}
         </div>
       </div>
     </div>`;
 }
 
 /** El recorrido del resultado, en HTML: no es una imagen con texto dentro. */
-const recorrido = `
+const recorrido = (pasos) => `
   <ol class="recorrido">
-    <li><span class="recorrido__n">1</span><b>Tus respuestas</b><span>60 afirmaciones, de 1 a 5</span></li>
-    <li><span class="recorrido__n">2</span><b>5 dimensiones</b><span>doce ítems cada una</span></li>
-    <li><span class="recorrido__n">3</span><b>15 facetas</b><span>cuatro ítems cada una</span></li>
-    <li><span class="recorrido__n">4</span><b>Interpretación</b><span>qué dice esa combinación</span></li>
-    <li><span class="recorrido__n">5</span><b>Preguntas y plan</b><span>qué puedes hacer con ella</span></li>
+    ${pasos
+      .map(
+        (p, i) =>
+          `<li><span class="recorrido__n">${i + 1}</span><b>${esc(p.titulo)}</b><span>${esc(p.detalle)}</span></li>`,
+      )
+      .join("\n    ")}
   </ol>`;
 
 /**
@@ -268,182 +234,110 @@ function plegable({ id, numero, titulo, resumen, cuerpo }) {
  */
 export function paginaDeInicio(recursos) {
   const { fuentes } = recursos;
+  const t = recursos.textos.portada;
   const ref = (f) =>
     `<li>${esc(f.autores)} (${f.anio}). <i>${esc(f.titulo)}</i>. ${esc(f.publicacion)}. ` +
     `<a href="https://doi.org/${esc(f.doi)}" target="_blank" rel="noopener">doi.org/${esc(f.doi)}</a></li>`;
+
+  // Cada rejilla de tarjetas: el icono es estructura y se queda aquí; el texto
+  // de cada tarjeta viene de los textos de idioma, emparejado por posición.
+  const rejilla = (columnas, iconos, tarjetas) =>
+    `<div class="rejilla rejilla--${columnas}">
+            ${iconos.map((ic, i) => tarjeta(ic, tarjetas[i].titulo, tarjetas[i].texto)).join("\n            ")}
+          </div>`;
 
   const pliegues = [
     plegable({
       id: "queAporta",
       numero: "1",
-      titulo: "¿Qué aporta hacer el test Identify?",
-      resumen:
-        "Comprende tus tendencias, reconoce tus recursos y detecta en qué contextos puedes necesitar un ajuste diferente.",
+      titulo: t.pliegues.queAporta.titulo,
+      resumen: t.pliegues.queAporta.resumen,
       cuerpo: `
-          <p>Muchas respuestas aparecen de forma automática. Identify convierte esas tendencias en un mapa
-          comprensible para que puedas reconocer qué te impulsa, qué puede desgastarte y qué alternativas
-          puedes incorporar según la situación.</p>
-          <div class="rejilla rejilla--3">
-            ${tarjeta("mapa", "Autoconocimiento con matices", "Comprende tu combinación particular de cinco dimensiones y quince facetas sin reducirte a una etiqueta.")}
-            ${tarjeta("chispa", "Fortalezas contextualizadas", "Identifica tendencias que pueden ayudarte y los contextos en los que aportan más valor.")}
-            ${tarjeta("aviso", "Riesgos por exceso o desajuste", "Detecta cuándo una fortaleza puede dejar de ayudarte por intensidad, desequilibrio o contexto.")}
-            ${tarjeta("brujula", "Decisiones más conscientes", "Observa cómo tus tendencias pueden influir en prioridades, hábitos y decisiones.")}
-            ${tarjeta("personas", "Relaciones más comprensibles", "Comprende cómo tiendes a conectar, confiar, expresarte y responder ante otras personas.")}
-            ${tarjeta("semilla", "Desarrollo orientado a la acción", "Transforma los resultados en preguntas y acciones concretas que puedas experimentar.")}
-          </div>
-          <p class="destacado">El objetivo no es decirte cómo eres de forma absoluta, sino ayudarte a
-          observar cómo funcionan tus tendencias y qué puedes hacer con esa información.</p>`,
+          <p>${t.pliegues.queAporta.intro}</p>
+          ${rejilla(3, ["mapa", "chispa", "aviso", "brujula", "personas", "semilla"], t.pliegues.queAporta.tarjetas)}
+          <p class="destacado">${t.pliegues.queAporta.destacado}</p>`,
     }),
 
     plegable({
       id: "rigor",
       numero: "2",
-      titulo: "Rigor para comprenderte con más matices",
-      resumen:
-        "En qué se apoya el test: el modelo Big Five/OCEAN, la estructura del BFI-2 y hasta dónde llega lo que mide.",
+      titulo: t.pliegues.rigor.titulo,
+      resumen: t.pliegues.rigor.resumen,
       cuerpo: `
-          <p>Identify se apoya en el modelo Big Five/OCEAN y en la estructura jerárquica del BFI-2. Analiza
-          cinco dominios amplios y quince facetas específicas para ofrecer una lectura dimensional de la
-          personalidad.</p>
-          <p>Esto permite ir más allá de una etiqueta: muestra grados, diferencias internas y combinaciones
-          que ayudan a comprender cómo pueden expresarse tus tendencias en distintos contextos.</p>
-          <p>Los resultados son orientativos. Describen cómo te has definido al responder y deben
-          interpretarse junto con tu experiencia, tu contexto y, cuando sea necesario, el criterio de un
-          profesional.</p>
-          <p class="destacado">La ciencia no te convierte en una etiqueta: aporta un marco para comprender
-          matices y formular mejores preguntas.</p>
+          ${t.pliegues.rigor.parrafos.map((p) => `<p>${p}</p>`).join("\n          ")}
+          <p class="destacado">${t.pliegues.rigor.destacado}</p>
           <dl class="confianza">
-            <div><dt>60 ítems</dt><dd>Cuestionario de autoinforme.</dd></div>
-            <div><dt>5 dimensiones</dt><dd>Los grandes dominios del modelo Big Five.</dd></div>
-            <div><dt>15 facetas</dt><dd>Tres matices dentro de cada dimensión.</dd></div>
-            <div><dt>Adaptación española</dt><dd>Estudiada en investigación publicada.</dd></div>
+            ${t.pliegues.rigor.confianza
+              .map((c) => `<div><dt>${esc(c.dato)}</dt><dd>${esc(c.texto)}</dd></div>`)
+              .join("\n            ")}
           </dl>`,
     }),
 
     plegable({
       id: "dimensiones",
       numero: "3",
-      titulo: "Dimensiones, no etiquetas",
-      resumen:
-        "Big Five no divide a las personas en categorías cerradas: todas presentamos las cinco en distintos grados.",
+      titulo: t.pliegues.dimensiones.titulo,
+      resumen: t.pliegues.dimensiones.resumen,
       cuerpo: `
-          <p>Big Five/OCEAN no divide a las personas en categorías cerradas. Todas las personas presentan
-          las cinco dimensiones en distintos grados, y el valor del resultado está en observar cómo se
-          combinan.</p>
-          <div class="rejilla rejilla--4">
-            ${tarjeta("ruta", "Un modelo dimensional", "Representa grados y no categorías absolutas.")}
-            ${tarjeta("libro", "Una lectura jerárquica", "Combina cinco dominios con quince facetas.")}
-            ${tarjeta("mapa", "Más matices que una tipología", "Dos personas con un dominio similar pueden presentar facetas diferentes.")}
-            ${tarjeta("balanza", "Interpretación contextual", "Una tendencia puede ayudar o dificultar dependiendo de la situación.")}
-          </div>
-          <p class="destacado">Big Five no busca encasillarte. Busca describir, con matices, cómo tiendes a
-          desenvolverte.</p>`,
+          <p>${t.pliegues.dimensiones.intro}</p>
+          ${rejilla(4, ["ruta", "libro", "mapa", "balanza"], t.pliegues.dimensiones.tarjetas)}
+          <p class="destacado">${t.pliegues.dimensiones.destacado}</p>`,
     }),
 
     plegable({
       id: "cincoDimensiones",
       numero: "4",
-      titulo: "Las cinco dimensiones que estudia Identify",
-      resumen:
-        "Apertura de mente, Responsabilidad, Extraversión, Cordialidad y Emocionalidad negativa, con sus tres facetas cada una.",
+      titulo: t.pliegues.cincoDimensiones.titulo,
+      resumen: t.pliegues.cincoDimensiones.resumen,
       cuerpo: `
-          <p>Todas las personas tenemos las cinco dimensiones. Lo que cambia es la intensidad de cada una y
-          la forma en que se combinan sus facetas.</p>
-          <div class="oceanes">${tarjetasOcean(recursos)}</div>
-          <p class="apunte">${icono("aviso")}<span><b>Ansiedad</b>, <b>Depresión</b> y <b>Volatilidad
-          emocional</b> son nombres técnicos de escalas de personalidad. No representan condiciones
-          clínicas ni diagnósticos.</span></p>`,
+          <p>${t.pliegues.cincoDimensiones.intro}</p>
+          <div class="oceanes">${tarjetasOcean(recursos, t.ocean)}</div>
+          <p class="apunte">${icono("aviso")}<span>${t.pliegues.cincoDimensiones.apunte}</span></p>`,
     }),
 
     plegable({
       id: "porQueImporta",
       numero: "5",
-      titulo: "¿Por qué es importante conocer estas dimensiones?",
-      resumen:
-        "Cómo se notan al relacionarte, al organizarte, al gestionar la tensión y al aprender algo nuevo.",
+      titulo: t.pliegues.porQueImporta.titulo,
+      resumen: t.pliegues.porQueImporta.resumen,
       cuerpo: `
-          <p>Conocerte no significa etiquetarte. Significa comprender qué tendencias te impulsan, cuáles
-          pueden desgastarte y qué ajustes pueden ayudarte a responder mejor a cada situación.</p>
-          <div class="rejilla rejilla--3">
-            ${tarjeta("personas", "Relacionarte", "Comprender cómo buscas contacto, expresas opiniones, muestras empatía y construyes confianza.")}
-            ${tarjeta("ruta", "Actuar y organizarte", "Reconocer cómo conviertes intenciones en acciones, estructuras tareas y sostienes compromisos.")}
-            ${tarjeta("aviso", "Gestionar la tensión", "Observar cómo registras preocupación, desánimo y cambios emocionales cuando aumenta la presión.")}
-            ${tarjeta("chispa", "Aprender y crear", "Comprender cómo exploras ideas, imaginas alternativas y conectas con experiencias intelectuales o estéticas.")}
-            ${tarjeta("semilla", "Ampliar tu repertorio", "Elegir respuestas diferentes cuando tu tendencia automática no es la más útil para la situación.")}
-          </div>`,
+          <p>${t.pliegues.porQueImporta.intro}</p>
+          ${rejilla(3, ["personas", "ruta", "aviso", "chispa", "semilla"], t.pliegues.porQueImporta.tarjetas)}`,
     }),
 
     plegable({
       id: "informe",
       numero: "6",
-      titulo: "Informe personalizado: lo que recibes",
-      resumen:
-        "Mucho más que cinco puntuaciones: interpretación, combinaciones, preguntas y un plan de acción.",
+      titulo: t.pliegues.informe.titulo,
+      resumen: t.pliegues.informe.resumen,
       cuerpo: `
-          <p>Al finalizar, Identify genera automáticamente un informe personalizado que explica qué
-          significan tus resultados, cómo se combinan y qué puedes hacer con ellos.</p>
-          ${recorrido}
-          ${vistaPrevia(recursos)}
-          <p class="apunte">${icono("balanza")}<span>Los dominios ofrecen la visión más sólida del perfil;
-          las facetas permiten profundizar en sus matices y deben leerse con mayor prudencia.</span></p>
+          <p>${t.pliegues.informe.intro}</p>
+          ${recorrido(t.recorrido)}
+          ${vistaPrevia(recursos, t.muestra)}
+          <p class="apunte">${icono("balanza")}<span>${t.pliegues.informe.apunteDominios}</span></p>
 
-          <h3 class="pliegue__sub">¿Qué descubrirás en tu informe personalizado?</h3>
+          <h3 class="pliegue__sub">${t.pliegues.informe.descubriras}</h3>
           <ol class="apartados">
-            <li><b>Resumen global.</b> Un titular y una interpretación general de los patrones principales.</li>
-            <li><b>Gráfico de los cinco dominios.</b> Puntuaciones de 1 a 5 y bandas en Extraversión,
-            Cordialidad, Responsabilidad, Emocionalidad negativa y Apertura de mente.</li>
-            <li><b>Análisis de las quince facetas.</b> Las tres facetas de cada dominio, y cuál se separa
-            claramente de las otras dos.</li>
-            <li><b>Interpretación de cada dominio.</b> Definición, lectura personalizada, posibles
-            aportaciones, tensiones y palancas prácticas.</li>
-            <li><b>Combinaciones del perfil.</b> Patrones que aparecen al cruzar facetas cuando se cumplen
-            todas las condiciones de una regla.</li>
-            <li><b>Señales de atención.</b> Combinaciones que se quedan cerca, explicadas en condicional y
-            nunca como resultados actuales.</li>
-            <li><b>Aplicación en el trabajo.</b> Cómo pueden expresarse esas tendencias profesionalmente.</li>
-            <li><b>Preguntas poderosas.</b> Preguntas derivadas de tus resultados.</li>
-            <li><b>Plan de acción.</b> Tres acciones concretas, cada una con su indicador de seguimiento.</li>
-            <li><b>Imágenes para recordar.</b> Tres metáforas ligadas a las puntuaciones más relevantes.</li>
-            <li><b>Conclusiones.</b> Síntesis de recursos, ajustes y prioridades.</li>
-            <li><b>Fuentes y metodología.</b> Instrumento, escala, adaptación, referencias y límites.</li>
+            ${t.pliegues.informe.apartados.map((a) => `<li>${a}</li>`).join("\n            ")}
           </ol>
 
-          <h3 class="pliegue__sub">El valor está en lo que haces con la información</h3>
-          <p>El valor del informe no está solo en conocer una puntuación. Está en comprender cómo se expresa
-          en tu vida, qué patrones conviene proteger y dónde puede resultar útil introducir un pequeño
-          cambio.</p>
+          <h3 class="pliegue__sub">${t.pliegues.informe.valorTitulo}</h3>
+          <p>${t.pliegues.informe.valorTexto}</p>
           <ol class="pasos">
-            <li><b>Reconocer.</b> Poner nombre a tendencias que quizá ya intuías.</li>
-            <li><b>Comprender.</b> Observar cómo se combinan dominios y facetas.</li>
-            <li><b>Contextualizar.</b> Distinguir cuándo una tendencia ayuda y cuándo puede dificultar.</li>
-            <li><b>Accionar.</b> Elegir una pregunta o acción concreta para experimentar.</li>
+            ${t.pliegues.informe.pasos.map((p) => `<li>${p}</li>`).join("\n            ")}
           </ol>
-          <p class="apunte">${icono("balanza")}<span>El informe transforma las puntuaciones en hipótesis de
-          reflexión, no en verdades absolutas.</span></p>`,
+          <p class="apunte">${icono("balanza")}<span>${t.pliegues.informe.apunteHipotesis}</span></p>`,
     }),
 
     plegable({
       id: "comoLeer",
       numero: "7",
-      titulo: "Un mapa para conocerte, no una etiqueta",
-      resumen:
-        "Qué mide y qué no mide: los límites de lo que puede decirte un cuestionario que respondes tú.",
+      titulo: t.pliegues.comoLeer.titulo,
+      resumen: t.pliegues.comoLeer.resumen,
       cuerpo: `
           <div class="lectura">
             <ul class="lista">
-              <li>Identify mide <b>tendencias que describe la propia persona</b>: refleja cómo te
-              describiste al responder.</li>
-              <li>Esas tendencias son relativamente estables, <b>pero no fijas</b>, y pueden expresarse de
-              manera distinta según el contexto.</li>
-              <li><b>No hay puntuaciones buenas ni malas.</b> Una tendencia puede ayudar o estorbar según la
-              situación, y una puntuación intermedia suele indicar flexibilidad.</li>
-              <li><b>No es un diagnóstico</b> ni una prueba clínica.</li>
-              <li>No mide inteligencia ni capacidad, y <b>no determina idoneidad</b> para un puesto.</li>
-              <li>No predice exactamente lo que vas a hacer, ni sustituye el criterio de un profesional.</li>
-              <li>Las bandas indican tu posición <b>dentro de la escala del cuestionario</b>. No son una
-              comparación con la población general: este informe no utiliza percentiles normativos.</li>
-              <li>Las facetas son escalas de cuatro ítems: <b>sostienen menos peso que los dominios</b> y
-              conviene leerlas con más prudencia.</li>
+              ${t.pliegues.comoLeer.lista.map((l) => `<li>${l}</li>`).join("\n              ")}
             </ul>
           </div>`,
     }),
@@ -451,27 +345,22 @@ export function paginaDeInicio(recursos) {
     plegable({
       id: "baseCientifica",
       numero: "8",
-      titulo: "Conoce la base científica de Identify",
-      resumen: "Modelo, instrumento, estructura, adaptación española y referencias con su DOI.",
+      titulo: t.pliegues.baseCientifica.titulo,
+      resumen: t.pliegues.baseCientifica.resumen,
       cuerpo: `
           <dl class="ficha">
-            <dt>Modelo</dt><dd>Big Five/OCEAN, como marco dimensional de personalidad.</dd>
-            <dt>Instrumento</dt><dd>Big Five Inventory-2 (BFI-2), de Christopher J. Soto y Oliver P. John.</dd>
-            <dt>Estructura</dt><dd>60 ítems, cinco dominios y quince facetas; cuatro ítems por faceta y doce
-            por dominio, en una escala de 1 a 5.</dd>
-            <dt>Adaptación española</dt><dd>Adaptación estudiada por Gallardo-Pujol y colaboradores.</dd>
-            <dt>Interpretación</dt><dd>Los resultados se presentan como tendencias y asociaciones, no como
-            diagnósticos ni predicciones deterministas. Las combinaciones, las preguntas y el plan de acción
-            son elaboración propia de IMPAUSA sobre esa base, y no forman parte del instrumento original.</dd>
+            ${t.pliegues.baseCientifica.ficha
+              .map((c) => `<dt>${esc(c.dato)}</dt><dd>${esc(c.texto)}</dd>`)
+              .join("\n            ")}
           </dl>
-          <p class="ojo">Referencias</p>
+          <p class="ojo">${t.pliegues.baseCientifica.referencias}</p>
           <ol class="referencias">
             ${ref(fuentes.instrumento)}
             ${ref(fuentes.adaptacion)}
-            <li>Berkeley Personality Lab. Información oficial sobre el BFI-2:
+            <li>${t.pliegues.baseCientifica.berkeley}
             <a href="https://www.ocf.berkeley.edu/~johnlab/bfi.html" target="_blank" rel="noopener">ocf.berkeley.edu/~johnlab/bfi.html</a></li>
           </ol>
-          <p class="atribucion">BFI-2 © Oliver P. John y Christopher J. Soto.</p>`,
+          <p class="atribucion">${esc(t.pliegues.baseCientifica.atribucion)}</p>`,
     }),
   ].join("");
 
@@ -482,18 +371,12 @@ export function paginaDeInicio(recursos) {
     ${ondas}
     <div class="ancho hero__caja">
       <h1 class="rotulo"><span id="rn">Identify</span><span class="rotulo__by" id="rb">by Impausa</span></h1>
-      <p class="hero__titular">Comprende cómo tiendes a pensar, actuar, relacionarte y responder ante lo que
-        vives, <span class="realce">y cómo convertir ese conocimiento en decisiones más conscientes</span></p>
-      <p class="hero__base">Basado en Big Five/OCEAN <span aria-hidden="true">·</span> BFI-2
-        <span aria-hidden="true">·</span> 60 ítems</p>
-      <p class="hero__texto">Explora cinco grandes dimensiones y quince facetas de personalidad. Al finalizar
-        recibirás un informe personalizado que transforma tus resultados en interpretaciones, preguntas y
-        acciones concretas.</p>
-      <p class="hero__rigor">${icono("balanza")}<span>Una herramienta de autoconocimiento basada en investigación
-        publicada. No es un diagnóstico ni una predicción de conducta.</span></p>
+      <p class="hero__titular">${t.hero.titular}</p>
+      <p class="hero__base">${t.hero.base}</p>
+      <p class="hero__texto">${t.hero.texto}</p>
+      <p class="hero__rigor">${icono("balanza")}<span>${t.hero.rigor}</span></p>
       ${MARCA_CTA_HERO}
-      <p class="micro">No hay respuestas correctas o incorrectas. Responde pensando en cómo sueles actuar
-        habitualmente.</p>
+      <p class="micro">${t.hero.micro}</p>
       ${MARCA_IDIOMAS}
       ${MARCA_AVISO}
     </div>
@@ -501,22 +384,19 @@ export function paginaDeInicio(recursos) {
 
   <section class="banda banda--blanca">
     <div class="ancho">
-      <p class="ojo">Antes de empezar</p>
-      <h2>Qué es Identify y qué vas a recibir</h2>
-      <p class="entradilla">Ocho apartados, por si quieres saber dónde te metes. Ábrelos si te apetece; el
-      test funciona igual sin leer ninguno.</p>
+      <p class="ojo">${t.central.ojo}</p>
+      <h2>${t.central.titulo}</h2>
+      <p class="entradilla">${t.central.entradilla}</p>
       <div class="pila">${pliegues}</div>
     </div>
   </section>
 
   <section class="banda banda--cierre">
     <div class="ancho ancho--estrecho cierre">
-      <h2>Conócete con más profundidad y menos etiquetas</h2>
-      <p>Responde las 60 afirmaciones y recibe una lectura personalizada de tus cinco dimensiones y quince
-      facetas.</p>
+      <h2>${t.cierre.titulo}</h2>
+      <p>${t.cierre.texto}</p>
       ${MARCA_CTA_FINAL}
-      <p class="micro">No hay respuestas correctas o incorrectas. Elige la opción que mejor describa cómo sueles
-      actuar habitualmente.</p>
+      <p class="micro">${t.cierre.micro}</p>
     </div>
   </section>
 

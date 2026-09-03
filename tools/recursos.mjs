@@ -16,6 +16,7 @@ import questions from "../src/config/questions.json" with { type: "json" };
 import facets from "../src/config/facets.json" with { type: "json" };
 import domains from "../src/config/domains.json" with { type: "json" };
 import labels from "../src/i18n/es-informe.json" with { type: "json" };
+import textos from "../src/i18n/es-textos.json" with { type: "json" };
 import rules from "../src/config/interpretation/combinations.json" with { type: "json" };
 import facetas from "../src/config/interpretation/facetas.json" with { type: "json" };
 import metaforas from "../src/config/interpretation/metaforas.json" with { type: "json" };
@@ -33,6 +34,7 @@ export function cargarRecursos() {
   return {
     config: { questions, facets, domains },
     labels,
+    textos,
     rules,
     facetas,
     metaforas,

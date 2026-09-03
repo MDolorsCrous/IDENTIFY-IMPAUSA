@@ -155,6 +155,7 @@ test("las señales las escribe el código, y nunca las da por ciertas", () => {
   const modelo = construirModelo(respuestasEjemplo, recursos, {});
   const html = renderInforme(modelo, {}, recursos.labels, {
     facetas: recursos.facetas,
+    textos: recursos.textos.informe,
     metaforas: recursos.metaforas,
     fuentes: recursos.fuentes,
     fecha: "1 de enero de 2026",
@@ -183,6 +184,7 @@ test("un pasaje largo se parte en párrafos", () => {
   };
   const html = renderInforme(modelo, prosa as any, recursos.labels, {
     facetas: recursos.facetas,
+    textos: recursos.textos.informe,
     metaforas: recursos.metaforas,
     fecha: "1 de enero de 2026",
   });
@@ -193,6 +195,7 @@ test("un pasaje largo se parte en párrafos", () => {
   // Y una redacción antigua, sin líneas en blanco, sigue saliendo entera.
   const vieja = renderInforme(modelo, { conclusion: "Todo seguido, sin cortes." } as any, recursos.labels, {
     facetas: recursos.facetas,
+    textos: recursos.textos.informe,
     metaforas: recursos.metaforas,
     fecha: "1 de enero de 2026",
   });
@@ -210,6 +213,7 @@ test("cada dominio lleva su color, y el informe no enseña la dirección de la a
   const modelo = construirModelo(respuestasEjemplo, recursos, {});
   const html = renderInforme(modelo, {} as any, recursos.labels, {
     facetas: recursos.facetas,
+    textos: recursos.textos.informe,
     metaforas: recursos.metaforas,
     fuentes: recursos.fuentes,
     marca: recursos.marca,
@@ -242,6 +246,7 @@ test("la cabecera y el pie de página impresos se repiten", () => {
   const modelo = construirModelo(respuestasEjemplo, recursos, {});
   const html = renderInforme(modelo, {} as any, recursos.labels, {
     facetas: recursos.facetas,
+    textos: recursos.textos.informe,
     metaforas: recursos.metaforas,
     marca: recursos.marca,
     fecha: "1 de enero de 2026",
@@ -273,6 +278,7 @@ test("solo las piezas indivisibles se blindan contra el salto de página", () =>
   const modelo = construirModelo(respuestasEjemplo, recursos, {});
   const html = renderInforme(modelo, {} as any, recursos.labels, {
     facetas: recursos.facetas,
+    textos: recursos.textos.informe,
     metaforas: recursos.metaforas,
     fuentes: recursos.fuentes,
     marca: recursos.marca,
@@ -317,7 +323,7 @@ test("las combinaciones que se cumplen salen en el informe", () => {
   // informe entero», así que aquí se comprueba que dice la verdad en los dos
   // casos: cuando hay y cuando no.
   const recursos = cargarRecursos();
-  const opciones = { facetas: recursos.facetas, metaforas: recursos.metaforas, marca: recursos.marca, fecha: "1 de enero de 2026" };
+  const opciones = { facetas: recursos.facetas, textos: recursos.textos.informe, metaforas: recursos.metaforas, marca: recursos.marca, fecha: "1 de enero de 2026" };
   // Las citas llevan «&» y en el HTML sale escapado: se deshace para compararlas.
   const seccion = (html: string) => {
     const i = html.indexOf('id="combinaciones"');
@@ -350,7 +356,7 @@ test("una combinación marcada como clínica nunca aparece sola", () => {
   // eso encaja con lo que la persona vive, hablarlo con un profesional es lo
   // razonable». Las otras no llevan ese aviso: repetirlo en todas lo vaciaría.
   const recursos = cargarRecursos();
-  const opciones = { facetas: recursos.facetas, metaforas: recursos.metaforas, marca: recursos.marca, fecha: "1 de enero de 2026" };
+  const opciones = { facetas: recursos.facetas, textos: recursos.textos.informe, metaforas: recursos.metaforas, marca: recursos.marca, fecha: "1 de enero de 2026" };
   const seccion = (id: string) => {
     const modelo = construirModelo(respuestasQueDisparan(recursos, id), recursos, {});
     const html = renderInforme(modelo, {} as any, recursos.labels, opciones);

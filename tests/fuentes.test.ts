@@ -79,6 +79,7 @@ test("el informe generado lleva la bibliografía entera", () => {
   );
   const html = renderInforme(construirModelo(respuestas as any, recursos), {}, recursos.labels, {
     facetas: recursos.facetas,
+    textos: recursos.textos.informe,
     metaforas: recursos.metaforas,
     fuentes: recursos.fuentes,
     fecha: "1 de enero de 2026",
@@ -98,6 +99,7 @@ test("el informe se firma: logotipo, contacto y copyright", () => {
   );
   const html = renderInforme(construirModelo(respuestas as any, recursos), {}, recursos.labels, {
     facetas: recursos.facetas,
+    textos: recursos.textos.informe,
     metaforas: recursos.metaforas,
     fuentes: recursos.fuentes,
     marca: recursos.marca,
@@ -122,6 +124,7 @@ test("el informe abre y cierra con la marca, y todo sobre el mismo eje", () => {
   );
   const html = renderInforme(construirModelo(respuestas as any, recursos), {}, recursos.labels, {
     facetas: recursos.facetas,
+    textos: recursos.textos.informe,
     metaforas: recursos.metaforas,
     fuentes: recursos.fuentes,
     marca: recursos.marca,

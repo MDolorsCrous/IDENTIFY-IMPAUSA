@@ -18,6 +18,7 @@ if (process.argv[1] && import.meta.url === `file:///${process.argv[1].replace(/\
   const modelo = construirModelo(respuestas, recursos);
   const html = renderInforme(modelo, prosa, recursos.labels, {
     facetas: recursos.facetas,
+    textos: recursos.textos.informe,
     metaforas: recursos.metaforas,
     fuentes: recursos.fuentes,
     marca: recursos.marca,

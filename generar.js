@@ -166,6 +166,7 @@ const avisos = Object.keys(prosa).length ? avisosDeLongitud(prosa, modelo) : [];
 
 const html = renderInforme(modelo, prosa, recursos.labels, {
   facetas: recursos.facetas,
+  textos: recursos.textos.informe,
   metaforas: recursos.metaforas,
   fuentes: recursos.fuentes,
   marca: recursos.marca,

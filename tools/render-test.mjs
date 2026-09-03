@@ -76,7 +76,7 @@ const html = `<!doctype html>
      dispararse. Faltaba desde el principio, y afectaba al cuestionario entero,
      no solo a esta pantalla. -->
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Test Identify</title>
+<title>${recursos.textos.test.titulo}</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,700&family=Source+Sans+3:wght@0,400;0,600&display=swap">
@@ -274,6 +274,8 @@ const HUECO_CTA_FINAL = ${JSON.stringify(MARCA_CTA_FINAL)};
 const HUECO_IDIOMAS = ${JSON.stringify(MARCA_IDIOMAS)};
 const HUECO_AVISO = ${JSON.stringify(MARCA_AVISO)};
 const CFG = D.recursos.config;
+// Las cadenas de la interfaz, de src/i18n/es-textos.json: viajan dentro de D.
+const T = D.recursos.textos.test;
 const puntuar = respuestas => {
   const s = score(respuestas, CFG);
   return { facetas: s.facets, dominios: s.domains };
@@ -343,13 +345,13 @@ function portada(){
   const puertaCerrada = HAY_SERVIDOR && !recuerdaCodigo.leer();
   const laPuerta =
     '<form class="puerta" id="puerta">' +
-      '<label class="campo" for="codigo">Código de acceso' +
-        '<span>Te lo da quien te ha pasado el enlace</span>' +
+      '<label class="campo" for="codigo">' + T.puerta.etiqueta +
+        '<span>' + T.puerta.pista + '</span>' +
       '</label>' +
       '<div class="puerta__fila">' +
         '<input id="codigo" name="codigo" type="text" autocomplete="off" ' +
                'autocapitalize="off" spellcheck="false" required>' +
-        '<button class="cta" type="submit">Entrar</button>' +
+        '<button class="cta" type="submit">' + T.puerta.entrar + '</button>' +
       '</div>' +
       '<p class="puerta__error" id="puertaError" role="alert" hidden></p>' +
     '</form>';
@@ -357,16 +359,16 @@ function portada(){
   // pegando trozos: asi quien lea este fichero —o la prueba que comprueba que el
   // fichero local tiene por donde empezar— encuentra lo que busca.
   const botonHero = '<button class="cta" id="empezar" type="button">' +
-    'Comenzar el test ahora <span aria-hidden="true">→</span></button>';
+    T.inicio.empezar + ' <span aria-hidden="true">→</span></button>';
   const botonCierre = '<button class="cta" id="empezar2" type="button">' +
-    'Comenzar el test ahora <span aria-hidden="true">→</span></button>';
+    T.inicio.empezar + ' <span aria-hidden="true">→</span></button>';
 
   // Con la puerta puesta, el boton del cierre no puede empezar el test: lleva
   // al codigo, que es lo unico que abre. Mandar a alguien hasta abajo y dejarlo
   // ahi sin decirle por que no pasa nada seria peor que no poner boton.
   const alCierre = puertaCerrada
-    ? '<button class="cta" id="alaPuerta" type="button">Introducir el código de acceso ' +
-      '<span aria-hidden="true">↑</span></button>'
+    ? '<button class="cta" id="alaPuerta" type="button">' + T.inicio.alCodigo +
+      ' <span aria-hidden="true">↑</span></button>'
     : botonCierre;
 
   const selectorDeIdiomas =
@@ -381,8 +383,7 @@ function portada(){
     .replace(HUECO_CTA_FINAL, alCierre)
     .replace(HUECO_IDIOMAS, selectorDeIdiomas)
     .replace(HUECO_AVISO, FALLOS.length
-      ? '<div class="fallo">Aviso: la autocomprobación del cálculo no coincide en: ' +
-        FALLOS.join(", ") + '. No uses estos resultados.</div>'
+      ? '<div class="fallo">' + rellena(T.inicio.avisoFallos, { lista: FALLOS.join(", ") }) + '</div>'
       : "")
     + '<dialog class="panel" id="panelIdioma" aria-labelledby="panelIdiomaT">' +
         '<h2 id="panelIdiomaT"></h2>' +
@@ -452,7 +453,7 @@ function portada(){
     aviso.hidden = true;
     boton.disabled = true;
     const etiqueta = boton.textContent;
-    boton.textContent = "Comprobando…";
+    boton.textContent = T.puerta.comprobando;
     try {
       const r = await fetch("/api/entrar", {
         method: "POST",
@@ -466,11 +467,11 @@ function portada(){
         return;
       }
       const datos = await r.json().catch(() => ({}));
-      aviso.textContent = datos.error || "No se ha podido comprobar el código.";
+      aviso.textContent = datos.error || T.puerta.noComprobado;
       aviso.hidden = false;
       campo.select();
     } catch {
-      aviso.textContent = "No se ha podido conectar. Comprueba la conexión.";
+      aviso.textContent = T.puerta.sinConexion;
       aviso.hidden = false;
     } finally {
       boton.disabled = false;
@@ -529,22 +530,22 @@ function pregunta(){
   const hechas = Object.keys(respuestas).length;
   app.innerHTML = \`
     <div class="progreso">
-      <div class="progreso__fila"><span>Pregunta \${indice + 1} de 60</span><span>\${Math.round(hechas / 60 * 100)}% completado</span></div>
+      <div class="progreso__fila"><span>\${rellena(T.pregunta.de60, { n: indice + 1 })}</span><span>\${rellena(T.pregunta.completado, { pct: Math.round(hechas / 60 * 100) })}</span></div>
       <div class="barra"><div class="barra__relleno" style="width:\${hechas / 60 * 100}%"></div></div>
     </div>
     <div class="contenido">
       <div class="pregunta">
         <p class="stem">\${esc(D.stem)}</p>
         <h2 class="enunciado">\${esc(D.texts[q.id])}</h2>
-        <div class="opciones" role="radiogroup" aria-label="Escala de respuesta">
+        <div class="opciones" role="radiogroup" aria-label="\${T.pregunta.ariaEscala}">
           \${[1,2,3,4,5].map(v => \`
             <button class="opcion" role="radio" aria-checked="\${elegido === v}" data-v="\${v}">
               <span class="opcion__num">\${v}</span><span>\${esc(D.scale[v])}</span>
             </button>\`).join("")}
         </div>
         <div class="pie-preg">
-          <button class="enlace" id="atras" \${indice === 0 ? "disabled" : ""}>← Anterior</button>
-          <span class="ayuda">Puedes responder con las teclas 1 a 5</span>
+          <button class="enlace" id="atras" \${indice === 0 ? "disabled" : ""}>\${T.pregunta.anterior}</button>
+          <span class="ayuda">\${T.pregunta.teclas}</span>
         </div>
       </div>
     </div>\`;
@@ -571,7 +572,7 @@ function filas(items, etiquetas, valores){
     const v = valores[x.id];
     return \`<div class="fila">
       <div class="fila__n">\${esc(etiquetas[x.id])}</div>
-      <div class="eje" role="img" aria-label="\${esc(etiquetas[x.id])}: \${num(v)} sobre 5">
+      <div class="eje" role="img" aria-label="\${rellena(T.resultados.ariaEje, { nombre: esc(etiquetas[x.id]), valor: num(v) })}">
         <div class="eje__medio"></div>
         <div class="eje__relleno" style="width:\${pos(v)}%"></div>
         <div class="eje__punto" style="left:\${pos(v)}%"></div>
@@ -587,7 +588,7 @@ function resultados(){
   const porDominio = CFG.domains.map(d => \`
     <div class="bloque">
       <h3>\${esc(D.domainLabels[d.id])} — \${num(dominios[d.id])}</h3>
-      <p class="bloque__sub">Sus tres facetas</p>
+      <p class="bloque__sub">\${T.resultados.facetasSub}</p>
       \${filas(CFG.facets.filter(f => f.domain === d.id), D.facetLabels, facetas)}
       \${escalaTest}
     </div>\`).join("");
@@ -596,48 +597,44 @@ function resultados(){
     <div class="contenido">
       <div class="resultados">
         <div>
-          <p class="etiqueta">Cuestionario completado</p>
-          <h2 style="font-size:1.7rem">Tus puntuaciones</h2>
+          <p class="etiqueta">\${T.resultados.etiqueta}</p>
+          <h2 style="font-size:1.7rem">\${T.resultados.titulo}</h2>
         </div>
         <div class="nota">
-          <p><b>Esto son solo los números.</b> Cada valor va de 1 a 5 y es la media de las respuestas de esa escala. No hay aquí ninguna interpretación: no hay puntuaciones buenas ni malas.</p>
-          <p>La lectura de lo que significan llega en el informe, que se elabora aparte.</p>
+          <p>\${T.resultados.nota1}</p>
+          <p>\${T.resultados.nota2}</p>
         </div>
         <div class="bloque">
-          <h3>Los cinco dominios</h3>
-          <p class="bloque__sub">Cada uno es la media de sus doce preguntas</p>
+          <h3>\${T.resultados.dominios}</h3>
+          <p class="bloque__sub">\${T.resultados.dominiosSub}</p>
           \${filas(CFG.domains, D.domainLabels, dominios)}
           \${escalaTest}
         </div>
         \${porDominio}
         <div class="bloque">
-          <h3>Tu informe</h3>
-          <p class="bloque__sub">Con estas mismas puntuaciones, ahora interpretadas.</p>
+          <h3>\${T.resultados.informeTitulo}</h3>
+          <p class="bloque__sub">\${T.resultados.informeSub}</p>
           \${
             HAY_SERVIDOR
               ? ""
               : \`<div class="nota nota--local">
-                   <p><b>Este fichero no puede redactar el informe solo.</b> Está abierto desde
-                   tu ordenador, y un fichero suelto no puede llevar dentro la clave de la API:
-                   quedaría a la vista de cualquiera que lo abriese.</p>
-                   <p>Aquí sale el informe con todo lo que calcula el código y los pasajes de
-                   coaching marcados como pendientes; luego puedes copiar el encargo y pegar la
-                   redacción. <b>Para que se redacte solo de un clic, ábrelo en la web.</b></p>
+                   <p>\${T.resultados.local1}</p>
+                   <p>\${T.resultados.local2}</p>
                  </div>\`
           }
-          <label class="campo">Tu nombre <span>(opcional, sale en la portada)</span>
-            <input id="persona" type="text" autocomplete="name" placeholder="Marta">
+          <label class="campo">\${T.resultados.nombre} <span>\${T.resultados.nombreOpcional}</span>
+            <input id="persona" type="text" autocomplete="name" placeholder="\${T.resultados.nombreEjemplo}">
           </label>
           <div class="acciones">
-            <button class="boton" id="informe">Informe Identify</button>
-            <button class="boton boton--claro" id="ver">Ver el JSON</button>
+            <button class="boton" id="informe">\${T.informe.nombre}</button>
+            <button class="boton boton--claro" id="ver">\${T.resultados.verJson}</button>
           </div>
-          <textarea id="json" class="json" readonly hidden aria-label="Resultado en JSON"></textarea>
+          <textarea id="json" class="json" readonly hidden aria-label="\${T.resultados.ariaJson}"></textarea>
         </div>
         <div class="acciones">
-          <button class="boton boton--claro" id="reiniciar">Empezar de nuevo</button>
+          <button class="boton boton--claro" id="reiniciar">\${T.resultados.reiniciar}</button>
         </div>
-        <p class="ayuda">Nada de esto se ha guardado ni enviado a ningún sitio. Si cierras la página, se pierde.</p>
+        <p class="ayuda">\${T.resultados.nadaGuardado}</p>
       </div>
     </div>\`;
 
@@ -662,7 +659,7 @@ function resultados(){
   document.getElementById("ver").onclick = e => {
     caja.value = paraElInforme();
     caja.hidden = !caja.hidden;
-    e.target.textContent = caja.hidden ? "Ver el JSON" : "Ocultar el JSON";
+    e.target.textContent = caja.hidden ? T.resultados.verJson : T.resultados.ocultarJson;
     if (!caja.hidden) caja.select();
   };
   document.getElementById("informe").onclick = () => {
@@ -679,8 +676,8 @@ function resultados(){
 function copiarEnBoton(boton, texto, etiqueta){
   const caja = document.getElementById("json");
   navigator.clipboard?.writeText(texto).then(
-    () => { boton.textContent = "Copiado"; setTimeout(() => boton.textContent = etiqueta, 1800); },
-    () => { if (caja) { caja.value = texto; caja.hidden = false; caja.select(); } boton.textContent = "Cópialo de aquí"; },
+    () => { boton.textContent = T.copiar.copiado; setTimeout(() => boton.textContent = etiqueta, 1800); },
+    () => { if (caja) { caja.value = texto; caja.hidden = false; caja.select(); } boton.textContent = T.copiar.aMano; },
   );
 }
 
@@ -689,6 +686,7 @@ function informe(){
   const modelo = construirModelo(respuestas, D.recursos, { persona: persona || undefined });
   const html = renderInforme(modelo, prosa, D.recursos.labels, {
     facetas: D.recursos.facetas,
+    textos: D.recursos.textos.informe,
     metaforas: D.recursos.metaforas,
     fuentes: D.recursos.fuentes,
     marca: D.recursos.marca,
@@ -698,24 +696,22 @@ function informe(){
 
   app.innerHTML = \`
     <div class="barra-informe">
-      <button class="enlace" id="volver">← Volver a las puntuaciones</button>
+      <button class="enlace" id="volver">\${T.informe.volver}</button>
       <div class="acciones">
-        \${conProsa || redactando || !HAY_SERVIDOR ? "" : '<button class="boton" id="generar">Generar el informe completo</button>'}
-        \${conProsa || redactando || HAY_SERVIDOR ? "" : '<button class="boton boton--claro" id="encargo">Copiar el encargo</button><button class="enlace" id="encargoLargo" title="Para una conversación que no tenga cargada la skill identify-bfi2-knowledge">sin la skill</button>'}
-        \${redactando || (HAY_SERVIDOR && !conProsa) ? "" : '<button class="boton boton--claro" id="pegar">' + (conProsa ? "Cambiar la redacción" : "Pegar la redacción") + '</button>'}
-        <button class="boton boton--claro" id="imprimir">Imprimir</button>
+        \${conProsa || redactando || !HAY_SERVIDOR ? "" : '<button class="boton" id="generar">' + T.informe.generar + '</button>'}
+        \${conProsa || redactando || HAY_SERVIDOR ? "" : '<button class="boton boton--claro" id="encargo">' + T.informe.encargo + '</button><button class="enlace" id="encargoLargo" title="' + T.informe.encargoLargoTitulo + '">' + T.informe.encargoLargo + '</button>'}
+        \${redactando || (HAY_SERVIDOR && !conProsa) ? "" : '<button class="boton boton--claro" id="pegar">' + (conProsa ? T.informe.cambiarRedaccion : T.informe.pegarRedaccion) + '</button>'}
+        <button class="boton boton--claro" id="imprimir">\${T.informe.imprimir}</button>
       </div>
     </div>
-    <iframe id="marco" title="Informe Identify"></iframe>
+    <iframe id="marco" title="\${T.informe.nombre}"></iframe>
     \${
       redactando
         ? \`<aside class="trabajando" role="status" aria-live="polite">
-             <p class="trabajando__t">Claude está redactando</p>
-             <p class="trabajando__d">Los pasajes de coaching de tu informe. Mientras tanto
-             puedes ir leyendo las puntuaciones y las lecturas de cada faceta.</p>
+             <p class="trabajando__t">\${T.trabajando.titulo}</p>
+             <p class="trabajando__d">\${T.trabajando.detalle}</p>
              <div class="trabajando__barra"><span id="barraProgreso"></span></div>
-             <p class="trabajando__pie"><span id="barraTiempo">0 s</span> · suele tardar
-             poco más de un minuto</p>
+             <p class="trabajando__pie"><span id="barraTiempo">0 s</span> · \${T.trabajando.tarda}</p>
            </aside>\`
         : ""
     }\`;
@@ -749,26 +745,22 @@ function informe(){
   // las mismas reglas en dos sitios. El largo queda para una conversacion que no
   // la tenga cargada.
   const encargo = document.getElementById("encargo");
-  if (encargo) encargo.onclick = e => copiarEnBoton(e.target, promptCorto(modelo, D.recursos.facetas), "Copiar el encargo");
+  if (encargo) encargo.onclick = e => copiarEnBoton(e.target, promptCorto(modelo, D.recursos.facetas), T.informe.encargo);
   const encargoLargo = document.getElementById("encargoLargo");
-  if (encargoLargo) encargoLargo.onclick = e => copiarEnBoton(e.target, promptCompleto(modelo, D.recursos.facetas), "sin la skill");
+  if (encargoLargo) encargoLargo.onclick = e => copiarEnBoton(e.target, promptCompleto(modelo, D.recursos.facetas), T.informe.encargoLargo);
 
   const generar = document.getElementById("generar");
   if (generar) generar.onclick = () => redactarEnElServidor(generar, modelo);
 
   const pegar = document.getElementById("pegar");
   if (pegar) pegar.onclick = () => {
-    const pegado = window.prompt(
-      "Pega aquí el JSON que te haya devuelto Claude con la redacción.\\n\\n" +
-      "Se comprueba antes de meterlo: si le falta alguna sección, te lo digo y no toco el informe.",
-      "",
-    );
+    const pegado = window.prompt(T.informe.pegarInstrucciones, "");
     if (pegado === null) return;
     let candidata;
     try { candidata = JSON.parse(pegado); }
-    catch { window.alert("Eso no es un JSON válido. Cópialo entero, desde la primera llave hasta la última."); return; }
+    catch { window.alert(T.informe.jsonInvalido); return; }
     const fallos = validarProsa(candidata, modelo);
-    if (fallos.length) { window.alert("La redacción no encaja con el esquema:\\n\\n· " + fallos.join("\\n· ")); return; }
+    if (fallos.length) { window.alert(rellena(T.informe.noEncaja, { lista: fallos.join("\\n· ") })); return; }
     prosa = candidata;
     pintar();
   };
@@ -813,13 +805,13 @@ async function redactarEnElServidor(boton, modelo){
   // «Informe Identify» todavia no se ha dibujado ninguna pantalla de informe.
   modelo = modelo ?? construirModelo(respuestas, D.recursos, { persona: persona || undefined });
   const codigo = recuerdaCodigo.leer() ||
-    window.prompt("Código de acceso\\n\\nTe lo da quien te ha pasado el enlace.", "");
+    window.prompt(T.puerta.pedirCodigo, "");
   if (!codigo) return false;
 
   // Puede no haber boton: desde «Informe Identify» se llama con la pantalla de
   // espera dibujada, no con un boton que cambiar.
   const etiqueta = boton?.textContent;
-  if (boton) { boton.disabled = true; boton.textContent = "Redactando…"; }
+  if (boton) { boton.disabled = true; boton.textContent = T.servidor.redactando; }
 
   // Un nombre para este encargo. El servidor no puede devolver el informe por
   // la misma conexion —tarda mas de lo que Netlify deja vivir una funcion— asi
@@ -839,7 +831,7 @@ async function redactarEnElServidor(boton, modelo){
     // Una funcion en segundo plano contesta 202 y nada mas: que haya arrancado
     // no dice todavia si el codigo era bueno. Eso llega con el resultado.
     if (!arranque.ok && arranque.status !== 202) {
-      return fallo("No se ha podido empezar el informe. Inténtalo de nuevo.");
+      return fallo(T.servidor.noEmpezado);
     }
 
     // A buscarlo. Se pregunta cada tres segundos durante cuatro minutos: el
@@ -855,7 +847,7 @@ async function redactarEnElServidor(boton, modelo){
           body: JSON.stringify({ id, codigo }),
         });
         datos = await r.json().catch(() => ({}));
-        if (r.status === 403) { recuerdaCodigo.olvidar(); return fallo(datos.error || "Código incorrecto."); }
+        if (r.status === 403) { recuerdaCodigo.olvidar(); return fallo(datos.error || T.servidor.codigoIncorrecto); }
       } catch {
         continue; // un fallo suelto de red no tiene por que tirar la espera
       }
@@ -863,29 +855,28 @@ async function redactarEnElServidor(boton, modelo){
       if (datos.estado === "trabajando") continue;
       if (datos.estado === "error") {
         if (datos.que === "codigo") recuerdaCodigo.olvidar();
-        return fallo(datos.error || "No se ha podido generar el informe.");
+        return fallo(datos.error || T.servidor.noGenerado);
       }
       if (datos.estado === "listo") {
         const fallos = validarProsa(datos.prosa, modelo);
-        if (fallos.length) return fallo("La redacción ha llegado incompleta. Vuelve a intentarlo.");
+        if (fallos.length) return fallo(T.servidor.incompleta);
         recuerdaCodigo.guardar(codigo);
         prosa = datos.prosa;
         if (boton) pintar(); // sin botón, quien ha llamado dibuja el informe después
         return true;
       }
     }
-    return fallo("El informe está tardando demasiado. Vuelve a intentarlo en un momento.");
+    return fallo(T.servidor.tardaDemasiado);
   } catch {
-    return fallo("No se ha podido conectar. Comprueba la conexión y vuelve a intentarlo.");
+    return fallo(T.servidor.sinConexion);
   } finally {
     if (boton) { boton.disabled = false; boton.textContent = etiqueta; }
   }
 }
 
 function fechaLarga(iso){
-  const meses = ["enero","febrero","marzo","abril","mayo","junio","julio","agosto","septiembre","octubre","noviembre","diciembre"];
   const [a, m, d] = iso.split("-").map(Number);
-  return Number.isFinite(d) ? d + " de " + meses[m - 1] + " de " + a : iso;
+  return Number.isFinite(d) ? rellena(T.fechaLarga, { dia: d, mes: T.meses[m - 1], ano: a }) : iso;
 }
 
 // Norma de marca: «by Impausa» mide exactamente lo mismo que el titular.

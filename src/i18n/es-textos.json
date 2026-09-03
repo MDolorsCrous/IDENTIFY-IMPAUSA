@@ -1,0 +1,377 @@
+{
+  "_comentario": "Las cadenas de la interfaz, fuera del código. Tres grupos: portada (pantalla de inicio), test (cuestionario y pantallas) e informe (el documento). Los huecos {asi} los rellena el código con valores ya escapados; el texto con <b> u otras marcas se inserta tal cual, sin escapar.",
+  "portada": {
+    "hero": {
+      "titular": "Comprende cómo tiendes a pensar, actuar, relacionarte y responder ante lo que vives, <span class=\"realce\">y cómo convertir ese conocimiento en decisiones más conscientes</span>",
+      "base": "Basado en Big Five/OCEAN <span aria-hidden=\"true\">·</span> BFI-2 <span aria-hidden=\"true\">·</span> 60 ítems",
+      "texto": "Explora cinco grandes dimensiones y quince facetas de personalidad. Al finalizar recibirás un informe personalizado que transforma tus resultados en interpretaciones, preguntas y acciones concretas.",
+      "rigor": "Una herramienta de autoconocimiento basada en investigación publicada. No es un diagnóstico ni una predicción de conducta.",
+      "micro": "No hay respuestas correctas o incorrectas. Responde pensando en cómo sueles actuar habitualmente."
+    },
+    "central": {
+      "ojo": "Antes de empezar",
+      "titulo": "Qué es Identify y qué vas a recibir",
+      "entradilla": "Ocho apartados, por si quieres saber dónde te metes. Ábrelos si te apetece; el test funciona igual sin leer ninguno."
+    },
+    "cierre": {
+      "titulo": "Conócete con más profundidad y menos etiquetas",
+      "texto": "Responde las 60 afirmaciones y recibe una lectura personalizada de tus cinco dimensiones y quince facetas.",
+      "micro": "No hay respuestas correctas o incorrectas. Elige la opción que mejor describa cómo sueles actuar habitualmente."
+    },
+    "ocean": {
+      "oculto": "Término internacional: ",
+      "explica": {
+        "open_mindedness": "Explora tu inclinación a profundizar en ideas, apreciar la belleza e imaginar posibilidades nuevas.",
+        "conscientiousness": "Observa cómo estructuras, ejecutas y sostienes tareas, objetivos y compromisos.",
+        "extraversion": "Ayuda a comprender cuánto tiendes a buscar interacción, tomar la iniciativa y mantener un ritmo activo.",
+        "agreeableness": "Observa cómo consideras las necesidades de otras personas, cuidas las relaciones y confías en sus intenciones.",
+        "negative_emotionality": "Explora con qué facilidad registras preocupación, desánimo o cambios emocionales ante las dificultades."
+      }
+    },
+    "muestra": {
+      "aria": "Ejemplo visual de un informe, con cifras inventadas",
+      "sello": "Ejemplo visual · cifras inventadas",
+      "ojo": "Resultado de un vistazo",
+      "titulo": "Los cinco dominios",
+      "escalaMedio": "3 · punto medio",
+      "bandas": {
+        "extraversion": "media-alta",
+        "agreeableness": "alta",
+        "conscientiousness": "media-baja",
+        "negative_emotionality": "media-alta",
+        "open_mindedness": "alta"
+      },
+      "bloques": [
+        { "ojo": "Interpretación", "texto": "Cada dominio se explica con su definición, la lectura de tus tres facetas y las tensiones que pueden aparecer." },
+        { "ojo": "Preguntas poderosas", "texto": "Preguntas escritas a partir de tus resultados, para llevar a una conversación o a un cuaderno." },
+        { "ojo": "Plan de acción", "texto": "Tres acciones concretas, cada una con una señal que te dice si está funcionando." }
+      ]
+    },
+    "recorrido": [
+      { "titulo": "Tus respuestas", "detalle": "60 afirmaciones, de 1 a 5" },
+      { "titulo": "5 dimensiones", "detalle": "doce ítems cada una" },
+      { "titulo": "15 facetas", "detalle": "cuatro ítems cada una" },
+      { "titulo": "Interpretación", "detalle": "qué dice esa combinación" },
+      { "titulo": "Preguntas y plan", "detalle": "qué puedes hacer con ella" }
+    ],
+    "pliegues": {
+      "queAporta": {
+        "titulo": "¿Qué aporta hacer el test Identify?",
+        "resumen": "Comprende tus tendencias, reconoce tus recursos y detecta en qué contextos puedes necesitar un ajuste diferente.",
+        "intro": "Muchas respuestas aparecen de forma automática. Identify convierte esas tendencias en un mapa comprensible para que puedas reconocer qué te impulsa, qué puede desgastarte y qué alternativas puedes incorporar según la situación.",
+        "tarjetas": [
+          { "titulo": "Autoconocimiento con matices", "texto": "Comprende tu combinación particular de cinco dimensiones y quince facetas sin reducirte a una etiqueta." },
+          { "titulo": "Fortalezas contextualizadas", "texto": "Identifica tendencias que pueden ayudarte y los contextos en los que aportan más valor." },
+          { "titulo": "Riesgos por exceso o desajuste", "texto": "Detecta cuándo una fortaleza puede dejar de ayudarte por intensidad, desequilibrio o contexto." },
+          { "titulo": "Decisiones más conscientes", "texto": "Observa cómo tus tendencias pueden influir en prioridades, hábitos y decisiones." },
+          { "titulo": "Relaciones más comprensibles", "texto": "Comprende cómo tiendes a conectar, confiar, expresarte y responder ante otras personas." },
+          { "titulo": "Desarrollo orientado a la acción", "texto": "Transforma los resultados en preguntas y acciones concretas que puedas experimentar." }
+        ],
+        "destacado": "El objetivo no es decirte cómo eres de forma absoluta, sino ayudarte a observar cómo funcionan tus tendencias y qué puedes hacer con esa información."
+      },
+      "rigor": {
+        "titulo": "Rigor para comprenderte con más matices",
+        "resumen": "En qué se apoya el test: el modelo Big Five/OCEAN, la estructura del BFI-2 y hasta dónde llega lo que mide.",
+        "parrafos": [
+          "Identify se apoya en el modelo Big Five/OCEAN y en la estructura jerárquica del BFI-2. Analiza cinco dominios amplios y quince facetas específicas para ofrecer una lectura dimensional de la personalidad.",
+          "Esto permite ir más allá de una etiqueta: muestra grados, diferencias internas y combinaciones que ayudan a comprender cómo pueden expresarse tus tendencias en distintos contextos.",
+          "Los resultados son orientativos. Describen cómo te has definido al responder y deben interpretarse junto con tu experiencia, tu contexto y, cuando sea necesario, el criterio de un profesional."
+        ],
+        "destacado": "La ciencia no te convierte en una etiqueta: aporta un marco para comprender matices y formular mejores preguntas.",
+        "confianza": [
+          { "dato": "60 ítems", "texto": "Cuestionario de autoinforme." },
+          { "dato": "5 dimensiones", "texto": "Los grandes dominios del modelo Big Five." },
+          { "dato": "15 facetas", "texto": "Tres matices dentro de cada dimensión." },
+          { "dato": "Adaptación española", "texto": "Estudiada en investigación publicada." }
+        ]
+      },
+      "dimensiones": {
+        "titulo": "Dimensiones, no etiquetas",
+        "resumen": "Big Five no divide a las personas en categorías cerradas: todas presentamos las cinco en distintos grados.",
+        "intro": "Big Five/OCEAN no divide a las personas en categorías cerradas. Todas las personas presentan las cinco dimensiones en distintos grados, y el valor del resultado está en observar cómo se combinan.",
+        "tarjetas": [
+          { "titulo": "Un modelo dimensional", "texto": "Representa grados y no categorías absolutas." },
+          { "titulo": "Una lectura jerárquica", "texto": "Combina cinco dominios con quince facetas." },
+          { "titulo": "Más matices que una tipología", "texto": "Dos personas con un dominio similar pueden presentar facetas diferentes." },
+          { "titulo": "Interpretación contextual", "texto": "Una tendencia puede ayudar o dificultar dependiendo de la situación." }
+        ],
+        "destacado": "Big Five no busca encasillarte. Busca describir, con matices, cómo tiendes a desenvolverte."
+      },
+      "cincoDimensiones": {
+        "titulo": "Las cinco dimensiones que estudia Identify",
+        "resumen": "Apertura de mente, Responsabilidad, Extraversión, Cordialidad y Emocionalidad negativa, con sus tres facetas cada una.",
+        "intro": "Todas las personas tenemos las cinco dimensiones. Lo que cambia es la intensidad de cada una y la forma en que se combinan sus facetas.",
+        "apunte": "<b>Ansiedad</b>, <b>Depresión</b> y <b>Volatilidad emocional</b> son nombres técnicos de escalas de personalidad. No representan condiciones clínicas ni diagnósticos."
+      },
+      "porQueImporta": {
+        "titulo": "¿Por qué es importante conocer estas dimensiones?",
+        "resumen": "Cómo se notan al relacionarte, al organizarte, al gestionar la tensión y al aprender algo nuevo.",
+        "intro": "Conocerte no significa etiquetarte. Significa comprender qué tendencias te impulsan, cuáles pueden desgastarte y qué ajustes pueden ayudarte a responder mejor a cada situación.",
+        "tarjetas": [
+          { "titulo": "Relacionarte", "texto": "Comprender cómo buscas contacto, expresas opiniones, muestras empatía y construyes confianza." },
+          { "titulo": "Actuar y organizarte", "texto": "Reconocer cómo conviertes intenciones en acciones, estructuras tareas y sostienes compromisos." },
+          { "titulo": "Gestionar la tensión", "texto": "Observar cómo registras preocupación, desánimo y cambios emocionales cuando aumenta la presión." },
+          { "titulo": "Aprender y crear", "texto": "Comprender cómo exploras ideas, imaginas alternativas y conectas con experiencias intelectuales o estéticas." },
+          { "titulo": "Ampliar tu repertorio", "texto": "Elegir respuestas diferentes cuando tu tendencia automática no es la más útil para la situación." }
+        ]
+      },
+      "informe": {
+        "titulo": "Informe personalizado: lo que recibes",
+        "resumen": "Mucho más que cinco puntuaciones: interpretación, combinaciones, preguntas y un plan de acción.",
+        "intro": "Al finalizar, Identify genera automáticamente un informe personalizado que explica qué significan tus resultados, cómo se combinan y qué puedes hacer con ellos.",
+        "apunteDominios": "Los dominios ofrecen la visión más sólida del perfil; las facetas permiten profundizar en sus matices y deben leerse con mayor prudencia.",
+        "descubriras": "¿Qué descubrirás en tu informe personalizado?",
+        "apartados": [
+          "<b>Resumen global.</b> Un titular y una interpretación general de los patrones principales.",
+          "<b>Gráfico de los cinco dominios.</b> Puntuaciones de 1 a 5 y bandas en Extraversión, Cordialidad, Responsabilidad, Emocionalidad negativa y Apertura de mente.",
+          "<b>Análisis de las quince facetas.</b> Las tres facetas de cada dominio, y cuál se separa claramente de las otras dos.",
+          "<b>Interpretación de cada dominio.</b> Definición, lectura personalizada, posibles aportaciones, tensiones y palancas prácticas.",
+          "<b>Combinaciones del perfil.</b> Patrones que aparecen al cruzar facetas cuando se cumplen todas las condiciones de una regla.",
+          "<b>Señales de atención.</b> Combinaciones que se quedan cerca, explicadas en condicional y nunca como resultados actuales.",
+          "<b>Aplicación en el trabajo.</b> Cómo pueden expresarse esas tendencias profesionalmente.",
+          "<b>Preguntas poderosas.</b> Preguntas derivadas de tus resultados.",
+          "<b>Plan de acción.</b> Tres acciones concretas, cada una con su indicador de seguimiento.",
+          "<b>Imágenes para recordar.</b> Tres metáforas ligadas a las puntuaciones más relevantes.",
+          "<b>Conclusiones.</b> Síntesis de recursos, ajustes y prioridades.",
+          "<b>Fuentes y metodología.</b> Instrumento, escala, adaptación, referencias y límites."
+        ],
+        "valorTitulo": "El valor está en lo que haces con la información",
+        "valorTexto": "El valor del informe no está solo en conocer una puntuación. Está en comprender cómo se expresa en tu vida, qué patrones conviene proteger y dónde puede resultar útil introducir un pequeño cambio.",
+        "pasos": [
+          "<b>Reconocer.</b> Poner nombre a tendencias que quizá ya intuías.",
+          "<b>Comprender.</b> Observar cómo se combinan dominios y facetas.",
+          "<b>Contextualizar.</b> Distinguir cuándo una tendencia ayuda y cuándo puede dificultar.",
+          "<b>Accionar.</b> Elegir una pregunta o acción concreta para experimentar."
+        ],
+        "apunteHipotesis": "El informe transforma las puntuaciones en hipótesis de reflexión, no en verdades absolutas."
+      },
+      "comoLeer": {
+        "titulo": "Un mapa para conocerte, no una etiqueta",
+        "resumen": "Qué mide y qué no mide: los límites de lo que puede decirte un cuestionario que respondes tú.",
+        "lista": [
+          "Identify mide <b>tendencias que describe la propia persona</b>: refleja cómo te describiste al responder.",
+          "Esas tendencias son relativamente estables, <b>pero no fijas</b>, y pueden expresarse de manera distinta según el contexto.",
+          "<b>No hay puntuaciones buenas ni malas.</b> Una tendencia puede ayudar o estorbar según la situación, y una puntuación intermedia suele indicar flexibilidad.",
+          "<b>No es un diagnóstico</b> ni una prueba clínica.",
+          "No mide inteligencia ni capacidad, y <b>no determina idoneidad</b> para un puesto.",
+          "No predice exactamente lo que vas a hacer, ni sustituye el criterio de un profesional.",
+          "Las bandas indican tu posición <b>dentro de la escala del cuestionario</b>. No son una comparación con la población general: este informe no utiliza percentiles normativos.",
+          "Las facetas son escalas de cuatro ítems: <b>sostienen menos peso que los dominios</b> y conviene leerlas con más prudencia."
+        ]
+      },
+      "baseCientifica": {
+        "titulo": "Conoce la base científica de Identify",
+        "resumen": "Modelo, instrumento, estructura, adaptación española y referencias con su DOI.",
+        "ficha": [
+          { "dato": "Modelo", "texto": "Big Five/OCEAN, como marco dimensional de personalidad." },
+          { "dato": "Instrumento", "texto": "Big Five Inventory-2 (BFI-2), de Christopher J. Soto y Oliver P. John." },
+          { "dato": "Estructura", "texto": "60 ítems, cinco dominios y quince facetas; cuatro ítems por faceta y doce por dominio, en una escala de 1 a 5." },
+          { "dato": "Adaptación española", "texto": "Adaptación estudiada por Gallardo-Pujol y colaboradores." },
+          { "dato": "Interpretación", "texto": "Los resultados se presentan como tendencias y asociaciones, no como diagnósticos ni predicciones deterministas. Las combinaciones, las preguntas y el plan de acción son elaboración propia de IMPAUSA sobre esa base, y no forman parte del instrumento original." }
+        ],
+        "referencias": "Referencias",
+        "berkeley": "Berkeley Personality Lab. Información oficial sobre el BFI-2:",
+        "atribucion": "BFI-2 © Oliver P. John y Christopher J. Soto."
+      }
+    }
+  },
+  "test": {
+    "titulo": "Test Identify",
+    "meses": ["enero", "febrero", "marzo", "abril", "mayo", "junio", "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"],
+    "fechaLarga": "{dia} de {mes} de {ano}",
+    "puerta": {
+      "etiqueta": "Código de acceso",
+      "pista": "Te lo da quien te ha pasado el enlace",
+      "entrar": "Entrar",
+      "comprobando": "Comprobando…",
+      "noComprobado": "No se ha podido comprobar el código.",
+      "sinConexion": "No se ha podido conectar. Comprueba la conexión.",
+      "pedirCodigo": "Código de acceso\n\nTe lo da quien te ha pasado el enlace."
+    },
+    "inicio": {
+      "empezar": "Comenzar el test ahora",
+      "alCodigo": "Introducir el código de acceso",
+      "avisoFallos": "Aviso: la autocomprobación del cálculo no coincide en: {lista}. No uses estos resultados."
+    },
+    "pregunta": {
+      "de60": "Pregunta {n} de 60",
+      "completado": "{pct}% completado",
+      "ariaEscala": "Escala de respuesta",
+      "anterior": "← Anterior",
+      "teclas": "Puedes responder con las teclas 1 a 5"
+    },
+    "resultados": {
+      "ariaEje": "{nombre}: {valor} sobre 5",
+      "etiqueta": "Cuestionario completado",
+      "titulo": "Tus puntuaciones",
+      "nota1": "<b>Esto son solo los números.</b> Cada valor va de 1 a 5 y es la media de las respuestas de esa escala. No hay aquí ninguna interpretación: no hay puntuaciones buenas ni malas.",
+      "nota2": "La lectura de lo que significan llega en el informe, que se elabora aparte.",
+      "dominios": "Los cinco dominios",
+      "dominiosSub": "Cada uno es la media de sus doce preguntas",
+      "facetasSub": "Sus tres facetas",
+      "informeTitulo": "Tu informe",
+      "informeSub": "Con estas mismas puntuaciones, ahora interpretadas.",
+      "local1": "<b>Este fichero no puede redactar el informe solo.</b> Está abierto desde tu ordenador, y un fichero suelto no puede llevar dentro la clave de la API: quedaría a la vista de cualquiera que lo abriese.",
+      "local2": "Aquí sale el informe con todo lo que calcula el código y los pasajes de coaching marcados como pendientes; luego puedes copiar el encargo y pegar la redacción. <b>Para que se redacte solo de un clic, ábrelo en la web.</b>",
+      "nombre": "Tu nombre",
+      "nombreOpcional": "(opcional, sale en la portada)",
+      "nombreEjemplo": "Marta",
+      "verJson": "Ver el JSON",
+      "ocultarJson": "Ocultar el JSON",
+      "ariaJson": "Resultado en JSON",
+      "reiniciar": "Empezar de nuevo",
+      "nadaGuardado": "Nada de esto se ha guardado ni enviado a ningún sitio. Si cierras la página, se pierde."
+    },
+    "copiar": {
+      "copiado": "Copiado",
+      "aMano": "Cópialo de aquí"
+    },
+    "informe": {
+      "nombre": "Informe Identify",
+      "volver": "← Volver a las puntuaciones",
+      "generar": "Generar el informe completo",
+      "encargo": "Copiar el encargo",
+      "encargoLargo": "sin la skill",
+      "encargoLargoTitulo": "Para una conversación que no tenga cargada la skill identify-bfi2-knowledge",
+      "cambiarRedaccion": "Cambiar la redacción",
+      "pegarRedaccion": "Pegar la redacción",
+      "imprimir": "Imprimir",
+      "pegarInstrucciones": "Pega aquí el JSON que te haya devuelto Claude con la redacción.\n\nSe comprueba antes de meterlo: si le falta alguna sección, te lo digo y no toco el informe.",
+      "jsonInvalido": "Eso no es un JSON válido. Cópialo entero, desde la primera llave hasta la última.",
+      "noEncaja": "La redacción no encaja con el esquema:\n\n· {lista}"
+    },
+    "trabajando": {
+      "titulo": "Claude está redactando",
+      "detalle": "Los pasajes de coaching de tu informe. Mientras tanto puedes ir leyendo las puntuaciones y las lecturas de cada faceta.",
+      "tarda": "suele tardar poco más de un minuto"
+    },
+    "servidor": {
+      "redactando": "Redactando…",
+      "noEmpezado": "No se ha podido empezar el informe. Inténtalo de nuevo.",
+      "codigoIncorrecto": "Código incorrecto.",
+      "noGenerado": "No se ha podido generar el informe.",
+      "incompleta": "La redacción ha llegado incompleta. Vuelve a intentarlo.",
+      "tardaDemasiado": "El informe está tardando demasiado. Vuelve a intentarlo en un momento.",
+      "sinConexion": "No se ha podido conectar. Comprueba la conexión y vuelve a intentarlo."
+    }
+  },
+  "informe": {
+    "titulo": "Informe Identify",
+    "maqueta": "Informe sin la capa de redacción · los pasajes que escribe Claude van marcados como pendientes",
+    "cintilloTipo": "Informe individual · BFI-2",
+    "portadaPie": "Informe individual · BFI-2 · 60 ítems",
+    "fila": {
+      "seSepara": "se separa del resto",
+      "aria": "{nombre}: {valor} sobre 5, banda {banda}"
+    },
+    "escala": {
+      "medio": "3 · punto medio"
+    },
+    "pendiente": {
+      "titulo": "Pendiente de redacción",
+      "cola": "Este pasaje lo escribe Claude a partir de las puntuaciones de arriba."
+    },
+    "huecos": {
+      "dominio": "la lectura conjunta de este dominio",
+      "resumen": "el resumen del perfil",
+      "trabajo": "la lectura en clave laboral",
+      "preguntas": "las preguntas poderosas",
+      "plan": "los tres pasos del plan, cada uno con su indicador",
+      "conclusion": "las conclusiones"
+    },
+    "senales": {
+      "ninguna": "Ninguna de las 26 combinaciones se queda cerca de cumplirse en tu perfil. No hay nada en esta sección, y es una respuesta tan válida como cualquier otra.",
+      "una": "Una combinación se queda",
+      "varias": "{n} combinaciones se quedan",
+      "unaFaceta": "Todas dependen de una sola faceta: <b>{faceta}</b>.",
+      "variasFacetas": "Las facetas que las dejan fuera son {lista} y <b>{ultima}</b>.",
+      "entrada": "{cuantas} <b>a una sola condición</b> de cumplirse. {cuales}",
+      "porEso": "Por eso van en condicional y sin cita: <b>no describen tu perfil de hoy</b>. Lo que señalan es por dónde se movería si una pieza cambiara — que es justo el tipo de cosa que conviene mirar en una conversación de coaching.",
+      "falta": "Se daría con una {nombre} {pedido}; en tu perfil queda {banda}.",
+      "alta": "alta",
+      "baja": "baja"
+    },
+    "combis": {
+      "seCumplePor": "Se cumple por {quien}.",
+      "avisoClinico": "Esto describe un patrón observado en la investigación, no un diagnóstico ni una afirmación sobre ti. Si se parece a lo que estás viviendo, hablarlo con un profesional es lo razonable.",
+      "vacio1": "Tu perfil <b>no activa ninguna</b> de las {total} combinaciones descritas en la literatura científica sobre este cuestionario.",
+      "vacio2": "No es una carencia: esas combinaciones exigen varias puntuaciones extremas a la vez, y la mayoría de perfiles no las reúnen. Lo característico de este perfil está en el recorrido faceta a faceta.",
+      "una": "Una de las combinaciones descritas se cumple",
+      "varias": "{n} de las combinaciones descritas se cumplen",
+      "entera": "{cuantas} <b>entera</b> en tu perfil: todas sus condiciones, no algunas. Por eso van afirmadas y con su cita, a diferencia de las señales del apartado siguiente.",
+      "describen": "Describen <b>patrones observados en la investigación</b>, no a ti. Que una combinación se cumpla dice por dónde suele moverse un perfil como el tuyo, no lo que vas a hacer."
+    },
+    "datos": {
+      "linea": "<b>{nombre}: {valor}</b> sobre 5, en la banda {banda}.",
+      "divergente": "De sus tres facetas, la que más se separa de las otras dos es <b>{nombre}</b>, con {valor}.",
+      "juntas": "Sus tres facetas van juntas: ninguna se separa del resto."
+    },
+    "lectura": {
+      "matiz": "Cerca del punto medio, así que en versión suave:"
+    },
+    "leyenda": {
+      "titulo": "Equivalencias de nombres",
+      "entrada": "<b>{nombre}</b> — nombre técnico: {tecnico}"
+    },
+    "indice": {
+      "titulo": "Contenido",
+      "aria": "Índice del informe",
+      "secciones": {
+        "comoLeer": "Cómo leer este informe",
+        "resumen": "Resumen del perfil",
+        "vistazo": "Resultado de un vistazo",
+        "dominios": "Los cinco dominios en detalle",
+        "combinaciones": "Combinaciones del perfil",
+        "senales": "Señales de atención",
+        "trabajo": "En el trabajo",
+        "preguntas": "Preguntas poderosas",
+        "plan": "Plan de acción",
+        "imagenes": "Tres imágenes",
+        "conclusiones": "Conclusiones",
+        "fuentes": "Fuentes y metodología"
+      }
+    },
+    "comoLeer": {
+      "eyebrow": "Aviso importante",
+      "titulo": "Cómo leer este informe",
+      "intro": "Este cuestionario mide <b>tendencias de comportamiento</b> que tú mismo describes. Son estables, pero no fijas: cambian con el tiempo y con el contexto.",
+      "noEsTitulo": "Lo que este informe no es:",
+      "noEs": [
+        "No es un diagnóstico. Nada de lo que leas aquí es una condición clínica.",
+        "No mide inteligencia, ni capacidad, ni idoneidad para un puesto.",
+        "No predice lo que vas a hacer."
+      ],
+      "comparacion": "Contra qué se compara:",
+      "cierre": "No hay puntuaciones buenas ni malas. Son tendencias que ayudan o estorban según el contexto, y una puntuación intermedia suele indicar flexibilidad."
+    },
+    "resumen": { "eyebrow": "Resumen del perfil" },
+    "vistazo": { "eyebrow": "De un vistazo", "titulo": "Los cinco dominios" },
+    "dominios": {
+      "eyebrow": "En detalle",
+      "titulo": "Los cinco dominios, faceta a faceta",
+      "intro": "Cada dominio se compone de tres facetas. Dos personas con la misma puntuación general pueden tenerlas repartidas de forma muy distinta, y ahí está lo característico de cada perfil. Cuando una faceta se separa claramente de las otras dos, va señalada en naranja."
+    },
+    "combinaciones": { "eyebrow": "Combinaciones del perfil", "titulo": "Lo que aparece al cruzar las facetas" },
+    "senalesSeccion": { "eyebrow": "Cerca, pero no", "titulo": "Señales de atención" },
+    "trabajo": { "eyebrow": "Aplicación", "titulo": "En el trabajo" },
+    "preguntas": { "eyebrow": "Para pensar", "titulo": "Preguntas poderosas" },
+    "plan": { "eyebrow": "Para hacer", "titulo": "Plan de acción", "indicador": "Cómo sabrás si sirve:" },
+    "imagenes": {
+      "eyebrow": "Para recordarlo",
+      "titulo": "Tres imágenes",
+      "intro": "Las ideas se olvidan; las imágenes se quedan. Estas salen de las puntuaciones que más se apartan del centro en tu perfil, y están para volver a ellas entre sesiones.",
+      "ancla": "Si te quedas con una",
+      "porTu": "por tu {faceta} {banda}"
+    },
+    "conclusiones": { "eyebrow": "Para cerrar", "titulo": "Conclusiones" },
+    "fuentesSeccion": {
+      "titulo": "Fuentes y metodología",
+      "intro": "Instrumento: <b>BFI-2</b>, Big Five Inventory-2, en su adaptación española. 60 ítems, escala de 1 a 5, cinco dominios y quince facetas. Cada faceta es la media de sus cuatro ítems; cada dominio, la media de sus doce. Las combinaciones proceden de la base de conocimiento de IMPAUSA sobre el BFI-2, construida sobre los trabajos que se listan a continuación.",
+      "avisoTitulo": "Aviso importante",
+      "aviso": "Las facetas son escalas de cuatro ítems: sostienen menos peso que los dominios y conviene leerlas con más prudencia. Este informe es una herramienta de autoconocimiento y coaching; no es una prueba clínica ni de selección, y refleja cómo te describiste el día que lo respondiste."
+    },
+    "firma": {
+      "quien": "{producto} es una herramienta de IMPAUSA POWER, S.L."
+    }
+  }
+}
