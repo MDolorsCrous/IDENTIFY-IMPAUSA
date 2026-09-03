@@ -326,7 +326,7 @@
         "trabajo": "At work",
         "preguntas": "Powerful questions",
         "plan": "Action plan",
-        "imagenes": "Three images",
+        "imagenes": "Images to remember",
         "conclusiones": "Conclusions",
         "fuentes": "Sources and methodology"
       }
@@ -357,8 +357,8 @@
     "preguntas": { "eyebrow": "To think about", "titulo": "Powerful questions" },
     "plan": { "eyebrow": "To act on", "titulo": "Action plan", "indicador": "How you will know it works:" },
     "imagenes": {
-      "eyebrow": "To remember it",
-      "titulo": "Three images",
+      "eyebrow": "Between sessions",
+      "titulo": "Images to remember",
       "intro": "Ideas fade; images stay. These come from the scores that stray furthest from the center in your profile, and they are here to return to between sessions.",
       "ancla": "If you keep just one",
       "porTu": "for your {banda} {faceta}"

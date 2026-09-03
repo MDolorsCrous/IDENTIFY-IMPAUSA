@@ -326,7 +326,7 @@
         "trabajo": "En el trabajo",
         "preguntas": "Preguntas poderosas",
         "plan": "Plan de acción",
-        "imagenes": "Tres imágenes",
+        "imagenes": "Imágenes para recordar",
         "conclusiones": "Conclusiones",
         "fuentes": "Fuentes y metodología"
       }
@@ -357,8 +357,8 @@
     "preguntas": { "eyebrow": "Para pensar", "titulo": "Preguntas poderosas" },
     "plan": { "eyebrow": "Para hacer", "titulo": "Plan de acción", "indicador": "Cómo sabrás si sirve:" },
     "imagenes": {
-      "eyebrow": "Para recordarlo",
-      "titulo": "Tres imágenes",
+      "eyebrow": "Entre sesiones",
+      "titulo": "Imágenes para recordar",
       "intro": "Las ideas se olvidan; las imágenes se quedan. Estas salen de las puntuaciones que más se apartan del centro en tu perfil, y están para volver a ellas entre sesiones.",
       "ancla": "Si te quedas con una",
       "porTu": "por tu {faceta} {banda}"
