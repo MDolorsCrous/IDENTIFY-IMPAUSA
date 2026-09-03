@@ -25,6 +25,16 @@
     "creative_imagination": "Imaginación creativa"
   },
   "renombradas": {},
+  "bandas": {
+    "baja": "baja",
+    "media-baja": "media-baja",
+    "media-alta": "media-alta",
+    "alta": "alta"
+  },
+  "avisoComparacion": {
+    "escala": "Las bandas de este informe indican tu posición respecto a la escala del cuestionario, no respecto a una población de referencia.",
+    "baremo": "Las bandas de este informe son percentiles: indican tu posición respecto a la muestra de referencia citada al final."
+  },
   "notas": {
     "_nota": "Aclaraciones que acompañan a un dominio cuando su nomenclatura técnica puede leerse como algo que no es. Al conservar los nombres originales, la explicación va donde aparecen, no escondida en una leyenda.",
     "negative_emotionality": "Los nombres de estas tres facetas —Ansiedad, Depresión, Volatilidad emocional— son los términos técnicos del cuestionario, y describen tendencias normales de la personalidad. No son condiciones clínicas ni tienen nada que ver con un diagnóstico: una puntuación alta en Depresión significa que sueles registrar el desánimo con más facilidad, no que tengas un trastorno del ánimo."

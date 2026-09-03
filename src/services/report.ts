@@ -14,6 +14,10 @@ export interface Labels {
   facets: Record<string, string>;
   /** Facetas y dominios cuyo nombre visible difiere del técnico, para la leyenda. */
   renombradas: Record<string, string>;
+  /** Nombre visible de cada banda. Las claves son los ids del motor (baja…alta). */
+  bandas: Record<string, string>;
+  /** El aviso de contra qué se compara, según el método de bandas. */
+  avisoComparacion: { escala: string; baremo: string };
 }
 
 export interface DomainConfig {
@@ -69,14 +73,6 @@ export interface ReportModel {
   /** Nombre visible → nombre técnico, para la leyenda. */
   legend: { label: string; technicalLabel: string }[];
 }
-
-const AVISO_ESCALA =
-  "Las bandas de este informe indican tu posición respecto a la escala del cuestionario, " +
-  "no respecto a una población de referencia.";
-
-const AVISO_BAREMO =
-  "Las bandas de este informe son percentiles: indican tu posición respecto a la muestra " +
-  "de referencia citada al final.";
 
 /** Faceta que más se aparta de la media de las otras dos de su dominio. */
 function divergente(facets: FacetView[]): FacetView | undefined {
@@ -150,7 +146,9 @@ export function buildReport(
   return {
     meta: {
       method,
-      comparisonNotice: method === "baremo" ? AVISO_BAREMO : AVISO_ESCALA,
+      // El motor decide el método; el idioma pone las palabras. El aviso viene
+      // de labels (src/i18n/*-informe.json), como el resto de la prosa.
+      comparisonNotice: method === "baremo" ? labels.avisoComparacion.baremo : labels.avisoComparacion.escala,
       ...(generatedFor ? { generatedFor } : {}),
     },
     headline: {

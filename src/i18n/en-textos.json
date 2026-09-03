@@ -1,0 +1,377 @@
+{
+  "_comentario": "Las cadenas de la interfaz en ingles, con la MISMA estructura que es-textos.json: cada clave de alli existe aqui, con los mismos huecos {asi} y las listas del mismo largo (tests/i18n.test.ts lo vigila). Donde el castellano habla de la adaptacion espanola, aqui se habla del original ingles, que es lo que responde esta persona.",
+  "portada": {
+    "hero": {
+      "titular": "Understand how you tend to think, act, relate to others and respond to what life brings, <span class=\"realce\">and how to turn that knowledge into more conscious decisions</span>",
+      "base": "Based on Big Five/OCEAN <span aria-hidden=\"true\">·</span> BFI-2 <span aria-hidden=\"true\">·</span> 60 items",
+      "texto": "Explore five broad dimensions and fifteen facets of personality. When you finish, you will receive a personalized report that turns your results into interpretations, questions and concrete actions.",
+      "rigor": "A self-knowledge tool grounded in published research. It is not a diagnosis or a prediction of behavior.",
+      "micro": "There are no right or wrong answers. Respond thinking of how you usually act."
+    },
+    "central": {
+      "ojo": "Before you start",
+      "titulo": "What Identify is and what you will receive",
+      "entradilla": "Eight sections, in case you want to know what you are getting into. Open them if you feel like it; the test works just the same if you read none."
+    },
+    "cierre": {
+      "titulo": "Know yourself with more depth and fewer labels",
+      "texto": "Answer the 60 statements and receive a personalized reading of your five dimensions and fifteen facets.",
+      "micro": "There are no right or wrong answers. Choose the option that best describes how you usually act."
+    },
+    "ocean": {
+      "oculto": "International term: ",
+      "explica": {
+        "open_mindedness": "Explores your inclination to go deep into ideas, appreciate beauty and imagine new possibilities.",
+        "conscientiousness": "Looks at how you structure, execute and sustain tasks, goals and commitments.",
+        "extraversion": "Helps understand how much you tend to seek interaction, take the initiative and keep an active pace.",
+        "agreeableness": "Looks at how you consider other people's needs, care for relationships and trust their intentions.",
+        "negative_emotionality": "Explores how readily you register worry, low mood or emotional shifts in the face of difficulties."
+      }
+    },
+    "muestra": {
+      "aria": "A visual example of a report, with made-up figures",
+      "sello": "Visual example · made-up figures",
+      "ojo": "At a glance",
+      "titulo": "The five domains",
+      "escalaMedio": "3 · midpoint",
+      "bandas": {
+        "extraversion": "medium-high",
+        "agreeableness": "high",
+        "conscientiousness": "medium-low",
+        "negative_emotionality": "medium-high",
+        "open_mindedness": "high"
+      },
+      "bloques": [
+        { "ojo": "Interpretation", "texto": "Each domain is explained with its definition, the reading of your three facets and the tensions that may appear." },
+        { "ojo": "Powerful questions", "texto": "Questions written from your results, to take to a conversation or a notebook." },
+        { "ojo": "Action plan", "texto": "Three concrete actions, each with a signal that tells you whether it is working." }
+      ]
+    },
+    "recorrido": [
+      { "titulo": "Your answers", "detalle": "60 statements, rated 1 to 5" },
+      { "titulo": "5 dimensions", "detalle": "twelve items each" },
+      { "titulo": "15 facets", "detalle": "four items each" },
+      { "titulo": "Interpretation", "detalle": "what that combination says" },
+      { "titulo": "Questions and plan", "detalle": "what you can do with it" }
+    ],
+    "pliegues": {
+      "queAporta": {
+        "titulo": "What do you gain from taking the Identify test?",
+        "resumen": "Understand your tendencies, recognize your resources and spot the contexts where you may need a different adjustment.",
+        "intro": "Many responses show up automatically. Identify turns those tendencies into a comprehensible map so you can recognize what drives you, what may wear you down and what alternatives you can bring in depending on the situation.",
+        "tarjetas": [
+          { "titulo": "Self-knowledge with nuance", "texto": "Understand your particular combination of five dimensions and fifteen facets without being reduced to a label." },
+          { "titulo": "Strengths in context", "texto": "Identify tendencies that can help you and the contexts where they add the most value." },
+          { "titulo": "Risks of excess or mismatch", "texto": "Spot when a strength may stop helping you because of intensity, imbalance or context." },
+          { "titulo": "More conscious decisions", "texto": "Observe how your tendencies can influence priorities, habits and decisions." },
+          { "titulo": "More understandable relationships", "texto": "Understand how you tend to connect, trust, express yourself and respond to other people." },
+          { "titulo": "Action-oriented development", "texto": "Turn the results into concrete questions and actions you can experiment with." }
+        ],
+        "destacado": "The goal is not to tell you how you are in absolute terms, but to help you observe how your tendencies work and what you can do with that information."
+      },
+      "rigor": {
+        "titulo": "Rigor, to understand yourself with more nuance",
+        "resumen": "What the test rests on: the Big Five/OCEAN model, the structure of the BFI-2 and how far what it measures can go.",
+        "parrafos": [
+          "Identify rests on the Big Five/OCEAN model and on the hierarchical structure of the BFI-2. It analyzes five broad domains and fifteen specific facets to offer a dimensional reading of personality.",
+          "This makes it possible to go beyond a label: it shows degrees, internal differences and combinations that help understand how your tendencies may express themselves in different contexts.",
+          "The results are orientative. They describe how you defined yourself when answering and should be interpreted together with your experience, your context and, when necessary, the judgment of a professional."
+        ],
+        "destacado": "Science does not turn you into a label: it provides a frame to understand nuance and ask better questions.",
+        "confianza": [
+          { "dato": "60 items", "texto": "A self-report questionnaire." },
+          { "dato": "5 dimensions", "texto": "The broad domains of the Big Five model." },
+          { "dato": "15 facets", "texto": "Three nuances within each dimension." },
+          { "dato": "Original version", "texto": "You answer the English original, as published by its authors." }
+        ]
+      },
+      "dimensiones": {
+        "titulo": "Dimensions, not labels",
+        "resumen": "The Big Five does not sort people into closed categories: we all present the five, in different degrees.",
+        "intro": "Big Five/OCEAN does not sort people into closed categories. Everyone presents the five dimensions in different degrees, and the value of the result lies in observing how they combine.",
+        "tarjetas": [
+          { "titulo": "A dimensional model", "texto": "It represents degrees, not absolute categories." },
+          { "titulo": "A hierarchical reading", "texto": "It combines five domains with fifteen facets." },
+          { "titulo": "More nuance than a typology", "texto": "Two people with a similar domain can present different facets." },
+          { "titulo": "Interpretation in context", "texto": "A tendency can help or hinder depending on the situation." }
+        ],
+        "destacado": "The Big Five is not out to pigeonhole you. It seeks to describe, with nuance, how you tend to operate."
+      },
+      "cincoDimensiones": {
+        "titulo": "The five dimensions Identify studies",
+        "resumen": "Open-Mindedness, Conscientiousness, Extraversion, Agreeableness and Negative Emotionality, each with its three facets.",
+        "intro": "We all have the five dimensions. What changes is the intensity of each one and the way its facets combine.",
+        "apunte": "<b>Anxiety</b>, <b>Depression</b> and <b>Emotional Volatility</b> are technical names of personality scales. They do not represent clinical conditions or diagnoses."
+      },
+      "porQueImporta": {
+        "titulo": "Why does knowing these dimensions matter?",
+        "resumen": "How they show up when you relate to others, organize yourself, manage tension and learn something new.",
+        "intro": "Knowing yourself does not mean labeling yourself. It means understanding which tendencies drive you, which may wear you down and which adjustments can help you respond better to each situation.",
+        "tarjetas": [
+          { "titulo": "Relating to others", "texto": "Understand how you seek contact, voice opinions, show empathy and build trust." },
+          { "titulo": "Acting and organizing", "texto": "Recognize how you turn intentions into actions, structure tasks and sustain commitments." },
+          { "titulo": "Managing tension", "texto": "Observe how you register worry, low mood and emotional shifts when pressure rises." },
+          { "titulo": "Learning and creating", "texto": "Understand how you explore ideas, imagine alternatives and connect with intellectual or aesthetic experiences." },
+          { "titulo": "Widening your repertoire", "texto": "Choose different responses when your automatic tendency is not the most useful one for the situation." }
+        ]
+      },
+      "informe": {
+        "titulo": "A personalized report: what you receive",
+        "resumen": "Much more than five scores: interpretation, combinations, questions and an action plan.",
+        "intro": "When you finish, Identify automatically generates a personalized report that explains what your results mean, how they combine and what you can do with them.",
+        "apunteDominios": "The domains offer the most solid view of the profile; the facets allow you to go deeper into its nuances and should be read with more caution.",
+        "descubriras": "What will you discover in your personalized report?",
+        "apartados": [
+          "<b>Overall summary.</b> A headline and a general interpretation of the main patterns.",
+          "<b>Chart of the five domains.</b> Scores from 1 to 5 and bands in Extraversion, Agreeableness, Conscientiousness, Negative Emotionality and Open-Mindedness.",
+          "<b>Analysis of the fifteen facets.</b> The three facets of each domain, and which one clearly stands apart from the other two.",
+          "<b>Interpretation of each domain.</b> Definition, personalized reading, possible contributions, tensions and practical levers.",
+          "<b>Profile combinations.</b> Patterns that appear when facets are crossed and every condition of a rule is met.",
+          "<b>Signals to watch.</b> Combinations that come close, explained conditionally and never as current results.",
+          "<b>At work.</b> How those tendencies may express themselves professionally.",
+          "<b>Powerful questions.</b> Questions derived from your results.",
+          "<b>Action plan.</b> Three concrete actions, each with its follow-up indicator.",
+          "<b>Images to remember.</b> Three metaphors tied to the most relevant scores.",
+          "<b>Conclusions.</b> A synthesis of resources, adjustments and priorities.",
+          "<b>Sources and methodology.</b> Instrument, scale, version, references and limits."
+        ],
+        "valorTitulo": "The value is in what you do with the information",
+        "valorTexto": "The value of the report is not just in knowing a score. It is in understanding how it expresses itself in your life, which patterns are worth protecting and where a small change might prove useful.",
+        "pasos": [
+          "<b>Recognize.</b> Put a name to tendencies you may already have sensed.",
+          "<b>Understand.</b> Observe how domains and facets combine.",
+          "<b>Contextualize.</b> Distinguish when a tendency helps and when it may hinder.",
+          "<b>Act.</b> Choose one concrete question or action to experiment with."
+        ],
+        "apunteHipotesis": "The report turns scores into hypotheses for reflection, not absolute truths."
+      },
+      "comoLeer": {
+        "titulo": "A map to know yourself, not a label",
+        "resumen": "What it measures and what it does not: the limits of what a questionnaire you answer yourself can tell you.",
+        "lista": [
+          "Identify measures <b>tendencies described by the person themselves</b>: it reflects how you described yourself when answering.",
+          "Those tendencies are relatively stable, <b>but not fixed</b>, and can express themselves differently depending on context.",
+          "<b>There are no good or bad scores.</b> A tendency can help or hinder depending on the situation, and a mid-range score usually signals flexibility.",
+          "<b>It is not a diagnosis</b> or a clinical test.",
+          "It does not measure intelligence or ability, and it <b>does not determine suitability</b> for a job.",
+          "It does not predict exactly what you are going to do, nor does it replace the judgment of a professional.",
+          "The bands indicate your position <b>within the questionnaire's scale</b>. They are not a comparison with the general population: this report does not use normative percentiles.",
+          "Facets are four-item scales: <b>they carry less weight than the domains</b> and should be read with more caution."
+        ]
+      },
+      "baseCientifica": {
+        "titulo": "Get to know the scientific base of Identify",
+        "resumen": "Model, instrument, structure, original version and references with their DOI.",
+        "ficha": [
+          { "dato": "Model", "texto": "Big Five/OCEAN, as a dimensional frame of personality." },
+          { "dato": "Instrument", "texto": "The Big Five Inventory-2 (BFI-2), by Christopher J. Soto and Oliver P. John." },
+          { "dato": "Structure", "texto": "60 items, five domains and fifteen facets; four items per facet and twelve per domain, on a 1-to-5 scale." },
+          { "dato": "Version", "texto": "The original English BFI-2, exactly as published by its authors." },
+          { "dato": "Interpretation", "texto": "Results are presented as tendencies and associations, not as diagnoses or deterministic predictions. The combinations, the questions and the action plan are IMPAUSA's own elaboration on that base, and are not part of the original instrument." }
+        ],
+        "referencias": "References",
+        "berkeley": "Berkeley Personality Lab. Official information on the BFI-2:",
+        "atribucion": "BFI-2 © Oliver P. John and Christopher J. Soto."
+      }
+    }
+  },
+  "test": {
+    "titulo": "Identify Test",
+    "meses": ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
+    "fechaLarga": "{mes} {dia}, {ano}",
+    "puerta": {
+      "etiqueta": "Access code",
+      "pista": "You get it from whoever sent you the link",
+      "entrar": "Enter",
+      "comprobando": "Checking…",
+      "noComprobado": "The code could not be verified.",
+      "sinConexion": "Could not connect. Check your connection.",
+      "pedirCodigo": "Access code\n\nYou get it from whoever sent you the link."
+    },
+    "inicio": {
+      "empezar": "Start the test now",
+      "alCodigo": "Enter the access code",
+      "avisoFallos": "Warning: the calculation self-check does not match in: {lista}. Do not use these results."
+    },
+    "pregunta": {
+      "de60": "Question {n} of 60",
+      "completado": "{pct}% complete",
+      "ariaEscala": "Response scale",
+      "anterior": "← Previous",
+      "teclas": "You can answer with keys 1 to 5"
+    },
+    "resultados": {
+      "ariaEje": "{nombre}: {valor} out of 5",
+      "etiqueta": "Questionnaire complete",
+      "titulo": "Your scores",
+      "nota1": "<b>These are just the numbers.</b> Each value runs from 1 to 5 and is the average of that scale's answers. There is no interpretation here: there are no good or bad scores.",
+      "nota2": "The reading of what they mean comes in the report, which is produced separately.",
+      "dominios": "The five domains",
+      "dominiosSub": "Each is the average of its twelve questions",
+      "facetasSub": "Its three facets",
+      "informeTitulo": "Your report",
+      "informeSub": "With these same scores, now interpreted.",
+      "local1": "<b>This file cannot draft the report on its own.</b> It is open from your computer, and a standalone file cannot carry the API key inside: it would be in plain sight of anyone who opened it.",
+      "local2": "Here the report comes out with everything the code calculates and the coaching passages marked as pending; then you can copy the briefing and paste the draft. <b>To have it drafted in one click, open it on the web.</b>",
+      "nombre": "Your name",
+      "nombreOpcional": "(optional, appears on the cover)",
+      "nombreEjemplo": "Marta",
+      "verJson": "View the JSON",
+      "ocultarJson": "Hide the JSON",
+      "ariaJson": "Result as JSON",
+      "reiniciar": "Start over",
+      "nadaGuardado": "None of this has been saved or sent anywhere. If you close the page, it is gone."
+    },
+    "copiar": {
+      "copiado": "Copied",
+      "aMano": "Copy it from here"
+    },
+    "informe": {
+      "nombre": "Identify Report",
+      "volver": "← Back to the scores",
+      "generar": "Generate the full report",
+      "encargo": "Copy the briefing",
+      "encargoLargo": "without the skill",
+      "encargoLargoTitulo": "For a conversation that does not have the identify-bfi2-knowledge skill loaded",
+      "cambiarRedaccion": "Replace the draft",
+      "pegarRedaccion": "Paste the draft",
+      "imprimir": "Print",
+      "pegarInstrucciones": "Paste here the JSON that Claude returned with the draft.\n\nIt is checked before going in: if any section is missing, I will tell you and leave the report untouched.",
+      "jsonInvalido": "That is not valid JSON. Copy it whole, from the first brace to the last.",
+      "noEncaja": "The draft does not fit the schema:\n\n· {lista}"
+    },
+    "trabajando": {
+      "titulo": "Claude is writing",
+      "detalle": "The coaching passages of your report. Meanwhile you can start reading the scores and the facet readings.",
+      "tarda": "it usually takes just over a minute"
+    },
+    "servidor": {
+      "redactando": "Writing…",
+      "noEmpezado": "The report could not be started. Try again.",
+      "codigoIncorrecto": "Incorrect code.",
+      "noGenerado": "The report could not be generated.",
+      "incompleta": "The draft arrived incomplete. Try again.",
+      "tardaDemasiado": "The report is taking too long. Try again in a moment.",
+      "sinConexion": "Could not connect. Check your connection and try again."
+    }
+  },
+  "informe": {
+    "titulo": "Identify Report",
+    "maqueta": "Report without the drafting layer · the passages Claude writes are marked as pending",
+    "cintilloTipo": "Individual report · BFI-2",
+    "portadaPie": "Individual report · BFI-2 · 60 items",
+    "fila": {
+      "seSepara": "stands apart from the rest",
+      "aria": "{nombre}: {valor} out of 5, {banda} band"
+    },
+    "escala": {
+      "medio": "3 · midpoint"
+    },
+    "pendiente": {
+      "titulo": "Still to be written",
+      "cola": "Claude writes this passage from the scores above."
+    },
+    "huecos": {
+      "dominio": "the combined reading of this domain",
+      "resumen": "the profile summary",
+      "trabajo": "the reading for work",
+      "preguntas": "the powerful questions",
+      "plan": "the three steps of the plan, each with its indicator",
+      "conclusion": "the conclusions"
+    },
+    "senales": {
+      "ninguna": "None of the 26 combinations comes close to being met in your profile. There is nothing in this section, and that is as valid an answer as any other.",
+      "una": "One combination sits",
+      "varias": "{n} combinations sit",
+      "unaFaceta": "All of them hinge on a single facet: <b>{faceta}</b>.",
+      "variasFacetas": "The facets keeping them out are {lista} and <b>{ultima}</b>.",
+      "entrada": "{cuantas} <b>one single condition away</b> from being met. {cuales}",
+      "porEso": "That is why they are phrased conditionally and carry no citation: <b>they do not describe your profile today</b>. What they point to is where it would move if one piece changed — which is exactly the kind of thing worth looking at in a coaching conversation.",
+      "falta": "It would be met with {pedido} {nombre}; in your profile it stays {banda}.",
+      "alta": "high",
+      "baja": "low"
+    },
+    "combis": {
+      "seCumplePor": "It is met through {quien}.",
+      "avisoClinico": "This describes a pattern observed in research, not a diagnosis or a statement about you. If it resembles what you are going through, talking it over with a professional is the sensible thing to do.",
+      "vacio1": "Your profile <b>does not activate any</b> of the {total} combinations described in the scientific literature on this questionnaire.",
+      "vacio2": "That is not a shortcoming: those combinations require several extreme scores at once, and most profiles do not gather them. What is distinctive about this profile lies in the facet-by-facet journey.",
+      "una": "One of the described combinations is met",
+      "varias": "{n} of the described combinations are met",
+      "entera": "{cuantas} <b>in full</b> in your profile: all of its conditions, not just some. That is why they are stated and cited, unlike the signals in the next section.",
+      "describen": "They describe <b>patterns observed in research</b>, not you. That a combination is met says where a profile like yours tends to move, not what you are going to do."
+    },
+    "datos": {
+      "linea": "<b>{nombre}: {valor}</b> out of 5, in the {banda} band.",
+      "divergente": "Of its three facets, the one that stands furthest from the other two is <b>{nombre}</b>, at {valor}.",
+      "juntas": "Its three facets move together: none stands apart from the rest."
+    },
+    "lectura": {
+      "matiz": "Close to the midpoint, so in its soft version:"
+    },
+    "leyenda": {
+      "titulo": "Name equivalences",
+      "entrada": "<b>{nombre}</b> — technical name: {tecnico}"
+    },
+    "indice": {
+      "titulo": "Contents",
+      "aria": "Report index",
+      "secciones": {
+        "comoLeer": "How to read this report",
+        "resumen": "Profile summary",
+        "vistazo": "At a glance",
+        "dominios": "The five domains in detail",
+        "combinaciones": "Profile combinations",
+        "senales": "Signals to watch",
+        "trabajo": "At work",
+        "preguntas": "Powerful questions",
+        "plan": "Action plan",
+        "imagenes": "Three images",
+        "conclusiones": "Conclusions",
+        "fuentes": "Sources and methodology"
+      }
+    },
+    "comoLeer": {
+      "eyebrow": "Important notice",
+      "titulo": "How to read this report",
+      "intro": "This questionnaire measures <b>behavioral tendencies</b> that you yourself describe. They are stable, but not fixed: they change with time and with context.",
+      "noEsTitulo": "What this report is not:",
+      "noEs": [
+        "It is not a diagnosis. Nothing you read here is a clinical condition.",
+        "It does not measure intelligence, ability, or suitability for a job.",
+        "It does not predict what you are going to do."
+      ],
+      "comparacion": "What it is compared against:",
+      "cierre": "There are no good or bad scores. These are tendencies that help or hinder depending on context, and a mid-range score usually signals flexibility."
+    },
+    "resumen": { "eyebrow": "Profile summary" },
+    "vistazo": { "eyebrow": "At a glance", "titulo": "The five domains" },
+    "dominios": {
+      "eyebrow": "In detail",
+      "titulo": "The five domains, facet by facet",
+      "intro": "Each domain is made of three facets. Two people with the same overall score can have them distributed very differently, and that is where each profile's character lies. When a facet clearly stands apart from the other two, it is flagged in orange."
+    },
+    "combinaciones": { "eyebrow": "Profile combinations", "titulo": "What appears when the facets are crossed" },
+    "senalesSeccion": { "eyebrow": "Close, but not quite", "titulo": "Signals to watch" },
+    "trabajo": { "eyebrow": "Application", "titulo": "At work" },
+    "preguntas": { "eyebrow": "To think about", "titulo": "Powerful questions" },
+    "plan": { "eyebrow": "To act on", "titulo": "Action plan", "indicador": "How you will know it works:" },
+    "imagenes": {
+      "eyebrow": "To remember it",
+      "titulo": "Three images",
+      "intro": "Ideas fade; images stay. These come from the scores that stray furthest from the center in your profile, and they are here to return to between sessions.",
+      "ancla": "If you keep just one",
+      "porTu": "for your {banda} {faceta}"
+    },
+    "conclusiones": { "eyebrow": "To close", "titulo": "Conclusions" },
+    "fuentesSeccion": {
+      "titulo": "Sources and methodology",
+      "intro": "Instrument: the <b>BFI-2</b>, Big Five Inventory-2, in its original English version. 60 items, a 1-to-5 scale, five domains and fifteen facets. Each facet is the average of its four items; each domain, the average of its twelve. The combinations come from IMPAUSA's knowledge base on the BFI-2, built on the works listed below.",
+      "avisoTitulo": "Important notice",
+      "aviso": "Facets are four-item scales: they carry less weight than the domains and should be read with more caution. This report is a self-knowledge and coaching tool; it is not a clinical or selection test, and it reflects how you described yourself on the day you answered."
+    },
+    "firma": {
+      "quien": "{producto} is a tool by IMPAUSA POWER, S.L."
+    }
+  }
+}

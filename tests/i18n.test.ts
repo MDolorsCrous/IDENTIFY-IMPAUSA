@@ -101,9 +101,76 @@ test("la estructura no lleva prosa: ni resúmenes ni lecturas en los ficheros ne
 });
 
 test("cargarRecursos rechaza un idioma que no existe", () => {
-  // Ojo: en.json (los ítems del test) ya existe, pero la capa de interpretación
-  // inglesa todavía no; cargarRecursos("en") debe seguir fallando hasta la fase 4.
+  // Ojo: el cuestionario (en.json) y la interfaz (en-textos, en-informe) ya
+  // existen, pero la capa de interpretación inglesa todavía no; cargarRecursos("en")
+  // debe seguir fallando hasta la fase 5.
   assert.throws(() => cargarRecursos("en" as any), /no hay textos para el idioma/);
+});
+
+// ---- La interfaz en inglés (fase 4): misma estructura, mismos huecos ----
+
+/**
+ * Compara la ESTRUCTURA de dos árboles de textos: mismas claves, mismos tipos,
+ * listas del mismo largo y los mismos huecos {asi} en cada cadena. El contenido
+ * es libre —es otra lengua—; la forma no. Las claves que empiezan por "_" son
+ * notas de mantenimiento y no cuentan.
+ */
+function compararEstructura(es: unknown, en: unknown, ruta: string, fallos: string[]) {
+  if (typeof es === "string") {
+    if (typeof en !== "string") { fallos.push(`${ruta}: no es una cadena en inglés`); return; }
+    const huecos = (s: string) => [...s.matchAll(/\{(\w+)\}/g)].map((m) => m[1]).sort().join(",");
+    if (huecos(es) !== huecos(en)) {
+      fallos.push(`${ruta}: los huecos no coinciden («${huecos(es)}» vs «${huecos(en)}»)`);
+    }
+    if (!en.trim()) fallos.push(`${ruta}: vacío en inglés`);
+    return;
+  }
+  if (Array.isArray(es)) {
+    if (!Array.isArray(en) || en.length !== es.length) {
+      fallos.push(`${ruta}: la lista inglesa no tiene ${es.length} elementos`);
+      return;
+    }
+    es.forEach((v, i) => compararEstructura(v, (en as unknown[])[i], `${ruta}[${i}]`, fallos));
+    return;
+  }
+  if (es && typeof es === "object") {
+    if (!en || typeof en !== "object" || Array.isArray(en)) { fallos.push(`${ruta}: no es un objeto en inglés`); return; }
+    const clavesEs = Object.keys(es).filter((k) => !k.startsWith("_")).sort();
+    const clavesEn = Object.keys(en).filter((k) => !k.startsWith("_")).sort();
+    for (const k of clavesEs) if (!clavesEn.includes(k)) fallos.push(`${ruta}.${k}: falta en inglés`);
+    for (const k of clavesEn) if (!clavesEs.includes(k)) fallos.push(`${ruta}.${k}: sobra en inglés`);
+    for (const k of clavesEs) {
+      if (clavesEn.includes(k)) {
+        compararEstructura((es as any)[k], (en as any)[k], `${ruta}.${k}`, fallos);
+      }
+    }
+  }
+}
+
+test("en-textos.json calca la estructura de es-textos.json, huecos incluidos", () => {
+  const fallos: string[] = [];
+  compararEstructura(leer("src/i18n/es-textos.json"), leer("src/i18n/en-textos.json"), "textos", fallos);
+  assert.deepEqual(fallos, []);
+});
+
+test("en-informe.json calca la estructura de es-informe.json", () => {
+  const fallos: string[] = [];
+  compararEstructura(leer("src/i18n/es-informe.json"), leer("src/i18n/en-informe.json"), "informe", fallos);
+  assert.deepEqual(fallos, []);
+});
+
+test("los dos idiomas nombran las cuatro bandas del motor y los dos avisos de comparación", () => {
+  for (const fichero of ["src/i18n/es-informe.json", "src/i18n/en-informe.json"]) {
+    const labels = leer(fichero);
+    assert.deepEqual(
+      Object.keys(labels.bandas).sort(),
+      ["alta", "baja", "media-alta", "media-baja"],
+      `${fichero}: las claves de bandas no son los ids del motor`,
+    );
+    for (const banda of Object.values(labels.bandas)) assert.ok((banda as string).length > 1);
+    assert.ok(labels.avisoComparacion.escala.length > 20, `${fichero}: falta el aviso de escala`);
+    assert.ok(labels.avisoComparacion.baremo.length > 20, `${fichero}: falta el aviso de baremo`);
+  }
 });
 
 // ---- El cuestionario en inglés (fase 3): los ítems oficiales y su costura ----

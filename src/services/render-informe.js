@@ -27,18 +27,18 @@ const pos = (v) => ((v - 1) / 4) * 100;
 const rellena = (plantilla, valores) =>
   plantilla.replace(/\{(\w+)\}/g, (_, clave) => valores[clave]);
 
-function fila(item, destacada, color, t) {
+function fila(item, destacada, color, t, nombreBanda) {
   return `
       <div class="fila${destacada ? " fila--destacada" : ""}"${color ? ` style="--dominio:${color}"` : ""}>
         <div class="fila__nombre">${esc(item.label)}${
           destacada ? `<span class="marca">${t.seSepara}</span>` : ""
         }</div>
-        <div class="eje${destacada ? " eje--acento" : ""}" role="img" aria-label="${rellena(t.aria, { nombre: esc(item.label), valor: num(item.score), banda: item.band })}">
+        <div class="eje${destacada ? " eje--acento" : ""}" role="img" aria-label="${rellena(t.aria, { nombre: esc(item.label), valor: num(item.score), banda: nombreBanda(item.band) })}">
           <div class="eje__medio"></div>
           <div class="eje__relleno" style="width:${pos(item.score)}%"></div>
           <div class="eje__punto" style="left:${pos(item.score)}%"></div>
         </div>
-        <div class="fila__dato"><b>${num(item.score)}</b><span>${esc(item.band)}</span></div>
+        <div class="fila__dato"><b>${num(item.score)}</b><span>${nombreBanda(item.band)}</span></div>
       </div>`;
 }
 
@@ -186,8 +186,8 @@ function bibliografia(fuentes) {
  * No es interpretacion, es descripcion: dice lo que pone el numero. Por eso puede
  * ir en el informe aunque no haya capa de redaccion.
  */
-function lineaDatos(d, t) {
-  const partes = [rellena(t.linea, { nombre: esc(d.label), valor: num(d.score), banda: esc(d.band) })];
+function lineaDatos(d, t, nombreBanda) {
+  const partes = [rellena(t.linea, { nombre: esc(d.label), valor: num(d.score), banda: nombreBanda(d.band) })];
   if (d.divergentFacet) {
     const f = d.divergentFacet;
     partes.push(rellena(t.divergente, { nombre: esc(f.label), valor: num(f.score) }));
@@ -204,7 +204,7 @@ function lineaDatos(d, t) {
  * mismo texto que su polo pero avisando de que la puntuación está cerca del
  * punto medio: la lectura orienta, no describe un extremo que no se ha dado.
  */
-function lecturasFacetas(dominio, facetas, t) {
+function lecturasFacetas(dominio, facetas, t, nombreBanda) {
   if (!facetas) return "";
   const bloques = dominio.facets
     .map((f) => {
@@ -217,7 +217,7 @@ function lecturasFacetas(dominio, facetas, t) {
         <div class="lectura">
           <div class="lectura__cab">
             <b>${esc(f.label)}</b>
-            <span>${num(f.score)} · ${esc(f.band)}</span>
+            <span>${num(f.score)} · ${nombreBanda(f.band)}</span>
           </div>
           ${ficha.definicion ? `<p class="lectura__def">${esc(ficha.definicion)}</p>` : ""}
           <p>${matizada ? `<em class="matiz">${t.matiz}</em> ` : ""}${esc(lectura.texto)}</p>
@@ -290,6 +290,10 @@ export function renderInforme(modelo, prosa = {}, labels, opciones = {}) {
   const fecha = opciones.fecha ?? "";
   const persona = modelo.meta.generatedFor ?? "";
 
+  // El motor trabaja con los ids de banda (baja…alta); lo que se lee sale del
+  // mapa de labels, que en castellano es la identidad. Ya llega escapado.
+  const nombreBanda = (b) => esc(labels.bandas?.[b] ?? b);
+
   const escala = lineaEscala(textos.escala);
   /**
    * Hueco de redaccion. Se marca en vez de dejarse en blanco: un vacio parece
@@ -298,7 +302,7 @@ export function renderInforme(modelo, prosa = {}, labels, opciones = {}) {
   const hueco = (que) =>
     `<p class="pendiente"><b>${textos.pendiente.titulo}</b> — ${esc(que)}. ${textos.pendiente.cola}</p>`;
 
-  const resumenVisual = `<div class="barras">${modelo.domains.map((d) => fila(d, false, colores?.[d.id], textos.fila)).join("")}</div>${escala}`;
+  const resumenVisual = `<div class="barras">${modelo.domains.map((d) => fila(d, false, colores?.[d.id], textos.fila, nombreBanda)).join("")}</div>${escala}`;
 
   const dominios = modelo.domains
     .map((d) => {
@@ -308,12 +312,12 @@ export function renderInforme(modelo, prosa = {}, labels, opciones = {}) {
     <section class="dominio"${colores?.[d.id] ? ` style="--dominio:${colores[d.id]}"` : ""}>
       <header class="dominio__cab">
         <h3>${esc(d.label)}</h3>
-        <span class="dominio__dato">${num(d.score)} <em>${esc(d.band)}</em></span>
+        <span class="dominio__dato">${num(d.score)} <em>${nombreBanda(d.band)}</em></span>
       </header>
-      <div class="barras">${d.facets.map((f) => fila(f, d.divergentFacet?.id === f.id, colores?.[d.id], textos.fila)).join("")}</div>
+      <div class="barras">${d.facets.map((f) => fila(f, d.divergentFacet?.id === f.id, colores?.[d.id], textos.fila, nombreBanda)).join("")}</div>
       ${escala}
-      ${lineaDatos(d, textos.datos)}
-      ${lecturasFacetas(d, facetas, textos.lectura)}
+      ${lineaDatos(d, textos.datos, nombreBanda)}
+      ${lecturasFacetas(d, facetas, textos.lectura, nombreBanda)}
       ${texto ? parrafos(texto) : hueco(textos.huecos.dominio)}
       ${nota ? `<p class="nota">${esc(nota)}</p>` : ""}
     </section>`;
@@ -336,7 +340,7 @@ export function renderInforme(modelo, prosa = {}, labels, opciones = {}) {
 const combinacionesHtml = modelo.fired
   .map((m) => {
     const quien = m.met
-      .map((x) => `${(labels.facets[x.condition.facet] ?? x.condition.facet).toLowerCase()} ${x.band}`)
+      .map((x) => `${(labels.facets[x.condition.facet] ?? x.condition.facet).toLowerCase()} ${labels.bandas?.[x.band] ?? x.band}`)
       .join(" + ");
     // Las marcadas «clinico» no aparecen nunca solas: describen un patrón de la
     // investigación, no a la persona, y llevan al lado qué hacer con eso.
@@ -381,7 +385,7 @@ const senalesHtml = senales
       <li>
         <b>${esc(m.rule.effect)}</b>
         <span>${esc(m.rule.summary)}</span>
-        <span class="senal__falta">${rellena(textos.senales.falta, { nombre: esc(nombre.toLowerCase()), pedido, banda: esc(f.band) })} ${esc(m.rule.references.join(" · "))}</span>
+        <span class="senal__falta">${rellena(textos.senales.falta, { nombre: esc(nombre.toLowerCase()), pedido, banda: nombreBanda(f.band) })} ${esc(m.rule.references.join(" · "))}</span>
       </li>`;
   })
   .join("");
@@ -894,14 +898,14 @@ ${
       .map(
         (m) => `<figure class="imagen">
       <blockquote>${esc(m.texto)}</blockquote>
-      <figcaption><b>${esc(m.nombre)}</b> · ${rellena(textos.imagenes.porTu, { faceta: esc(m.etiqueta.toLowerCase()), banda: esc(m.banda) })}</figcaption>
+      <figcaption><b>${esc(m.nombre)}</b> · ${rellena(textos.imagenes.porTu, { faceta: esc(m.etiqueta.toLowerCase()), banda: nombreBanda(m.banda) })}</figcaption>
     </figure>`,
       )
       .join("")}
     <figure class="imagen imagen--ancla">
       <p class="imagen__etiqueta">${textos.imagenes.ancla}</p>
       <blockquote>${esc(metaforas.ancla.texto)}</blockquote>
-      <figcaption><b>${esc(metaforas.ancla.nombre)}</b> · ${rellena(textos.imagenes.porTu, { faceta: esc(metaforas.ancla.etiqueta.toLowerCase()), banda: esc(metaforas.ancla.banda) })}</figcaption>
+      <figcaption><b>${esc(metaforas.ancla.nombre)}</b> · ${rellena(textos.imagenes.porTu, { faceta: esc(metaforas.ancla.etiqueta.toLowerCase()), banda: nombreBanda(metaforas.ancla.banda) })}</figcaption>
     </figure>
   </section>`
     : ""
