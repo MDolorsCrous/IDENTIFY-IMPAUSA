@@ -90,6 +90,48 @@ a la vez.
 IMPAUSA, un baremo propio de población adulta profesional sería mejor que este para el
 uso que le vais a dar.
 
+## El contraste americano (Soto & John, 2017, Tabla 5)
+
+Añadido el 3-9-2026, del estudio del artículo original (`docs/bfi2-form-en.md` explica la
+fuente). El artículo trae descriptivos de dos muestras americanas; la de internet es
+**equilibrada por sexo (500 hombres / 500 mujeres)** y algo más amplia de edad (18–77,
+media 28,7 años, 65 % menores de 30): mitiga justo dos de los cuatro problemas de la
+muestra española de arriba.
+
+| Dominio / Faceta | EE. UU. internet M (DT) | España M (DT) |
+| --- | --- | --- |
+| Extraversión | 3,23 (0,80) | 3,42 (0,54) |
+| — Sociabilidad | 2,95 (1,05) | 3,36 (0,90) |
+| Cordialidad | 3,68 (0,64) | 3,87 (0,48) |
+| — Compasión | 3,84 (0,78) | 4,06 (0,61) |
+| — Confianza | 3,23 (0,82) | 3,58 (0,64) |
+| Responsabilidad | 3,43 (0,77) | 3,40 (0,66) |
+| Emocionalidad negativa | 3,07 (0,87) | 3,13 (0,71) |
+| — Ansiedad | 3,43 (0,93) | 3,61 (0,74) |
+| Apertura de mente | 3,92 (0,65) | 3,89 (0,58) |
+
+(La tabla completa, con las 15 facetas y las columnas por sexo, está en la Tabla 5 del
+artículo; aquí van las filas que bastan para ver el patrón.)
+
+**Lo que dice este contraste:**
+
+1. **Un baremo no se puede compartir entre idiomas ni poblaciones.** Sociabilidad se
+   mueve 0,41 puntos entre la muestra americana y la española; Confianza, 0,35. El día
+   que el test exista en inglés, necesitará referencias inglesas: aplicarle este baremo
+   español —o el americano al test español— desplazaría las bandas tanto como los
+   problemas de muestra ya señalados.
+2. **Ninguna escala tiene la media en el 3,0.** Van de ~2,85 (Depresión, EE. UU.) a ~4,1
+   (Curiosidad intelectual). El aviso del informe —«las bandas indican posición en la
+   escala, no comparación con la población»— es exactamente el matiz correcto, y estas
+   cifras son la prueba de por qué hace falta.
+3. **Las diferencias por sexo se repiten entre culturas** (Ansiedad d = 0,33 en EE. UU. y
+   0,53 en España; Cordialidad d = 0,35 y 0,45): refuerza la pregunta 2 de abajo, porque
+   no es un artefacto de la muestra española.
+4. **Fiabilidades de las facetas en el original:** alfas de 0,66 (Compasión) a 0,85, con
+   media 0,76; retest a 8 semanas 0,73 las facetas y 0,76–0,84 los dominios. La misma
+   foto que la adaptación española: la prudencia con las facetas sueltas no es una
+   manía, es el instrumento.
+
 ## Preguntas para Elisenda
 
 1. ¿Es este el baremo español de referencia, o hay otro más reciente o con muestra
