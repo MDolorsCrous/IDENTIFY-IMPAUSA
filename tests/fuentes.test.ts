@@ -19,9 +19,9 @@ import { cargarRecursos, cargarEjemplo } from "../tools/recursos.mjs";
 const raiz = join(dirname(fileURLToPath(import.meta.url)), "..");
 const leer = (rel: string) => JSON.parse(readFileSync(join(raiz, rel), "utf8"));
 
-const fuentes = leer("src/config/fuentes.json");
-const facetas = leer("src/config/interpretation/facetas.json") as Record<string, any>;
-const reglas = leer("src/config/interpretation/combinations.json") as any[];
+const fuentes = cargarRecursos().fuentes;
+const facetas = cargarRecursos().facetas as Record<string, any>;
+const reglas = cargarRecursos().rules as any[];
 
 /** Todas las entradas, vengan de donde vengan dentro del fichero. */
 const todas = [fuentes.instrumento, fuentes.adaptacion, ...fuentes.interpretacion];

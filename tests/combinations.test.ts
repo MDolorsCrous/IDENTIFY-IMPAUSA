@@ -9,6 +9,8 @@ import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 
+import { cargarRecursos } from "../tools/recursos.mjs";
+
 const raiz = join(dirname(fileURLToPath(import.meta.url)), "..");
 const leer = (rel: string) => JSON.parse(readFileSync(join(raiz, rel), "utf8"));
 
@@ -30,7 +32,7 @@ interface Regla {
   revision?: string;
 }
 
-const reglas = leer("src/config/interpretation/combinations.json") as Regla[];
+const reglas = cargarRecursos().rules as Regla[];
 const facetas = new Set((leer("src/config/facets.json") as { id: string }[]).map((f) => f.id));
 
 const ALCANCES = new Set(["laboral", "personal", "interpersonal", "salud"]);
@@ -144,7 +146,7 @@ interface FichaFaceta {
   sourceSlides: number[];
 }
 
-const fichas = leer("src/config/interpretation/facetas.json") as Record<string, FichaFaceta>;
+const fichas = cargarRecursos().facetas as Record<string, FichaFaceta>;
 const idsFaceta = (leer("src/config/facets.json") as { id: string }[]).map((f) => f.id);
 
 test("hay lectura para las 15 facetas, y para ninguna que no exista", () => {

@@ -18,6 +18,8 @@ import {
 } from "../src/services/prompt.ts";
 import type { Responses } from "../src/services/scoring.ts";
 
+import { cargarRecursos } from "../tools/recursos.mjs";
+
 const raiz = join(dirname(fileURLToPath(import.meta.url)), "..");
 const leer = (rel: string) => JSON.parse(readFileSync(join(raiz, rel), "utf8"));
 
@@ -28,9 +30,9 @@ const recursos: Recursos = {
     domains: leer("src/config/domains.json"),
   },
   labels: leer("src/i18n/es-informe.json"),
-  rules: leer("src/config/interpretation/combinations.json"),
+  rules: cargarRecursos().rules,
 };
-const facetas = leer("src/config/interpretation/facetas.json") as Record<string, FichaFaceta>;
+const facetas = cargarRecursos().facetas as Record<string, FichaFaceta>;
 const fixture = leer("tests/fixtures/ejemplo-excel.json");
 const prosa = leer("tests/fixtures/prosa-ejemplo.json");
 

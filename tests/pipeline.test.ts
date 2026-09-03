@@ -15,6 +15,8 @@ import { construirModelo, type Recursos } from "../src/services/pipeline.ts";
 import { AMPLIO, type Norm } from "../src/services/interpretation.ts";
 import { ScoringError, type Responses } from "../src/services/scoring.ts";
 
+import { cargarRecursos } from "../tools/recursos.mjs";
+
 const raiz = join(dirname(fileURLToPath(import.meta.url)), "..");
 const leer = (rel: string) => JSON.parse(readFileSync(join(raiz, rel), "utf8"));
 
@@ -25,7 +27,7 @@ const recursos: Recursos = {
     domains: leer("src/config/domains.json"),
   },
   labels: leer("src/i18n/es-informe.json"),
-  rules: leer("src/config/interpretation/combinations.json"),
+  rules: cargarRecursos().rules,
 };
 
 const fixture = leer("tests/fixtures/ejemplo-excel.json");

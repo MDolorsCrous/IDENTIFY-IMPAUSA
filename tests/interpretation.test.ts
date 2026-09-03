@@ -7,6 +7,8 @@ import { dirname, join } from "node:path";
 import { band, bands, interpret, type Rule, type Norm } from "../src/services/interpretation.ts";
 import { score, type Responses } from "../src/services/scoring.ts";
 
+import { cargarRecursos } from "../tools/recursos.mjs";
+
 const raiz = join(dirname(fileURLToPath(import.meta.url)), "..");
 const leer = (rel: string) => JSON.parse(readFileSync(join(raiz, rel), "utf8"));
 
@@ -15,7 +17,7 @@ const config = {
   facets: leer("src/config/facets.json"),
   domains: leer("src/config/domains.json"),
 };
-const reglas = leer("src/config/interpretation/combinations.json") as Rule[];
+const reglas = cargarRecursos().rules as Rule[];
 const fixture = leer("tests/fixtures/ejemplo-excel.json");
 
 test("sin baremo, la banda sale de la escala y queda marcada como tal", () => {

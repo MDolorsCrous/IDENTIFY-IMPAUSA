@@ -19,7 +19,7 @@ const config = {
   facets: leer("src/config/facets.json"),
   domains: leer("src/config/domains.json"),
 };
-const reglas = leer("src/config/interpretation/combinations.json") as Rule[];
+const reglas = cargarRecursos().rules as Rule[];
 const labels = leer("src/i18n/es-informe.json") as Labels;
 const fixture = leer("tests/fixtures/ejemplo-excel.json");
 

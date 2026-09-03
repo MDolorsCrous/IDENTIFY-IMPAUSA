@@ -13,14 +13,16 @@ import { readFileSync, existsSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 
+import { cargarRecursos } from "../tools/recursos.mjs";
+
 const raiz = join(dirname(fileURLToPath(import.meta.url)), "..");
 const leer = (rel: string) => JSON.parse(readFileSync(join(raiz, rel), "utf8"));
 const skill = (rel: string) =>
   readFileSync(join(raiz, "skill/identify-bfi2-knowledge", rel), "utf8");
 
-const facetas = leer("src/config/interpretation/facetas.json") as Record<string, any>;
-const reglas = leer("src/config/interpretation/combinations.json") as any[];
-const metaforas = leer("src/config/interpretation/metaforas.json");
+const facetas = cargarRecursos().facetas as Record<string, any>;
+const reglas = cargarRecursos().rules as any[];
+const metaforas = cargarRecursos().metaforas;
 const ids = Object.keys(facetas).filter((k) => !k.startsWith("_"));
 
 test("la skill está generada", () => {

@@ -19,7 +19,7 @@ import type { Responses } from "../src/services/scoring.ts";
 const raiz = join(dirname(fileURLToPath(import.meta.url)), "..");
 const leer = (rel: string) => JSON.parse(readFileSync(join(raiz, rel), "utf8"));
 
-const metaforas = leer("src/config/interpretation/metaforas.json");
+const metaforas = cargarRecursos().metaforas;
 const facetas = (leer("src/config/facets.json") as { id: string }[]).map((f) => f.id);
 const recursos = cargarRecursos();
 

@@ -108,7 +108,11 @@ const seleccion = Object.fromEntries(
   ]),
 );
 
-const salida = {
+// La estructura (que categoria toca a cada faceta) es neutra y va a un fichero;
+// las imagenes en si son prosa y van al fichero del idioma. cargarRecursos()
+// los vuelve a juntar. El catalogo de la skill esta en castellano, asi que lo
+// que sale de aqui es siempre el .es.json; el ingles se traduce aparte.
+const estructura = {
   _nota:
     "Metaforas para el informe, tomadas del catalogo de la skill metaforas-coaching. " +
     "Solo las categorias que toca el BFI-2 y seis de cada una: el catalogo entero son " +
@@ -128,13 +132,14 @@ const salida = {
     ...EXCLUIDAS,
   },
   mapa: MAPA,
-  categorias: seleccion,
 };
 
 const destino = path.join(RAIZ, "src/config/interpretation/metaforas.json");
-writeFileSync(destino, JSON.stringify(salida, null, 2) + "\n", "utf8");
+writeFileSync(destino, JSON.stringify(estructura, null, 2) + "\n", "utf8");
+const destinoEs = path.join(RAIZ, "src/config/interpretation/metaforas.es.json");
+writeFileSync(destinoEs, JSON.stringify({ categorias: seleccion }, null, 2) + "\n", "utf8");
 console.log(
-  `escrito src/config/interpretation/metaforas.json: ` +
+  `escritos metaforas.json y metaforas.es.json: ` +
     `${Object.keys(seleccion).length} categorías · ${Object.keys(seleccion).length * POR_CATEGORIA} metáforas · ` +
     `${Object.keys(EXCLUIDAS).length} categorías excluidas`,
 );
