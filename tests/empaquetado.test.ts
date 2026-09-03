@@ -121,7 +121,7 @@ test("la página web pide la redacción al servidor, y le manda las respuestas",
   const pagina = readFileSync(join(raiz, "test-identify.html"), "utf8");
   assert.ok(pagina.includes("/api/redactar"), "la página no llama a la función");
   assert.ok(
-    pagina.includes("JSON.stringify({ id, codigo, respuestas, persona })"),
+    pagina.includes("JSON.stringify({ id, codigo, respuestas, persona, idioma })"),
     "lo que se manda al servidor ha cambiado: revísalo, es la defensa del endpoint",
   );
   // La redacción tarda más de lo que Netlify deja vivir una función, así que va
@@ -133,19 +133,40 @@ test("la página web pide la redacción al servidor, y le manda las respuestas",
   }
 });
 
-test("la portada ofrece los tres idiomas y explica los dos que faltan", () => {
-  // Este texto es la política del proyecto, no decoración: dice por qué el test
-  // no está en catalán —no hay adaptación oficial del BFI-2— y por qué eso es
-  // una decisión de rigor. Si desaparece, la herramienta vuelve a parecer
-  // descuidada en vez de honesta.
+test("el selector ofrece tres lenguas: dos de verdad y una explicada", () => {
+  // ES y EN cambian el idioma al instante —la página lleva los dos dentro— y
+  // CA sigue explicando, con honestidad, que no hay adaptación oficial del
+  // BFI-2 al catalán. Si esa explicación desaparece, la herramienta vuelve a
+  // parecer descuidada en vez de honesta.
   const pagina = readFileSync(join(raiz, "test-identify.html"), "utf8");
   for (const idioma of [">ES<", ">CA<", ">EN<"]) {
     assert.ok(pagina.includes(idioma), `falta ${idioma} en el selector`);
   }
+  assert.ok(pagina.includes('data-cambia="es"'), "ES ya no cambia el idioma");
+  assert.ok(pagina.includes('data-cambia="en"'), "EN ya no cambia el idioma");
   assert.ok(pagina.includes("Per què aquest test no és en català"), "falta la explicación en catalán");
   assert.ok(pagina.includes("no n'hi ha"), "la explicación ya no dice que no existe adaptación");
-  assert.ok(pagina.includes("English is on the way"), "falta la explicación en inglés");
-  assert.ok(pagina.includes("<dialog"), "las explicaciones no se abren en un panel");
+  assert.ok(pagina.includes("<dialog"), "la explicación no se abre en un panel");
+  // La promesa vieja ya no está: el inglés existe y se elige, no se anuncia.
+  assert.ok(!pagina.includes("English is on the way"), "sigue prometiendo el inglés en vez de darlo");
+  // Las dos portadas viajan en la página, cada una en su lengua, y la elección
+  // se recuerda para la próxima visita.
+  assert.ok(pagina.includes("Conócete con más profundidad"), "falta la portada en castellano");
+  assert.ok(pagina.includes("Know yourself with more depth"), "falta la portada en inglés");
+  assert.ok(pagina.includes("Start the test now"), "falta la interfaz inglesa");
+  assert.ok(pagina.includes("identify-idioma"), "el idioma elegido no se recuerda");
+});
+
+test("la portada inglesa no repite el nombre del dominio como término internacional", () => {
+  // En inglés, «Extraversion» YA es el término internacional: la línea de
+  // debajo solo tiene sentido cuando el nombre visible es otro. Queda una, y
+  // es correcta: bajo «Open-Mindedness» aparece «Openness», el nombre clásico
+  // del acrónimo OCEAN, que no es el mismo.
+  const inicioEs = paginaDeInicio(cargarRecursos("es"));
+  const inicioEn = paginaDeInicio(cargarRecursos("en"));
+  assert.equal((inicioEs.match(/ocean__ingles/g) ?? []).length, 5, "el castellano pierde el término internacional");
+  assert.equal((inicioEn.match(/ocean__ingles/g) ?? []).length, 1, "el inglés se repite a sí mismo");
+  assert.ok(inicioEn.includes(">Openness</p>"), "la línea que queda no es la de Openness");
 });
 
 test("la puerta pregunta el código al servidor, nunca lo lleva dentro", () => {

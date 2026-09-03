@@ -116,7 +116,13 @@ function tarjetasOcean(recursos, t) {
           <span class="ocean__letra" aria-hidden="true">${d.letra}</span>
           <div>
             <h3>${esc(labels.domains[d.id])}</h3>
-            <p class="ocean__ingles"><span class="oculto">${t.oculto}</span>${d.ingles}</p>
+            ${
+              // En inglés el nombre del dominio YA es el término internacional:
+              // repetirlo debajo sería decir «Extraversion — Extraversion».
+              labels.domains[d.id] === d.ingles
+                ? ""
+                : `<p class="ocean__ingles"><span class="oculto">${t.oculto}</span>${d.ingles}</p>`
+            }
           </div>
         </div>
         <p class="ocean__facetas">${facetas.join(" <span aria-hidden=\"true\">·</span> ")}</p>

@@ -20,25 +20,41 @@ import { cargarRecursos, cargarEjemplo, cargarIdioma, leer } from "./recursos.mj
 import { paginaDeInicio, MARCA_CTA_HERO, MARCA_CTA_FINAL, MARCA_IDIOMAS, MARCA_AVISO } from "../src/pagina/portada.mjs";
 import { estilosPortada } from "../src/pagina/portada-estilos.mjs";
 
-const recursos = cargarRecursos();
-const es = cargarIdioma();
+const recursos = cargarRecursos("es");
+const recursosEn = cargarRecursos("en");
 const fixture = cargarEjemplo();
 const paquete = empaquetarMotor();
 
 // Lo que el motor de Node saca del caso de ejemplo. La pagina tiene que sacar
-// exactamente esto con su copia empotrada.
+// exactamente esto con su copia empotrada. Las bandas y los conteos no dependen
+// del idioma: las condiciones de las reglas son neutras.
 const respuestasEjemplo = Object.fromEntries(
   Object.entries(fixture.responses).map(([k, v]) => [Number(k), v]),
 );
 const modeloEjemplo = construirModelo(respuestasEjemplo, recursos);
 
+/**
+ * La capa que viaja de cada idioma: lo que cambia con la lengua, mas su portada
+ * ya montada. Lo que NO cambia —la configuracion del motor y la marca, que pesa
+ * (tipografias y logotipo en base64)— va una sola vez, en `comun`.
+ */
+function capaDeIdioma(codigo, recursosIdioma) {
+  const { labels, textos, rules, facetas, metaforas, fuentes } = recursosIdioma;
+  return {
+    cuestionario: cargarIdioma(codigo),
+    labels,
+    textos,
+    rules,
+    facetas,
+    metaforas,
+    fuentes,
+    portada: paginaDeInicio(recursosIdioma),
+  };
+}
+
 const datos = {
-  recursos,
-  stem: es.stem,
-  scale: es.scale,
-  texts: es.questions,
-  facetLabels: recursos.labels.facets,
-  domainLabels: recursos.labels.domains,
+  comun: { config: recursos.config, marca: recursos.marca },
+  idiomas: { es: capaDeIdioma("es", recursos), en: capaDeIdioma("en", recursosEn) },
   check: {
     responses: fixture.responses,
     facets: fixture.facetsEsperado,
@@ -232,7 +248,7 @@ ${tipografiasDeLaCasa()}
   .puerta__error{margin:.5rem 0 0;font-size:.88rem;color:#B03030}
   @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .puerta__error{color:#E88}}
 
-  /* Idiomas: no cambian la lengua, explican por qué el test está en una sola */
+  /* Idiomas: ES y EN cambian la lengua al instante; CA explica por qué no puede */
   .idiomas{display:flex;gap:.15rem;align-items:center;font-size:.82rem;color:var(--ink-soft)}
   .idioma{background:none;border:0;padding:.3rem .5rem;border-radius:4px;cursor:pointer;
     color:var(--verde-medio);font-weight:600;letter-spacing:.04em}
@@ -268,14 +284,60 @@ ${paquete}
 
 <script>
 const D = ${JSON.stringify(datos)};
-const PORTADA = ${JSON.stringify(paginaDeInicio(recursos))};
 const HUECO_CTA_HERO = ${JSON.stringify(MARCA_CTA_HERO)};
 const HUECO_CTA_FINAL = ${JSON.stringify(MARCA_CTA_FINAL)};
 const HUECO_IDIOMAS = ${JSON.stringify(MARCA_IDIOMAS)};
 const HUECO_AVISO = ${JSON.stringify(MARCA_AVISO)};
-const CFG = D.recursos.config;
-// Las cadenas de la interfaz, de src/i18n/es-textos.json: viajan dentro de D.
-const T = D.recursos.textos.test;
+const CFG = D.comun.config;
+
+// ---- El idioma ----
+// La pagina lleva los dos dentro (D.idiomas) y el selector cambia entre ellos
+// al instante, sin recargar. La eleccion se recuerda; castellano por defecto.
+let idioma = "es";
+let T, CUES, RECURSOS, PORTADA_HTML;
+
+const recuerdaIdioma = {
+  leer(){ try { return localStorage.getItem("identify-idioma") || ""; } catch { return ""; } },
+  guardar(v){ try { localStorage.setItem("identify-idioma", v); } catch {} },
+};
+
+function aplicarIdioma(nuevo){
+  idioma = nuevo;
+  const capa = D.idiomas[nuevo];
+  T = capa.textos.test;
+  CUES = capa.cuestionario;
+  PORTADA_HTML = capa.portada;
+  // Lo que espera el motor y el renderizador: la capa del idioma con lo comun.
+  RECURSOS = {
+    config: D.comun.config,
+    marca: D.comun.marca,
+    labels: capa.labels,
+    textos: capa.textos,
+    rules: capa.rules,
+    facetas: capa.facetas,
+    metaforas: capa.metaforas,
+    fuentes: capa.fuentes,
+  };
+  document.documentElement.lang = nuevo;
+  document.title = T.titulo;
+  recuerdaIdioma.guardar(nuevo);
+}
+
+function cambiarIdioma(nuevo){
+  if (nuevo === idioma || !D.idiomas[nuevo]) return;
+  aplicarIdioma(nuevo);
+  // Cambiar de lengua reinicia lo volatil y vuelve a la portada: una redaccion
+  // es de su idioma, y el selector solo esta en la portada, donde aun no hay
+  // nada que perder.
+  for (const k in respuestas) delete respuestas[k];
+  persona = ""; prosa = {};
+  redactando = false; yaPedida = false; indice = 0;
+  pantalla = "portada";
+  pintar();
+}
+
+aplicarIdioma(D.idiomas[recuerdaIdioma.leer()] ? recuerdaIdioma.leer() : "es");
+
 const puntuar = respuestas => {
   const s = score(respuestas, CFG);
   return { facetas: s.facets, dominios: s.domains };
@@ -298,7 +360,7 @@ function comprobar(){
     for (const id in D.check.facets) if (Math.abs(facetas[id] - D.check.facets[id]) > 1e-9) fallos.push(id);
     for (const id in D.check.domains) if (Math.abs(dominios[id] - D.check.domains[id]) > 1e-9) fallos.push(id);
 
-    const modelo = construirModelo(r, D.recursos);
+    const modelo = construirModelo(r, RECURSOS);
     for (const f of modelo.domains.flatMap(d => d.facets)) {
       if (f.band !== D.check.bandas[f.id]) fallos.push("banda de " + f.id);
     }
@@ -371,14 +433,16 @@ function portada(){
       ' <span aria-hidden="true">↑</span></button>'
     : botonCierre;
 
+  // ES y EN cambian la lengua de verdad; CA abre la explicacion de por que no
+  // hay catalan. El activo lleva aria-current y no hace nada al pulsarlo.
   const selectorDeIdiomas =
     '<div class="idiomas">' +
-      '<button class="idioma" aria-current="true">ES</button><span aria-hidden="true">·</span>' +
+      '<button class="idioma" data-cambia="es"' + (idioma === "es" ? ' aria-current="true"' : '') + '>ES</button><span aria-hidden="true">·</span>' +
       '<button class="idioma" data-idioma="ca">CA</button><span aria-hidden="true">·</span>' +
-      '<button class="idioma" data-idioma="en">EN</button>' +
+      '<button class="idioma" data-cambia="en"' + (idioma === "en" ? ' aria-current="true"' : '') + '>EN</button>' +
     '</div>';
 
-  app.innerHTML = PORTADA
+  app.innerHTML = PORTADA_HTML
     .replace(HUECO_CTA_HERO, puertaCerrada ? laPuerta : botonHero)
     .replace(HUECO_CTA_FINAL, alCierre)
     .replace(HUECO_IDIOMAS, selectorDeIdiomas)
@@ -482,13 +546,15 @@ function portada(){
   for (const b of document.querySelectorAll("[data-idioma]")) {
     b.onclick = () => abrirPanelIdioma(b.dataset.idioma);
   }
+  for (const b of document.querySelectorAll("[data-cambia]")) {
+    b.onclick = () => cambiarIdioma(b.dataset.cambia);
+  }
   ajustarRotulo();
 }
 
-// El selector no cambia de idioma: explica por qué el test está en uno solo.
-// Cada lengua tiene su situación y por eso no comparten texto — el catalán no
-// tiene adaptación oficial del BFI-2, y el inglés es el original y sí la tiene.
-// Cada explicación va escrita en su propia lengua, que es lo cortés.
+// El catalán no cambia de idioma: explica por qué no puede. No hay adaptación
+// oficial del BFI-2 al catalán, y traducirlo por nuestra cuenta cambiaría lo
+// que mide cada pregunta. La explicación va en catalán, que es lo cortés.
 const IDIOMAS = {
   ca: {
     titulo: "Per què aquest test no és en català",
@@ -498,16 +564,7 @@ const IDIOMAS = {
       "Del BFI-2 hi ha adaptació oficial al castellà, publicada i validada amb mostra espanyola (Gallardo-Pujol i altres, 2022). Al català, ara mateix, no n'hi ha.",
       "Podríem traduir-lo nosaltres en una tarda. <strong>No ho fem a propòsit.</strong> Una traducció no validada canvia el que mesura cada pregunta sense que es noti, i els resultats deixarien de ser comparables amb les dades publicades. Tindries un test en català que sembla igual i val menys.",
       "Preferim dir-t'ho que dissimular-ho.",
-      "El qüestionari, doncs, en castellà. La conversa amb la teva coach, en català sempre que vulguis.",
-    ],
-  },
-  en: {
-    titulo: "English is on the way",
-    cerrar: "Got it",
-    parrafos: [
-      "Identify is built on the BFI-2, which was written in English to begin with (Soto &amp; John, 2017). So English isn't a translation problem: the original items exist and are the reference version everything else is measured against.",
-      "What's missing is our side of the work — the interface, and the layer that turns your scores into a report.",
-      "Until that's ready, the questionnaire runs in Spanish.",
+      "El qüestionari, doncs, en castellà o en anglès —l'original—. La conversa amb la teva coach, en català sempre que vulguis.",
     ],
   },
 };
@@ -535,12 +592,12 @@ function pregunta(){
     </div>
     <div class="contenido">
       <div class="pregunta">
-        <p class="stem">\${esc(D.stem)}</p>
-        <h2 class="enunciado">\${esc(D.texts[q.id])}</h2>
+        <p class="stem">\${esc(CUES.stem)}</p>
+        <h2 class="enunciado">\${esc(CUES.questions[q.id])}</h2>
         <div class="opciones" role="radiogroup" aria-label="\${T.pregunta.ariaEscala}">
           \${[1,2,3,4,5].map(v => \`
             <button class="opcion" role="radio" aria-checked="\${elegido === v}" data-v="\${v}">
-              <span class="opcion__num">\${v}</span><span>\${esc(D.scale[v])}</span>
+              <span class="opcion__num">\${v}</span><span>\${esc(CUES.scale[v])}</span>
             </button>\`).join("")}
         </div>
         <div class="pie-preg">
@@ -587,9 +644,9 @@ function resultados(){
   const escalaTest = '<div class="escala"><div></div><div class="escala__e"><span>1</span><span>3</span><span>5</span></div><div class="escala__h"></div></div>';
   const porDominio = CFG.domains.map(d => \`
     <div class="bloque">
-      <h3>\${esc(D.domainLabels[d.id])} — \${num(dominios[d.id])}</h3>
+      <h3>\${esc(RECURSOS.labels.domains[d.id])} — \${num(dominios[d.id])}</h3>
       <p class="bloque__sub">\${T.resultados.facetasSub}</p>
-      \${filas(CFG.facets.filter(f => f.domain === d.id), D.facetLabels, facetas)}
+      \${filas(CFG.facets.filter(f => f.domain === d.id), RECURSOS.labels.facets, facetas)}
       \${escalaTest}
     </div>\`).join("");
 
@@ -607,7 +664,7 @@ function resultados(){
         <div class="bloque">
           <h3>\${T.resultados.dominios}</h3>
           <p class="bloque__sub">\${T.resultados.dominiosSub}</p>
-          \${filas(CFG.domains, D.domainLabels, dominios)}
+          \${filas(CFG.domains, RECURSOS.labels.domains, dominios)}
           \${escalaTest}
         </div>
         \${porDominio}
@@ -683,13 +740,13 @@ function copiarEnBoton(boton, texto, etiqueta){
 
 // ---- El informe ----
 function informe(){
-  const modelo = construirModelo(respuestas, D.recursos, { persona: persona || undefined });
-  const html = renderInforme(modelo, prosa, D.recursos.labels, {
-    facetas: D.recursos.facetas,
-    textos: D.recursos.textos.informe,
-    metaforas: D.recursos.metaforas,
-    fuentes: D.recursos.fuentes,
-    marca: D.recursos.marca,
+  const modelo = construirModelo(respuestas, RECURSOS, { persona: persona || undefined });
+  const html = renderInforme(modelo, prosa, RECURSOS.labels, {
+    facetas: RECURSOS.facetas,
+    textos: RECURSOS.textos.informe,
+    metaforas: RECURSOS.metaforas,
+    fuentes: RECURSOS.fuentes,
+    marca: RECURSOS.marca,
     fecha: fechaLarga(new Date().toISOString().slice(0, 10)),
   });
   const conProsa = Object.keys(prosa).length > 0;
@@ -745,9 +802,9 @@ function informe(){
   // las mismas reglas en dos sitios. El largo queda para una conversacion que no
   // la tenga cargada.
   const encargo = document.getElementById("encargo");
-  if (encargo) encargo.onclick = e => copiarEnBoton(e.target, promptCorto(modelo, D.recursos.facetas), T.informe.encargo);
+  if (encargo) encargo.onclick = e => copiarEnBoton(e.target, promptCorto(modelo, RECURSOS.facetas, idioma), T.informe.encargo);
   const encargoLargo = document.getElementById("encargoLargo");
-  if (encargoLargo) encargoLargo.onclick = e => copiarEnBoton(e.target, promptCompleto(modelo, D.recursos.facetas), T.informe.encargoLargo);
+  if (encargoLargo) encargoLargo.onclick = e => copiarEnBoton(e.target, promptCompleto(modelo, RECURSOS.facetas, idioma), T.informe.encargoLargo);
 
   const generar = document.getElementById("generar");
   if (generar) generar.onclick = () => redactarEnElServidor(generar, modelo);
@@ -759,7 +816,7 @@ function informe(){
     let candidata;
     try { candidata = JSON.parse(pegado); }
     catch { window.alert(T.informe.jsonInvalido); return; }
-    const fallos = validarProsa(candidata, modelo);
+    const fallos = validarProsa(candidata, modelo, idioma);
     if (fallos.length) { window.alert(rellena(T.informe.noEncaja, { lista: fallos.join("\\n· ") })); return; }
     prosa = candidata;
     pintar();
@@ -803,7 +860,7 @@ function moverLaBarra(){
 async function redactarEnElServidor(boton, modelo){
   // El modelo se reconstruye aqui si no viene: cuando se llama desde el boton
   // «Informe Identify» todavia no se ha dibujado ninguna pantalla de informe.
-  modelo = modelo ?? construirModelo(respuestas, D.recursos, { persona: persona || undefined });
+  modelo = modelo ?? construirModelo(respuestas, RECURSOS, { persona: persona || undefined });
   const codigo = recuerdaCodigo.leer() ||
     window.prompt(T.puerta.pedirCodigo, "");
   if (!codigo) return false;
@@ -826,7 +883,8 @@ async function redactarEnElServidor(boton, modelo){
       // Van las RESPUESTAS, no el perfil: el servidor vuelve a puntuar con el
       // mismo motor. Asi no hay dos calculos que puedan discrepar, y el
       // endpoint no se puede usar para pedirle a Claude cualquier otra cosa.
-      body: JSON.stringify({ id, codigo, respuestas, persona }),
+      // El idioma viaja con ellas: el informe se redacta en la lengua del test.
+      body: JSON.stringify({ id, codigo, respuestas, persona, idioma }),
     });
     // Una funcion en segundo plano contesta 202 y nada mas: que haya arrancado
     // no dice todavia si el codigo era bueno. Eso llega con el resultado.
@@ -858,7 +916,7 @@ async function redactarEnElServidor(boton, modelo){
         return fallo(datos.error || T.servidor.noGenerado);
       }
       if (datos.estado === "listo") {
-        const fallos = validarProsa(datos.prosa, modelo);
+        const fallos = validarProsa(datos.prosa, modelo, idioma);
         if (fallos.length) return fallo(T.servidor.incompleta);
         recuerdaCodigo.guardar(codigo);
         prosa = datos.prosa;
