@@ -50,15 +50,34 @@ export class FalloDeRedaccion extends Error {
 }
 
 /**
+ * Lo que se le dice a quien espera el informe cuando algo falla, por idioma.
+ * Estos mensajes acaban en un aviso de la pagina, asi que hablan su lengua.
+ */
+const MENSAJES = {
+  es: {
+    declinada: "No se ha podido redactar este perfil.",
+    formato: "La redacción ha llegado mal. Inténtalo de nuevo.",
+    incompleta: "La redacción ha llegado incompleta.",
+  },
+  en: {
+    declinada: "This profile could not be written.",
+    formato: "The draft came back malformed. Try again.",
+    incompleta: "The draft arrived incomplete.",
+  },
+};
+
+/**
  * Pide la redaccion del informe.
  *
  * @param {object} modelo   el que devuelve construirModelo()
- * @param {object} facetas  facetas.json
+ * @param {object} facetas  las fichas de faceta del idioma (recursos.facetas)
  * @param {(aviso: string) => void} [avisar]  para dejar rastro de los reintentos
+ * @param {string} [esfuerzo]  cuanto piensa el modelo (tools/comparar-esfuerzo.mjs)
+ * @param {string} [idioma]  la lengua del encargo y del informe ("es" o "en")
  * @returns {Promise<{prosa: object, uso: object, coste: number, modelo: string, segundos: number}>}
  */
-export async function pedirRedaccion(modelo, facetas, avisar = () => {}, esfuerzo = ESFUERZO) {
-  const { sistema, mensaje, esquema } = encargoParaLaApi(modelo, facetas);
+export async function pedirRedaccion(modelo, facetas, avisar = () => {}, esfuerzo = ESFUERZO, idioma = "es") {
+  const { sistema, mensaje, esquema } = encargoParaLaApi(modelo, facetas, idioma);
   const cliente = clienteDeApi();
   const empezo = Date.now();
 
@@ -86,7 +105,7 @@ export async function pedirRedaccion(modelo, facetas, avisar = () => {}, esfuerz
         fallbacks: "default",
       });
       const respuesta = await flujo.finalMessage();
-      return leerRespuesta(respuesta, modelo, empezo);
+      return leerRespuesta(respuesta, modelo, empezo, idioma);
     } catch (e) {
       try { flujo?.abort(); } catch {}
       // Un fallo de esquema también es candidato a segunda oportunidad, así que
@@ -108,11 +127,12 @@ export async function pedirRedaccion(modelo, facetas, avisar = () => {}, esfuerz
 }
 
 /** Lo que vuelve de la API, comprobado antes de darlo por bueno. */
-function leerRespuesta(respuesta, modelo, empezo) {
+function leerRespuesta(respuesta, modelo, empezo, idioma = "es") {
+  const dice = MENSAJES[idioma] ?? MENSAJES.es;
   if (respuesta.stop_reason === "refusal") {
     throw new FalloDeRedaccion({
       que: "declinada",
-      mensaje: "No se ha podido redactar este perfil.",
+      mensaje: dice.declinada,
       pista: respuesta.stop_details?.category ?? "sin categoría",
     });
   }
@@ -126,7 +146,7 @@ function leerRespuesta(respuesta, modelo, empezo) {
   } catch {
     throw new FalloDeRedaccion({
       que: "formato",
-      mensaje: "La redacción ha llegado mal. Inténtalo de nuevo.",
+      mensaje: dice.formato,
       pista: (texto ?? "").slice(0, 200),
     });
   }
@@ -134,11 +154,11 @@ function leerRespuesta(respuesta, modelo, empezo) {
   // El esquema ya lo garantiza el servidor de la API, pero se comprueba igual:
   // es la misma validacion que se le aplica a una redaccion pegada a mano, y no
   // conviene que existan dos varas de medir.
-  const fallos = validarProsa(prosa, modelo);
+  const fallos = validarProsa(prosa, modelo, idioma);
   if (fallos.length) {
     throw new FalloDeRedaccion({
       que: "incompleta",
-      mensaje: "La redacción ha llegado incompleta.",
+      mensaje: dice.incompleta,
       pista: fallos.join(" · "),
     });
   }

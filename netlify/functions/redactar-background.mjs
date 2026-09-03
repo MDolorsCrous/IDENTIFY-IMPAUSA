@@ -26,7 +26,27 @@ import { pedirRedaccion, FalloDeRedaccion } from "../../tools/pedir-redaccion.mj
 
 const TOPE_POR_DEFECTO = 25;
 
-const recursos = cargarRecursos();
+// Los dos idiomas se mezclan una vez, al arrancar la funcion. La peticion trae
+// `idioma` y aqui solo se elige la capa; si no trae nada, castellano.
+const RECURSOS = { es: cargarRecursos("es"), en: cargarRecursos("en") };
+
+/** Lo que se le dice a quien espera, en su lengua. */
+const MENSAJES = {
+  es: {
+    sinConfigurar: "El servidor no está configurado.",
+    codigoIncorrecto: "El código de acceso no es correcto.",
+    respuestasInvalidas: "Las respuestas no son válidas.",
+    tope: (n) => `Se ha llegado al tope de ${n} informes por hoy. Vuelve a probarlo mañana.`,
+    noGenerado: "No se ha podido generar el informe.",
+  },
+  en: {
+    sinConfigurar: "The server is not configured.",
+    codigoIncorrecto: "The access code is not correct.",
+    respuestasInvalidas: "The answers are not valid.",
+    tope: (n) => `Today's limit of ${n} reports has been reached. Try again tomorrow.`,
+    noGenerado: "The report could not be generated.",
+  },
+};
 
 /** Donde se dejan los informes para que la pagina los recoja. */
 export const ALMACEN = "identify-informes";
@@ -78,13 +98,18 @@ export default async function handler(peticion) {
     return;
   }
 
+  // El idioma del informe. Solo los que existen; cualquier otra cosa, castellano.
+  const idioma = cuerpo.idioma === "en" ? "en" : "es";
+  const recursos = RECURSOS[idioma];
+  const dice = MENSAJES[idioma];
+
   if (!claveDeApi() || !process.env.CODIGO_ACCESO) {
     console.error("Falta configuracion. Nombres que se miran para la clave:", NOMBRES.join(", "));
-    return guardar(id, { estado: "error", error: "El servidor no está configurado." });
+    return guardar(id, { estado: "error", error: dice.sinConfigurar });
   }
 
   if (!mismoCodigo(cuerpo.codigo, process.env.CODIGO_ACCESO)) {
-    return guardar(id, { estado: "error", error: "El código de acceso no es correcto.", que: "codigo" });
+    return guardar(id, { estado: "error", error: dice.codigoIncorrecto, que: "codigo" });
   }
 
   // El motor valida las respuestas: numero de items, escala y que no sobre
@@ -100,26 +125,23 @@ export default async function handler(peticion) {
     });
   } catch (e) {
     if (e instanceof ScoringError) {
-      return guardar(id, { estado: "error", error: "Las respuestas no son válidas." });
+      return guardar(id, { estado: "error", error: dice.respuestasInvalidas });
     }
     throw e;
   }
 
   const cuota = await dentroDelTope();
   if (!cuota.vale) {
-    return guardar(id, {
-      estado: "error",
-      error: `Se ha llegado al tope de ${cuota.tope} informes por hoy. Vuelve a probarlo mañana.`,
-    });
+    return guardar(id, { estado: "error", error: dice.tope(cuota.tope) });
   }
 
   // La llamada vive en tools/pedir-redaccion.mjs, compartida con el comando:
   // mismo modelo, mismos parametros y los mismos reintentos en un solo sitio.
   const empezo = Date.now();
   try {
-    const r = await pedirRedaccion(modelo, recursos.facetas, (aviso) => console.warn(aviso));
+    const r = await pedirRedaccion(modelo, recursos.facetas, (aviso) => console.warn(aviso), undefined, idioma);
     console.log(
-      `informe redactado en ${r.segundos.toFixed(0)} s · ` +
+      `informe redactado en ${r.segundos.toFixed(0)} s [${idioma}] · ` +
         `${r.uso.input_tokens} entrada / ${r.uso.output_tokens} salida · ` +
         `${r.coste.toFixed(3)} $ · ${cuota.usados ?? "?"}/${cuota.tope ?? "?"} hoy`,
     );
@@ -131,6 +153,6 @@ export default async function handler(peticion) {
       return guardar(id, { estado: "error", error: e.message, que: e.que });
     }
     console.error(`Fallo inesperado tras ${segundos} s:`, e?.message);
-    return guardar(id, { estado: "error", error: "No se ha podido generar el informe." });
+    return guardar(id, { estado: "error", error: dice.noGenerado });
   }
 }

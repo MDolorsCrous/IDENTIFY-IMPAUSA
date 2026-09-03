@@ -127,6 +127,167 @@ LONGITUDES
 
 Devuelve solo el JSON del esquema. Nada más.`;
 
+export const INSTRUCCIONES_EN = `You write the reports for Identify by Impausa, LivePausa's BFI-2 personality
+test. You receive an ALREADY INTERPRETED profile and return only the written
+passages, as JSON.
+
+WHAT YOU DO NOT DO
+- You do not calculate or correct scores: they come given, and they are correct.
+- You do not add findings that are not in the material you receive.
+- You do not diagnose. No facet is a clinical condition: "Anxiety" and
+  "Depression" are technical names of personality scales.
+- You do not say whether someone is fit for a job, or predict what they will do.
+- You do not invent references.
+
+TONE
+Close, professional, human, clear, motivating, deep, respectful, easy to
+understand, practical, actionable, prudent and never repetitive. Three rules:
+1. Attribute to the results, not to the person: "the results show",
+   "your profile tends to", "this suggests".
+2. Hedge: "may", "tends to", "usually". Never an absolute about someone.
+3. End on something actionable. If you name a cost, say what to do with it.
+
+Nothing grandiose:
+  "You are an unstoppable force" → "The results show a high orientation toward action"
+  "You are a born leader" → "Your profile can contribute focus, direction and forward drive"
+  "Your mind is wired to…" → "You may tend to make decisions quickly"
+
+Second person. Never label: "your pattern tends to…", not "you are an X".
+Every weakness with its lever beside it. No empty flattery.
+
+WHAT YOU MAY STATE
+- What can be read directly from a score: a statement.
+- What a fired combination rule says: a statement, and you may cite its
+  reference.
+- Anything else: a question or a conditional. Never a statement.
+
+THE DOMAINS: SAY WHAT THE CARDS CANNOT SAY
+Below each of your texts, the report prints the reading of each facet exactly as
+it comes from the knowledge base, with its citation. **Do not repeat or
+paraphrase it**: it would appear twice in nearly the same words.
+
+Your paragraph says what those cards cannot, because each one is written knowing
+nothing about the other two:
+- what it means that these three particular facets are distributed this way
+- which one stands apart from the rest, and what news that brings
+- what order of priority follows for this person
+
+Name the scores when they help the reader get oriented, but do not explain again
+what each facet is or what its level implies: that is already written just below.
+
+YOU DO NOT WRITE THE SIGNALS
+The "almost met" rules are written by the code, which knows exactly which
+condition is missing and in which band it sits. You do not need to mention them
+in any section, and above all **do not state them**: they are one condition
+short, so they do not describe this person.
+
+IF THERE IS SENSITIVE MATERIAL
+When a rule comes marked as clinical, do not leave it as a verdict: say what to
+do, and mention that if it matches what the person is living, talking it over
+with a professional is the sensible thing. If it comes marked as delicate,
+describe the pattern, never the person.
+
+IF NO RULE HAS FIRED
+Do not hide it or pad it out. The weight falls on the domain-by-domain journey.
+
+WHERE THE LEVERS COME FROM
+The questions and the plan do not come from your judgment: they come from the
+house method (the executive-coach-senior skill). Depending on what came out high
+or low:
+
+- Low assertiveness → assertiveness frame: setting limits, saying no, receiving
+  criticism. The lever is the concrete script, not "having more confidence".
+- Low respectfulness with high assertiveness → conflict frame: what kind of
+  conflict it is, what temperature it is at, and separating positions from
+  interests.
+- High emotional volatility → emotional regulation BEFORE any script for a
+  difficult conversation. The order matters.
+- Low trust → power dynamics and a map of people: delegating costs more than
+  ability explains, and it is trained with small, cheap experiments.
+- Low organization with high productiveness → systems and time, not motivation.
+
+And one rule that comes from there: **do not prescribe the missing trait**.
+Telling someone with low organization to get more organized almost never works;
+the lever is usually external structure, not more effort.
+
+PARAGRAPH BREAKS
+Long passages go in several paragraphs, separated by a blank line inside the
+same string. Two hundred words in a row read badly no matter how well written:
+the eye finds nowhere to rest.
+
+Break where the idea changes, not every so many words:
+- perfilEnUnaFrase: 2 paragraphs
+- enElTrabajo: 3 paragraphs — what it contributes, what it costs, and what to
+  do about it
+- conclusion: 2 paragraphs
+- each domain and each step of the plan: just one, they are short already
+
+LENGTHS
+- titular: one line, under 80 characters
+- perfilEnUnaFrase: 120-150 words
+- each domain: 80-110 words. They are short on purpose: the report prints each
+  facet's description just below
+- enElTrabajo: 200-250 words
+- preguntas: between 5 and 7, one line each
+- planAccion: exactly 3 steps, about 60 words each
+- conclusion: 80-120 words
+
+Return only the JSON of the schema. Nothing else.`;
+
+/**
+ * Lo que cambia con el idioma del encargo. Las claves del esquema y del
+ * material son el contrato y no se traducen; esto es lo que Claude LEE.
+ * Las bandas del material se traducen aparte, en materialParaRedactar.
+ */
+const ENCARGO_POR_IDIOMA: Record<string, {
+  instrucciones: string;
+  cabEsquema: string;
+  cabPerfil: string;
+  redacta: string;
+  corto: string[];
+}> = {
+  es: {
+    instrucciones: INSTRUCCIONES,
+    cabEsquema: "## Esquema de la respuesta",
+    cabPerfil: "## El perfil",
+    redacta: "Redacta el informe de esta persona.",
+    corto: [
+      "Redacta el informe de Identify by Impausa con este perfil, siguiendo la skill",
+      "`identify-bfi2-knowledge`: su tono, sus longitudes y su protocolo de seguridad.",
+      "El perfil viene ya interpretado — no lo recalcules. Devuelve solo el JSON del esquema.",
+    ],
+  },
+  en: {
+    instrucciones: INSTRUCCIONES_EN,
+    cabEsquema: "## Response schema",
+    cabPerfil: "## The profile",
+    redacta: "Write this person's report.",
+    corto: [
+      "Write the Identify by Impausa report for this profile, following the",
+      "`identify-bfi2-knowledge` skill: its tone, its lengths and its safety protocol.",
+      "The profile comes already interpreted — do not recalculate it. Return only the JSON of the schema.",
+    ],
+  },
+};
+
+const encargoDe = (idioma: string) => {
+  const e = ENCARGO_POR_IDIOMA[idioma];
+  if (!e) throw new Error(`no hay encargo para el idioma «${idioma}»`);
+  return e;
+};
+
+/**
+ * Las bandas, en la lengua del encargo. Los ids del motor van en castellano
+ * (baja…alta); a Claude se le pasan traducidos para que no los copie tal cual a
+ * la prosa inglesa. Una prueba los mantiene clavados a los de en-informe.json.
+ */
+export const BANDAS_EN: Record<string, string> = {
+  baja: "low",
+  "media-baja": "medium-low",
+  "media-alta": "medium-high",
+  alta: "high",
+};
+
 /**
  * El material: lo que el motor ha resuelto, y lo que la base de conocimiento
  * dice de cada faceta al nivel que ha salido.
@@ -134,7 +295,10 @@ Devuelve solo el JSON del esquema. Nada más.`;
 export function materialParaRedactar(
   modelo: ReportModel,
   facetas: Record<string, FichaFaceta>,
+  idioma = "es",
 ): unknown {
+  const banda = (b: string) => (idioma === "en" ? BANDAS_EN[b] ?? b : b);
+  const nivel = (alto: boolean) => (idioma === "en" ? (alto ? "high" : "low") : alto ? "alta" : "baja");
   return {
     comparacion: modelo.meta.comparisonNotice,
     metodoDeBandas: modelo.meta.method,
@@ -148,7 +312,7 @@ export function materialParaRedactar(
       id: d.id,
       nombre: d.label,
       puntuacion: dos(d.score),
-      banda: d.band,
+      banda: banda(d.band),
       facetaQueSeSepara: d.divergentFacet?.id ?? null,
       facetas: d.facets.map((f) => {
         const ficha = facetas[f.id];
@@ -157,7 +321,7 @@ export function materialParaRedactar(
           id: f.id,
           nombre: f.label,
           puntuacion: dos(f.score),
-          banda: f.band,
+          banda: banda(f.band),
           definicion: ficha?.definicion ?? null,
           queSignificaEsteNivel: lectura?.texto ?? null,
           cercaDelPuntoMedio: f.band === "media-baja" || f.band === "media-alta",
@@ -176,8 +340,8 @@ export function materialParaRedactar(
       queSignifica: m.rule.summary,
       leFalta: m.unmet.map((u) => ({
         faceta: u.condition.facet,
-        haríaFaltaQueFuera: u.condition.level === "high" ? "alta" : "baja",
-        peroEs: u.band,
+        haríaFaltaQueFuera: nivel(u.condition.level === "high"),
+        peroEs: banda(u.band),
       })),
     })),
     avisos: {
@@ -260,20 +424,22 @@ export function esquemaSalida(modelo: ReportModel): object {
 export function promptCompleto(
   modelo: ReportModel,
   facetas: Record<string, FichaFaceta>,
+  idioma = "es",
 ): string {
+  const e = encargoDe(idioma);
   return [
-    INSTRUCCIONES,
+    e.instrucciones,
     "",
-    "## Esquema de la respuesta",
+    e.cabEsquema,
     "",
     "```json",
     JSON.stringify(esquemaSalida(modelo), null, 2),
     "```",
     "",
-    "## El perfil",
+    e.cabPerfil,
     "",
     "```json",
-    JSON.stringify(materialParaRedactar(modelo, facetas), null, 2),
+    JSON.stringify(materialParaRedactar(modelo, facetas, idioma), null, 2),
     "```",
   ].join("\n");
 }
@@ -367,16 +533,18 @@ function paraElCable(valor: unknown): unknown {
 export function encargoParaLaApi(
   modelo: ReportModel,
   facetas: Record<string, FichaFaceta>,
+  idioma = "es",
 ): { sistema: string; mensaje: string; esquema: object } {
+  const e = encargoDe(idioma);
   return {
-    sistema: INSTRUCCIONES,
+    sistema: e.instrucciones,
     mensaje: [
-      "Redacta el informe de esta persona.",
+      e.redacta,
       "",
-      "## El perfil",
+      e.cabPerfil,
       "",
       "```json",
-      JSON.stringify(materialParaRedactar(modelo, facetas), null, 2),
+      JSON.stringify(materialParaRedactar(modelo, facetas, idioma), null, 2),
       "```",
     ].join("\n"),
     esquema: paraElCable(esquemaSalida(modelo)) as object,
@@ -392,51 +560,85 @@ export function encargoParaLaApi(
  * y ninguna forma de saber cuál manda. Si la skill no está cargada, el encargo
  * que hace falta es `promptCompleto`.
  */
-export function promptCorto(modelo: ReportModel, facetas: Record<string, FichaFaceta>): string {
+export function promptCorto(
+  modelo: ReportModel,
+  facetas: Record<string, FichaFaceta>,
+  idioma = "es",
+): string {
+  const e = encargoDe(idioma);
   return [
-    "Redacta el informe de Identify by Impausa con este perfil, siguiendo la skill",
-    "`identify-bfi2-knowledge`: su tono, sus longitudes y su protocolo de seguridad.",
-    "El perfil viene ya interpretado — no lo recalcules. Devuelve solo el JSON del esquema.",
+    ...e.corto,
     "",
-    "## Esquema de la respuesta",
+    e.cabEsquema,
     "",
     "```json",
     JSON.stringify(esquemaSalida(modelo), null, 2),
     "```",
     "",
-    "## El perfil",
+    e.cabPerfil,
     "",
     "```json",
-    JSON.stringify(materialParaRedactar(modelo, facetas), null, 2),
+    JSON.stringify(materialParaRedactar(modelo, facetas, idioma), null, 2),
     "```",
   ].join("\n");
 }
 
+/**
+ * Lo que dice validarProsa cuando algo no cuadra, por idioma. Son mensajes que
+ * la página enseña en un aviso, así que hablan la lengua del test.
+ */
+const FALLOS_POR_IDIOMA: Record<string, {
+  noObjeto: string;
+  falta: (clave: string) => string;
+  faltaDominio: (id: string) => string;
+  preguntas: string;
+  pasos: (n: number) => string;
+  pasoIncompleto: (n: number, campo: string) => string;
+}> = {
+  es: {
+    noObjeto: "La respuesta no es un objeto.",
+    falta: (clave) => `falta «${clave}»`,
+    faltaDominio: (id) => `falta el texto del dominio «${id}»`,
+    preguntas: "«preguntas» debe tener entre 5 y 7 entradas",
+    pasos: (n) => `«planAccion» debe tener exactamente 3 pasos, y tiene ${n}`,
+    pasoIncompleto: (n, campo) => `al paso ${n} del plan le falta «${campo}»`,
+  },
+  en: {
+    noObjeto: "The response is not an object.",
+    falta: (clave) => `"${clave}" is missing`,
+    faltaDominio: (id) => `the text for the "${id}" domain is missing`,
+    preguntas: '"preguntas" must have between 5 and 7 entries',
+    pasos: (n) => `"planAccion" must have exactly 3 steps, and it has ${n}`,
+    pasoIncompleto: (n, campo) => `step ${n} of the plan is missing "${campo}"`,
+  },
+};
+
 /** Comprueba una respuesta antes de meterla en el informe. */
-export function validarProsa(prosa: unknown, modelo: ReportModel): string[] {
+export function validarProsa(prosa: unknown, modelo: ReportModel, idioma = "es"): string[] {
+  const dice = FALLOS_POR_IDIOMA[idioma] ?? FALLOS_POR_IDIOMA.es;
   const fallos: string[] = [];
   const p = prosa as Record<string, unknown>;
-  if (!p || typeof p !== "object") return ["La respuesta no es un objeto."];
+  if (!p || typeof p !== "object") return [dice.noObjeto];
 
   for (const clave of ["titular", "perfilEnUnaFrase", "enElTrabajo", "conclusion"]) {
-    if (typeof p[clave] !== "string" || !(p[clave] as string).trim()) fallos.push(`falta «${clave}»`);
+    if (typeof p[clave] !== "string" || !(p[clave] as string).trim()) fallos.push(dice.falta(clave));
   }
   const dominios = p.dominios as Record<string, unknown> | undefined;
   for (const d of modelo.domains) {
-    if (typeof dominios?.[d.id] !== "string") fallos.push(`falta el texto del dominio «${d.id}»`);
+    if (typeof dominios?.[d.id] !== "string") fallos.push(dice.faltaDominio(d.id));
   }
   const preguntas = p.preguntas;
   if (!Array.isArray(preguntas) || preguntas.length < 5 || preguntas.length > 7) {
-    fallos.push("«preguntas» debe tener entre 5 y 7 entradas");
+    fallos.push(dice.preguntas);
   }
   const plan = pasosDelPlan(p.planAccion);
   if (plan.length !== 3) {
-    fallos.push(`«planAccion» debe tener exactamente 3 pasos, y tiene ${plan.length}`);
+    fallos.push(dice.pasos(plan.length));
   } else {
     plan.forEach((paso, i) => {
       const x = paso as Record<string, unknown>;
       for (const c of ["titulo", "texto", "indicador"]) {
-        if (typeof x?.[c] !== "string") fallos.push(`al paso ${i + 1} del plan le falta «${c}»`);
+        if (typeof x?.[c] !== "string") fallos.push(dice.pasoIncompleto(i + 1, c));
       }
     });
   }

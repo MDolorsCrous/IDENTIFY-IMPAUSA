@@ -6,6 +6,7 @@ import { dirname, join } from "node:path";
 
 import { construirModelo, type Recursos } from "../src/services/pipeline.ts";
 import {
+  BANDAS_EN,
   INSTRUCCIONES,
   encargoParaLaApi,
   esquemaSalida,
@@ -204,4 +205,68 @@ test("un plan con dos pasos se rechaza, y dice cuántos ha visto", () => {
   const corta = structuredClone(prosa);
   corta.planAccion = corta.planAccion.slice(0, 2);
   assert.ok(validarProsa(corta, modelo).some((f) => f.includes("y tiene 2")));
+});
+
+// ---- El encargo en inglés (fase 6) ----
+
+test("el encargo inglés habla inglés y el esquema es el mismo", () => {
+  const en = encargoParaLaApi(modelo, facetas, "en") as any;
+  const es = encargoParaLaApi(modelo, facetas) as any;
+
+  // Las instrucciones inglesas existen, son inglesas y guardan las mismas reglas.
+  assert.ok(en.sistema.includes("You write the reports"), "el sistema no está en inglés");
+  for (const regla of ["120-150 words", "exactly 3 steps", "between 5 and 7", "do not prescribe the missing trait"]) {
+    assert.ok(en.sistema.includes(regla), `las instrucciones inglesas no dicen «${regla}»`);
+  }
+  assert.ok(!en.sistema.includes("Redacta"), "queda castellano en el sistema inglés");
+  assert.ok(en.mensaje.startsWith("Write this person's report."), "el mensaje no está en inglés");
+
+  // El esquema es el contrato del informe y no cambia con el idioma.
+  assert.deepEqual(en.esquema, es.esquema);
+});
+
+test("el material inglés traduce las bandas y nada más", () => {
+  const es = materialParaRedactar(modelo, facetas) as any;
+  const en = materialParaRedactar(modelo, facetas, "en") as any;
+
+  // Mismos ids, mismas puntuaciones; las bandas, en inglés.
+  for (let i = 0; i < es.dominios.length; i++) {
+    assert.equal(en.dominios[i].id, es.dominios[i].id);
+    assert.equal(en.dominios[i].puntuacion, es.dominios[i].puntuacion);
+    assert.ok(["low", "medium-low", "medium-high", "high"].includes(en.dominios[i].banda), en.dominios[i].banda);
+    for (let j = 0; j < es.dominios[i].facetas.length; j++) {
+      assert.ok(["low", "medium-low", "medium-high", "high"].includes(en.dominios[i].facetas[j].banda));
+    }
+  }
+  for (const s of en.senales) {
+    for (const f of s.leFalta) {
+      assert.ok(["high", "low"].includes(f.haríaFaltaQueFuera), f.haríaFaltaQueFuera);
+      assert.ok(["low", "medium-low", "medium-high", "high"].includes(f.peroEs), f.peroEs);
+    }
+  }
+});
+
+test("las bandas del encargo inglés son las mismas que las del informe inglés", () => {
+  // Dos mapas por necesidad (prompt.ts se empaqueta y no puede importar i18n);
+  // esta prueba es lo que impide que diverjan sin que nadie lo note.
+  const labels = leer("src/i18n/en-informe.json");
+  assert.deepEqual(BANDAS_EN, labels.bandas);
+});
+
+test("validarProsa habla la lengua que se le pide", () => {
+  const mala = { titular: "x" };
+  const es = validarProsa(mala, modelo);
+  const en = validarProsa(mala, modelo, "en");
+  assert.equal(es.length, en.length, "los dos idiomas no encuentran los mismos fallos");
+  assert.ok(es.some((f) => f.includes("falta «perfilEnUnaFrase»")));
+  assert.ok(en.some((f) => f.includes('"perfilEnUnaFrase" is missing')));
+  assert.ok(en.every((f) => !f.includes("falta")), "queda castellano en los fallos ingleses");
+});
+
+test("el encargo corto inglés manda a la skill y lleva el perfil traducido", () => {
+  const corto = promptCorto(modelo, facetas, "en");
+  assert.ok(corto.includes("identify-bfi2-knowledge"), "no nombra la skill");
+  assert.ok(corto.includes("## Response schema"), "no lleva el esquema en inglés");
+  assert.ok(corto.includes('"banda": "'), "no lleva bandas");
+  assert.ok(!corto.includes('"banda": "media-alta"'), "las bandas van sin traducir");
 });
