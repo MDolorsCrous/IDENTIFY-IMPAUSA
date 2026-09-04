@@ -106,14 +106,18 @@ const html = `<!doctype html>
   body{margin:0;background:var(--ground);color:var(--ink);
     font-family:"Lato","Source Sans 3",system-ui,sans-serif;font-size:17px;line-height:1.55;
     -webkit-font-smoothing:antialiased}
-  h1,h2,h3{font-family:"Playfair Display",Georgia,serif;margin:0;color:var(--titulo);text-wrap:balance}
+  /* Los titulos van en Montserrat, como el informe y la portada. El rotulo de
+     la entrada conserva su serif: lo manda la skill retol-test-impausa, y es la
+     marca del producto, no un titulo mas. */
+  h1,h2,h3{font-family:"Montserrat",system-ui,sans-serif;font-weight:600;margin:0;
+    color:var(--titulo);text-wrap:balance;letter-spacing:-.01em}
   button{font:inherit;color:inherit}
   :focus-visible{outline:2px solid var(--naranja);outline-offset:3px;border-radius:4px}
   @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 
   .marco{min-height:100vh;display:flex;flex-direction:column}
   .contenido{flex:1;display:flex;flex-direction:column;justify-content:center;
-    width:100%;max-width:40rem;margin:0 auto;padding:2rem 1.25rem 3rem}
+    width:100%;max-width:42rem;margin:0 auto;padding:2rem 1.25rem 3rem}
 
   /* Portada */
   .rotulo{font-family:"Playfair Display",Georgia,serif;font-weight:700;display:inline-block;
@@ -123,8 +127,11 @@ const html = `<!doctype html>
     background:linear-gradient(90deg,#EF8A4D 0%,#DFAE6B 33%,#B9BC72 66%,#7FAE79 100%);
     -webkit-background-clip:text;background-clip:text;color:transparent}
   .portada{text-align:center;display:flex;flex-direction:column;align-items:center;gap:1.4rem}
-  .etiqueta{font-size:.72rem;letter-spacing:.16em;text-transform:uppercase;
-    color:var(--verde-medio);font-weight:600}
+  .etiqueta{font-family:"Montserrat",system-ui,sans-serif;font-size:.7rem;
+    letter-spacing:.18em;text-transform:uppercase;color:var(--verde);font-weight:700}
+  /* El logotipo tambien en la pantalla de puntuaciones: es la unica que queda
+     sin nada de la casa, y se ve justo despues de veinte minutos de test. */
+  .marca-sup{height:22px;width:auto;display:block;margin:0 0 1.1rem}
   .portada p{max-width:32rem;margin:0;color:var(--ink-soft)}
   .datos{display:flex;flex-wrap:wrap;gap:.5rem;justify-content:center;margin-top:.3rem}
   .dato{background:var(--tarjeta);border:1px solid var(--borde);border-radius:999px;
@@ -135,35 +142,72 @@ const html = `<!doctype html>
   .boton:hover{transform:translateY(-1px);box-shadow:var(--sombra-alta)}
   .boton:active{transform:translateY(0)}
 
-  /* Progreso */
-  .progreso{position:sticky;top:0;background:var(--ground);padding:.9rem 1.25rem .7rem;
-    border-bottom:1px solid var(--borde);z-index:3}
+  /* ---- Progreso ----
+     La cabecera del cuestionario. Lleva el logotipo porque esta pantalla se ve
+     sesenta veces seguidas y era la unica del producto sin nada de la casa:
+     parecia otra aplicacion. Va pequeno y arriba, sin robar sitio. */
+  .progreso{position:sticky;top:0;background:var(--ground);padding:.75rem 1.25rem 0;
+    z-index:3}
+  .progreso__marca{display:flex;align-items:center;gap:1rem;max-width:42rem;
+    margin:0 auto .55rem}
+  .progreso__marca img{height:20px;width:auto;flex:none}
   .progreso__fila{display:flex;justify-content:space-between;align-items:baseline;
-    max-width:40rem;margin:0 auto .45rem;font-size:.82rem;color:var(--ink-soft);
+    gap:1rem;flex:1;font-family:"Montserrat",system-ui,sans-serif;font-size:.74rem;
+    font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-soft);
     font-variant-numeric:tabular-nums}
-  .barra{max-width:40rem;margin:0 auto;height:5px;background:var(--track);border-radius:3px;overflow:hidden}
-  .barra__relleno{height:100%;background:var(--verde-medio);border-radius:3px;
-    transition:width .25s ease;width:0}
+  .barra{max-width:42rem;margin:0 auto;height:6px;background:var(--track);
+    border-radius:99px;overflow:hidden}
+  /* El degradado de la casa, el mismo del boton y de las ondas. */
+  .barra__relleno{height:100%;border-radius:99px;width:0;
+    background:linear-gradient(90deg,#F47A20 0%,#D5B447 45%,#8FBE5A 72%,#27624F 100%);
+    background-size:42rem 100%;transition:width .3s ease}
 
-  /* Pregunta */
-  .pregunta{display:flex;flex-direction:column;gap:1.5rem}
-  .stem{color:var(--ink-soft);font-size:1rem;margin:0}
-  .enunciado{font-family:"Playfair Display",Georgia,serif;font-size:clamp(1.5rem,5.5vw,2.1rem);
-    font-weight:700;line-height:1.25;margin:0;color:var(--titulo)}
-  .opciones{display:flex;flex-direction:column;gap:.55rem}
+  /* ---- Pregunta ---- */
+  .pregunta{display:flex;flex-direction:column;gap:1.15rem}
+  /* La afirmacion, dentro de una tarjeta: es lo unico que hay que leer, y
+     separarla de las respuestas ahorra un salto de ojo sesenta veces. */
+  .tarjeta-preg{background:var(--tarjeta);border:1px solid var(--borde);
+    border-radius:16px;padding:1.5rem 1.6rem;box-shadow:var(--sombra)}
+  .stem{color:var(--verde);font-family:"Montserrat",system-ui,sans-serif;
+    font-size:.72rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;
+    margin:0 0 .5rem}
+  .enunciado{font-family:"Montserrat",system-ui,sans-serif;
+    font-size:clamp(1.3rem,4vw,1.75rem);font-weight:600;line-height:1.3;margin:0;
+    color:var(--titulo);text-wrap:balance}
+
+  .opciones{display:flex;flex-direction:column;gap:.5rem}
   .opcion{display:flex;align-items:center;gap:.9rem;width:100%;text-align:left;
-    background:var(--tarjeta);border:1px solid var(--borde);border-radius:6px;
-    padding:.8rem 1rem;cursor:pointer;transition:border-color .12s ease, background .12s ease}
-  .opcion:hover{border-color:var(--verde-medio)}
-  .opcion[aria-checked="true"]{border-color:var(--naranja);background:var(--naranja-claro)}
-  .opcion__num{flex:none;width:1.7rem;height:1.7rem;border-radius:50%;display:grid;place-items:center;
-    background:var(--track);font-size:.85rem;font-weight:600;color:var(--ink-soft)}
-  .opcion[aria-checked="true"] .opcion__num{background:var(--naranja);color:#fff}
-  .pie-preg{display:flex;justify-content:space-between;align-items:center;gap:1rem}
-  .enlace{background:none;border:0;color:var(--verde-medio);cursor:pointer;font-weight:600;
-    padding:.4rem 0}
-  .enlace[disabled]{color:var(--ink-soft);opacity:.5;cursor:default}
-  .ayuda{font-size:.82rem;color:var(--ink-soft)}
+    min-height:56px;background:var(--tarjeta);border:1px solid var(--borde);
+    border-radius:12px;padding:.75rem 1.1rem;cursor:pointer;
+    transition:border-color .12s ease, background .12s ease, transform .12s ease}
+  .opcion:hover{border-color:var(--verde-suave-borde);transform:translateX(2px)}
+  /* Elegida: verde y menta, no naranja. Sesenta veces seguidas, el naranja
+     cansa y se lee como aviso; esto es una confirmacion. */
+  .opcion[aria-checked="true"]{border-color:var(--verde-medio);background:var(--menta)}
+  .opcion__num{flex:none;width:2rem;height:2rem;border-radius:50%;display:grid;
+    place-items:center;background:var(--track);font-family:"Montserrat",system-ui,sans-serif;
+    font-size:.85rem;font-weight:700;color:var(--ink-soft);transition:background .12s ease}
+  .opcion[aria-checked="true"] .opcion__num{background:var(--verde);color:#FFFDFC}
+  .opcion__texto{flex:1}
+  /* La marca de elegida no es solo el color: quien no distinga verde de beige
+     ve igualmente que esa es la suya. */
+  .opcion__marca{flex:none;color:var(--verde);font-weight:700;opacity:0;
+    transition:opacity .12s ease}
+  .opcion[aria-checked="true"] .opcion__marca{opacity:1}
+
+  .pie-preg{display:flex;justify-content:space-between;align-items:center;gap:1rem;
+    margin-top:.2rem}
+  .enlace{background:none;border:0;color:var(--verde);cursor:pointer;font-weight:600;
+    padding:.5rem 0;min-height:44px}
+  .enlace[disabled]{color:var(--ink-soft);opacity:.45;cursor:default}
+  .ayuda{font-size:.8rem;color:var(--ink-soft)}
+  @media (max-width:640px){
+    .ayuda{display:none}
+    .progreso__marca{gap:.6rem}
+    .progreso__marca img{height:16px}
+    .progreso__fila{font-size:.66rem;letter-spacing:.03em}
+    .tarjeta-preg{padding:1.2rem 1.25rem}
+  }
 
   /* Resultados */
   .resultados{display:flex;flex-direction:column;gap:1.6rem}
@@ -178,9 +222,10 @@ const html = `<!doctype html>
   .eje{position:relative;height:8px;background:var(--track);border-radius:2px}
   .eje__medio{position:absolute;left:50%;top:-3px;bottom:-3px;width:1px;background:var(--borde)}
   .eje__relleno{position:absolute;left:0;top:0;bottom:0;border-radius:2px;
-    background:var(--verde-medio);opacity:.55}
+    background:var(--dominio,var(--verde-medio));opacity:.6}
   .eje__punto{position:absolute;top:50%;width:8px;height:8px;border-radius:50%;
-    background:var(--verde-medio);transform:translate(-50%,-50%);box-shadow:0 0 0 2px var(--tarjeta)}
+    background:var(--dominio,var(--verde-medio));transform:translate(-50%,-50%);
+    box-shadow:0 0 0 2px var(--tarjeta)}
   .fila__v{font-variant-numeric:tabular-nums;font-weight:600;min-width:2.7rem;text-align:right}
   .escala{display:grid;grid-template-columns:minmax(6.5rem,10rem) 1fr auto;gap:.8rem;
     font-size:.72rem;color:var(--ink-soft);margin-top:.5rem}
@@ -596,17 +641,26 @@ function pregunta(){
   const hechas = Object.keys(respuestas).length;
   app.innerHTML = \`
     <div class="progreso">
-      <div class="progreso__fila"><span>\${rellena(T.pregunta.de60, { n: indice + 1 })}</span><span>\${rellena(T.pregunta.completado, { pct: Math.round(hechas / 60 * 100) })}</span></div>
+      <div class="progreso__marca">
+        <img src="\${D.comun.marca.logo.src}" alt="\${esc(D.comun.marca.logo.alt)}">
+        <div class="progreso__fila">
+          <span>\${rellena(T.pregunta.de60, { n: indice + 1 })}</span>
+          <span>\${rellena(T.pregunta.completado, { pct: Math.round(hechas / 60 * 100) })}</span>
+        </div>
+      </div>
       <div class="barra"><div class="barra__relleno" style="width:\${hechas / 60 * 100}%"></div></div>
     </div>
     <div class="contenido">
       <div class="pregunta">
-        <p class="stem">\${esc(CUES.stem)}</p>
-        <h2 class="enunciado">\${esc(CUES.questions[q.id])}</h2>
+        <div class="tarjeta-preg">
+          <p class="stem">\${esc(CUES.stem)}</p>
+          <h2 class="enunciado">\${esc(CUES.questions[q.id])}</h2>
+        </div>
         <div class="opciones" role="radiogroup" aria-label="\${T.pregunta.ariaEscala}">
           \${[1,2,3,4,5].map(v => \`
             <button class="opcion" role="radio" aria-checked="\${elegido === v}" data-v="\${v}">
-              <span class="opcion__num">\${v}</span><span>\${esc(CUES.scale[v])}</span>
+              <span class="opcion__num">\${v}</span><span class="opcion__texto">\${esc(CUES.scale[v])}</span>
+              <span class="opcion__marca" aria-hidden="true">✓</span>
             </button>\`).join("")}
         </div>
         <div class="pie-preg">
@@ -633,10 +687,13 @@ document.addEventListener("keydown", e => {
   if (e.key === "Backspace" && indice > 0) { indice--; pintar(); e.preventDefault(); }
 });
 
-function filas(items, etiquetas, valores){
+function filas(items, etiquetas, valores, color){
   return items.map(x => {
     const v = valores[x.id];
-    return \`<div class="fila">
+    // El color del dominio, el mismo que en la portada y en el informe. En las
+    // facetas se hereda del dominio al que pertenecen, que es como se leen.
+    const tono = color ?? D.comun.marca.dominios[x.id];
+    return \`<div class="fila"\${tono ? \` style="--dominio:\${tono}"\` : ""}>
       <div class="fila__n">\${esc(etiquetas[x.id])}</div>
       <div class="eje" role="img" aria-label="\${rellena(T.resultados.ariaEje, { nombre: esc(etiquetas[x.id]), valor: num(v) })}">
         <div class="eje__medio"></div>
@@ -655,7 +712,7 @@ function resultados(){
     <div class="bloque">
       <h3>\${esc(RECURSOS.labels.domains[d.id])} — \${num(dominios[d.id])}</h3>
       <p class="bloque__sub">\${T.resultados.facetasSub}</p>
-      \${filas(CFG.facets.filter(f => f.domain === d.id), RECURSOS.labels.facets, facetas)}
+      \${filas(CFG.facets.filter(f => f.domain === d.id), RECURSOS.labels.facets, facetas, D.comun.marca.dominios[d.id])}
       \${escalaTest}
     </div>\`).join("");
 
@@ -663,6 +720,7 @@ function resultados(){
     <div class="contenido">
       <div class="resultados">
         <div>
+          <img class="marca-sup" src="\${D.comun.marca.logo.src}" alt="\${esc(D.comun.marca.logo.alt)}">
           <p class="etiqueta">\${T.resultados.etiqueta}</p>
           <h2 style="font-size:1.7rem">\${T.resultados.titulo}</h2>
         </div>
