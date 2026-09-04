@@ -329,3 +329,21 @@ test("solo se queda abierto un pliegue a la vez", () => {
   );
   assert.match(pagina, /const plegar = \(cab, abrir\)/, "falta la función que pliega");
 });
+
+test("cada tipografía viaja una sola vez en la página", () => {
+  // Las fuentes iban dos veces: dentro de `D` —de donde las coge el informe para
+  // su iframe, que es otro documento y necesita declarar las suyas— y otra vez
+  // como <style> en la cabecera. Eran 110 KB de 747 repetidos para nada. Ahora
+  // la cabecera se rellena al arrancar leyendo las de `D`.
+  const pagina = readFileSync(join(raiz, "test-identify.html"), "utf8");
+  const marca = cargarRecursos().marca;
+
+  for (const [nombre, b64] of Object.entries(marca.tipografias)) {
+    if (nombre.startsWith("_")) continue;
+    const veces = pagina.split(String(b64).slice(0, 120)).length - 1;
+    assert.equal(veces, 1, `${nombre} viaja ${veces} veces`);
+  }
+  // Y la cabecera las pone al arrancar, no el generador.
+  assert.match(pagina, /function ponerTipografias\(\)/, "nadie declara las tipografías");
+  assert.ok(!pagina.includes("tipografiasDeLaCasa"), "el generador vuelve a emitirlas");
+});

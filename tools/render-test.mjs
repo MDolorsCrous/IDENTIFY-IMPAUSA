@@ -67,22 +67,6 @@ const datos = {
   },
 };
 
-/**
- * Montserrat y Lato, incrustadas en la propia pagina.
- *
- * Las mismas que el informe, y por la misma razon: asi la pantalla se ve igual
- * el dia que Google Fonts no conteste. El rotulo conserva Playfair, que sigue
- * viniendo por enlace porque solo lo usan seis palabras.
- */
-function tipografiasDeLaCasa(){
-  const t = recursos.marca?.tipografias;
-  if (!t) return "";
-  const cara = (familia, peso, b64) =>
-    '@font-face{font-family:"' + familia + '";font-style:normal;font-weight:' + peso +
-    ';font-display:swap;src:url(data:font/woff2;base64,' + b64 + ') format("woff2")}';
-  return "<style>" + cara("Montserrat", "400 700", t.montserrat) +
-    cara("Lato", "400", t.lato400) + cara("Lato", "700", t.lato700) + "</style>";
-}
 
 const html = `<!doctype html>
 <html lang="es">
@@ -96,7 +80,6 @@ const html = `<!doctype html>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,700&family=Source+Sans+3:wght@0,400;0,600&display=swap">
-${tipografiasDeLaCasa()}
 <style>
   :root{
     --verde:#27624F; --verde-medio:#5F927D; --naranja:#F47A20; --naranja-claro:#FDF0E4;
@@ -288,6 +271,32 @@ const HUECO_CTA_HERO = ${JSON.stringify(MARCA_CTA_HERO)};
 const HUECO_CTA_FINAL = ${JSON.stringify(MARCA_CTA_FINAL)};
 const HUECO_IDIOMAS = ${JSON.stringify(MARCA_IDIOMAS)};
 const HUECO_AVISO = ${JSON.stringify(MARCA_AVISO)};
+
+/**
+ * Las tipografias de la casa, puestas al arrancar.
+ *
+ * Viajan **una sola vez**, dentro de D, que es de donde las coge tambien el
+ * informe: su iframe es un srcdoc, o sea otro documento, y necesita declarar
+ * las suyas. Antes se emitian ademas como <style> en la cabecera, asi que los
+ * mismos 110 KB de base64 iban dos veces en una pagina de 747.
+ *
+ * Ponerlas desde aqui no parpadea: el cuerpo esta vacio hasta que pinta() lo
+ * llena, y ajustarRotulo ya espera a document.fonts.ready para medir.
+ */
+(function ponerTipografias(){
+  const t = D.comun.marca && D.comun.marca.tipografias;
+  if (!t) return;
+  const cara = (familia, peso, b64) =>
+    '@font-face{font-family:"' + familia + '";font-style:normal;font-weight:' + peso +
+    ';font-display:swap;src:url(data:font/woff2;base64,' + b64 + ') format("woff2")}';
+  const hoja = document.createElement("style");
+  hoja.textContent =
+    cara("Montserrat", "400 700", t.montserrat) +
+    cara("Lato", "400", t.lato400) +
+    cara("Lato", "700", t.lato700);
+  document.head.appendChild(hoja);
+})();
+
 const CFG = D.comun.config;
 
 // ---- El idioma ----
