@@ -42,17 +42,41 @@
         "open_mindedness": "high"
       },
       "bloques": [
-        { "ojo": "Interpretation", "texto": "Each domain is explained with its definition, the reading of your three facets and the tensions that may appear." },
-        { "ojo": "Powerful questions", "texto": "Questions written from your results, to take to a conversation or a notebook." },
-        { "ojo": "Action plan", "texto": "Three concrete actions, each with a signal that tells you whether it is working." }
+        {
+          "ojo": "Interpretation",
+          "texto": "Each domain is explained with its definition, the reading of your three facets and the tensions that may appear."
+        },
+        {
+          "ojo": "Powerful questions",
+          "texto": "Questions written from your results, to take to a conversation or a notebook."
+        },
+        {
+          "ojo": "Action plan",
+          "texto": "Three concrete actions, each with a signal that tells you whether it is working."
+        }
       ]
     },
     "recorrido": [
-      { "titulo": "Your answers", "detalle": "60 statements, rated 1 to 5" },
-      { "titulo": "5 dimensions", "detalle": "twelve items each" },
-      { "titulo": "15 facets", "detalle": "four items each" },
-      { "titulo": "Interpretation", "detalle": "what that combination says" },
-      { "titulo": "Questions and plan", "detalle": "what you can do with it" }
+      {
+        "titulo": "Your answers",
+        "detalle": "60 statements, rated 1 to 5"
+      },
+      {
+        "titulo": "5 dimensions",
+        "detalle": "twelve items each"
+      },
+      {
+        "titulo": "15 facets",
+        "detalle": "four items each"
+      },
+      {
+        "titulo": "Interpretation",
+        "detalle": "what that combination says"
+      },
+      {
+        "titulo": "Questions and plan",
+        "detalle": "what you can do with it"
+      }
     ],
     "pliegues": {
       "queAporta": {
@@ -60,12 +84,30 @@
         "resumen": "Understand your tendencies, recognize your resources and spot the contexts where you may need a different adjustment.",
         "intro": "Many responses show up automatically. Identify turns those tendencies into a comprehensible map so you can recognize what drives you, what may wear you down and what alternatives you can bring in depending on the situation.",
         "tarjetas": [
-          { "titulo": "Self-knowledge with nuance", "texto": "Understand your particular combination of five dimensions and fifteen facets without being reduced to a label." },
-          { "titulo": "Strengths in context", "texto": "Identify tendencies that can help you and the contexts where they add the most value." },
-          { "titulo": "Risks of excess or mismatch", "texto": "Spot when a strength may stop helping you because of intensity, imbalance or context." },
-          { "titulo": "More conscious decisions", "texto": "Observe how your tendencies can influence priorities, habits and decisions." },
-          { "titulo": "More understandable relationships", "texto": "Understand how you tend to connect, trust, express yourself and respond to other people." },
-          { "titulo": "Action-oriented development", "texto": "Turn the results into concrete questions and actions you can experiment with." }
+          {
+            "titulo": "Self-knowledge with nuance",
+            "texto": "Understand your particular combination of five dimensions and fifteen facets without being reduced to a label."
+          },
+          {
+            "titulo": "Strengths in context",
+            "texto": "Identify tendencies that can help you and the contexts where they add the most value."
+          },
+          {
+            "titulo": "Risks of excess or mismatch",
+            "texto": "Spot when a strength may stop helping you because of intensity, imbalance or context."
+          },
+          {
+            "titulo": "More conscious decisions",
+            "texto": "Observe how your tendencies can influence priorities, habits and decisions."
+          },
+          {
+            "titulo": "More understandable relationships",
+            "texto": "Understand how you tend to connect, trust, express yourself and respond to other people."
+          },
+          {
+            "titulo": "Action-oriented development",
+            "texto": "Turn the results into concrete questions and actions you can experiment with."
+          }
         ],
         "destacado": "The goal is not to tell you how you are in absolute terms, but to help you observe how your tendencies work and what you can do with that information."
       },
@@ -79,10 +121,22 @@
         ],
         "destacado": "Science does not turn you into a label: it provides a frame to understand nuance and ask better questions.",
         "confianza": [
-          { "dato": "60 items", "texto": "A self-report questionnaire." },
-          { "dato": "5 dimensions", "texto": "The broad domains of the Big Five model." },
-          { "dato": "15 facets", "texto": "Three nuances within each dimension." },
-          { "dato": "Original version", "texto": "You answer the English original, as published by its authors." }
+          {
+            "dato": "60 items",
+            "texto": "A self-report questionnaire."
+          },
+          {
+            "dato": "5 dimensions",
+            "texto": "The broad domains of the Big Five model."
+          },
+          {
+            "dato": "15 facets",
+            "texto": "Three nuances within each dimension."
+          },
+          {
+            "dato": "Original version",
+            "texto": "You answer the English original, as published by its authors."
+          }
         ]
       },
       "dimensiones": {
@@ -90,10 +144,22 @@
         "resumen": "The Big Five does not sort people into closed categories: we all present the five, in different degrees.",
         "intro": "Big Five/OCEAN does not sort people into closed categories. Everyone presents the five dimensions in different degrees, and the value of the result lies in observing how they combine.",
         "tarjetas": [
-          { "titulo": "A dimensional model", "texto": "It represents degrees, not absolute categories." },
-          { "titulo": "A hierarchical reading", "texto": "It combines five domains with fifteen facets." },
-          { "titulo": "More nuance than a typology", "texto": "Two people with a similar domain can present different facets." },
-          { "titulo": "Interpretation in context", "texto": "A tendency can help or hinder depending on the situation." }
+          {
+            "titulo": "A dimensional model",
+            "texto": "It represents degrees, not absolute categories."
+          },
+          {
+            "titulo": "A hierarchical reading",
+            "texto": "It combines five domains with fifteen facets."
+          },
+          {
+            "titulo": "More nuance than a typology",
+            "texto": "Two people with a similar domain can present different facets."
+          },
+          {
+            "titulo": "Interpretation in context",
+            "texto": "A tendency can help or hinder depending on the situation."
+          }
         ],
         "destacado": "The Big Five is not out to pigeonhole you. It seeks to describe, with nuance, how you tend to operate."
       },
@@ -108,11 +174,26 @@
         "resumen": "How they show up when you relate to others, organize yourself, manage tension and learn something new.",
         "intro": "Knowing yourself does not mean labeling yourself. It means understanding which tendencies drive you, which may wear you down and which adjustments can help you respond better to each situation.",
         "tarjetas": [
-          { "titulo": "Relating to others", "texto": "Understand how you seek contact, voice opinions, show empathy and build trust." },
-          { "titulo": "Acting and organizing", "texto": "Recognize how you turn intentions into actions, structure tasks and sustain commitments." },
-          { "titulo": "Managing tension", "texto": "Observe how you register worry, low mood and emotional shifts when pressure rises." },
-          { "titulo": "Learning and creating", "texto": "Understand how you explore ideas, imagine alternatives and connect with intellectual or aesthetic experiences." },
-          { "titulo": "Widening your repertoire", "texto": "Choose different responses when your automatic tendency is not the most useful one for the situation." }
+          {
+            "titulo": "Relating to others",
+            "texto": "Understand how you seek contact, voice opinions, show empathy and build trust."
+          },
+          {
+            "titulo": "Acting and organizing",
+            "texto": "Recognize how you turn intentions into actions, structure tasks and sustain commitments."
+          },
+          {
+            "titulo": "Managing tension",
+            "texto": "Observe how you register worry, low mood and emotional shifts when pressure rises."
+          },
+          {
+            "titulo": "Learning and creating",
+            "texto": "Understand how you explore ideas, imagine alternatives and connect with intellectual or aesthetic experiences."
+          },
+          {
+            "titulo": "Widening your repertoire",
+            "texto": "Choose different responses when your automatic tendency is not the most useful one for the situation."
+          }
         ]
       },
       "informe": {
@@ -163,21 +244,53 @@
         "titulo": "Get to know the scientific base of Identify",
         "resumen": "Model, instrument, structure, original version and references with their DOI.",
         "ficha": [
-          { "dato": "Model", "texto": "Big Five/OCEAN, as a dimensional frame of personality." },
-          { "dato": "Instrument", "texto": "The Big Five Inventory-2 (BFI-2), by Christopher J. Soto and Oliver P. John." },
-          { "dato": "Structure", "texto": "60 items, five domains and fifteen facets; four items per facet and twelve per domain, on a 1-to-5 scale." },
-          { "dato": "Version", "texto": "The original English BFI-2, exactly as published by its authors." },
-          { "dato": "Interpretation", "texto": "Results are presented as tendencies and associations, not as diagnoses or deterministic predictions. The combinations, the questions and the action plan are IMPAUSA's own elaboration on that base, and are not part of the original instrument." }
+          {
+            "dato": "Model",
+            "texto": "Big Five/OCEAN, as a dimensional frame of personality."
+          },
+          {
+            "dato": "Instrument",
+            "texto": "The Big Five Inventory-2 (BFI-2), by Christopher J. Soto and Oliver P. John."
+          },
+          {
+            "dato": "Structure",
+            "texto": "60 items, five domains and fifteen facets; four items per facet and twelve per domain, on a 1-to-5 scale."
+          },
+          {
+            "dato": "Version",
+            "texto": "The original English BFI-2, exactly as published by its authors."
+          },
+          {
+            "dato": "Interpretation",
+            "texto": "Results are presented as tendencies and associations, not as diagnoses or deterministic predictions. The combinations, the questions and the action plan are IMPAUSA's own elaboration on that base, and are not part of the original instrument."
+          }
         ],
         "referencias": "References",
         "berkeley": "Berkeley Personality Lab. Official information on the BFI-2:",
         "atribucion": "BFI-2 © Oliver P. John and Christopher J. Soto."
       }
+    },
+    "pie": {
+      "herramienta": "Identify is a tool by",
+      "coaching": "Coaching and guidance"
     }
   },
   "test": {
     "titulo": "Identify Test",
-    "meses": ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
+    "meses": [
+      "January",
+      "February",
+      "March",
+      "April",
+      "May",
+      "June",
+      "July",
+      "August",
+      "September",
+      "October",
+      "November",
+      "December"
+    ],
     "fechaLarga": "{mes} {dia}, {ano}",
     "puerta": {
       "etiqueta": "Access code",
@@ -344,18 +457,39 @@
       "comparacion": "What it is compared against:",
       "cierre": "There are no good or bad scores. These are tendencies that help or hinder depending on context, and a mid-range score usually signals flexibility."
     },
-    "resumen": { "eyebrow": "Profile summary" },
-    "vistazo": { "eyebrow": "At a glance", "titulo": "The five domains" },
+    "resumen": {
+      "eyebrow": "Profile summary"
+    },
+    "vistazo": {
+      "eyebrow": "At a glance",
+      "titulo": "The five domains"
+    },
     "dominios": {
       "eyebrow": "In detail",
       "titulo": "The five domains, facet by facet",
       "intro": "Each domain is made of three facets. Two people with the same overall score can have them distributed very differently, and that is where each profile's character lies. When a facet clearly stands apart from the other two, it is flagged in orange."
     },
-    "combinaciones": { "eyebrow": "Profile combinations", "titulo": "What appears when the facets are crossed" },
-    "senalesSeccion": { "eyebrow": "Close, but not quite", "titulo": "Signals to watch" },
-    "trabajo": { "eyebrow": "Application", "titulo": "At work" },
-    "preguntas": { "eyebrow": "To think about", "titulo": "Powerful questions" },
-    "plan": { "eyebrow": "To act on", "titulo": "Action plan", "indicador": "How you will know it works:" },
+    "combinaciones": {
+      "eyebrow": "Profile combinations",
+      "titulo": "What appears when the facets are crossed"
+    },
+    "senalesSeccion": {
+      "eyebrow": "Close, but not quite",
+      "titulo": "Signals to watch"
+    },
+    "trabajo": {
+      "eyebrow": "Application",
+      "titulo": "At work"
+    },
+    "preguntas": {
+      "eyebrow": "To think about",
+      "titulo": "Powerful questions"
+    },
+    "plan": {
+      "eyebrow": "To act on",
+      "titulo": "Action plan",
+      "indicador": "How you will know it works:"
+    },
     "imagenes": {
       "eyebrow": "Between sessions",
       "titulo": "Images to remember",
@@ -363,7 +497,10 @@
       "ancla": "If you keep just one",
       "porTu": "for your {banda} {faceta}"
     },
-    "conclusiones": { "eyebrow": "To close", "titulo": "Conclusions" },
+    "conclusiones": {
+      "eyebrow": "To close",
+      "titulo": "Conclusions"
+    },
     "fuentesSeccion": {
       "titulo": "Sources and methodology",
       "intro": "Instrument: the <b>BFI-2</b>, Big Five Inventory-2, in its original English version. 60 items, a 1-to-5 scale, five domains and fifteen facets. Each facet is the average of its four items; each domain, the average of its twelve. The combinations come from IMPAUSA's knowledge base on the BFI-2, built on the works listed below.",

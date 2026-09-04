@@ -140,10 +140,18 @@ function cabeceraDeMarca(marca) {
  */
 function cierreDeMarca(marca, t) {
   if (!marca) return "";
-  const { logo, correo, web, copyright, producto } = marca;
+  const { logo, logoLive, correo, web, copyright, producto } = marca;
   return `
   <footer class="firma">
-    <img class="firma__logo" src="${logo.src}" alt="${esc(logo.alt)}" width="${logo.ancho}" height="${logo.alto}">
+    <div class="firma__logos">
+      <img class="firma__logo" src="${logo.src}" alt="${esc(logo.alt)}" width="${logo.ancho}" height="${logo.alto}">
+      ${
+        logoLive
+          ? `<img class="firma__live" src="${logoLive.src}" alt="${esc(logoLive.alt)}"
+        width="${logoLive.ancho}" height="${logoLive.alto}">`
+          : ""
+      }
+    </div>
     <p class="firma__linea">
       <a href="mailto:${esc(correo)}">${esc(correo)}</a>
       <span class="firma__sep" aria-hidden="true">·</span>
@@ -654,7 +662,14 @@ ${tipografias(opciones.marca)}
   .firma{margin-top:2.5rem;padding-top:2rem;text-align:center;
     border-top:2px solid transparent;
     border-image:linear-gradient(90deg,#EF8A4D 0%,#DFAE6B 33%,#B9BC72 66%,#7FAE79 100%) 1}
-  .firma__logo{width:320px;max-width:100%;height:auto;margin:0 auto 1.1rem;display:block}
+  /* Las dos marcas de la casa, juntas: IMPAUSA firma el producto y LivePausa
+     es el acompanamiento que hay detras. Tienen proporciones muy distintas
+     —una es una linea de texto y la otra casi cuadrada—, asi que se igualan por
+     lo que se ve y no por una altura comun. */
+  .firma__logos{display:flex;align-items:center;justify-content:center;
+    gap:2.4rem;flex-wrap:wrap;margin:0 auto 1.1rem}
+  .firma__logo{height:34px;width:auto;max-width:100%;display:block}
+  .firma__live{height:66px;width:auto;max-width:100%;display:block}
   /* Los párrafos del informe llevan un ancho máximo —una regla tipográfica: las
      líneas muy largas se leen mal—, y eso los dejaba más estrechos que su bloque
      y pegados a la izquierda. Centrar el texto dentro de una caja que ya está
@@ -668,7 +683,9 @@ ${tipografias(opciones.marca)}
   .firma__sep{color:var(--borde);margin:0 .5rem}
   .firma__copy{margin:.15rem 0 0;font-size:.8rem;color:var(--ink-soft)}
   /* En papel el logotipo va algo menor y el bloque nunca se parte. */
-  @media print{.firma{break-inside:avoid;margin-top:1.8rem}.firma__logo{width:130px}}
+  @media print{.firma{break-inside:avoid;margin-top:1.8rem}
+    .firma__logos{gap:1.6rem;margin-bottom:.8rem}
+    .firma__logo{height:22px}.firma__live{height:44px}}
 
   .maqueta{position:sticky;top:0;z-index:5;background:#1A4A3A;color:#F7F2EB;
     font-size:.8rem;letter-spacing:.02em;text-align:center;padding:.5rem 1rem}

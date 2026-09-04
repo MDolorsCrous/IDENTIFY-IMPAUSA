@@ -42,17 +42,41 @@
         "open_mindedness": "alta"
       },
       "bloques": [
-        { "ojo": "Interpretación", "texto": "Cada dominio se explica con su definición, la lectura de tus tres facetas y las tensiones que pueden aparecer." },
-        { "ojo": "Preguntas poderosas", "texto": "Preguntas escritas a partir de tus resultados, para llevar a una conversación o a un cuaderno." },
-        { "ojo": "Plan de acción", "texto": "Tres acciones concretas, cada una con una señal que te dice si está funcionando." }
+        {
+          "ojo": "Interpretación",
+          "texto": "Cada dominio se explica con su definición, la lectura de tus tres facetas y las tensiones que pueden aparecer."
+        },
+        {
+          "ojo": "Preguntas poderosas",
+          "texto": "Preguntas escritas a partir de tus resultados, para llevar a una conversación o a un cuaderno."
+        },
+        {
+          "ojo": "Plan de acción",
+          "texto": "Tres acciones concretas, cada una con una señal que te dice si está funcionando."
+        }
       ]
     },
     "recorrido": [
-      { "titulo": "Tus respuestas", "detalle": "60 afirmaciones, de 1 a 5" },
-      { "titulo": "5 dimensiones", "detalle": "doce ítems cada una" },
-      { "titulo": "15 facetas", "detalle": "cuatro ítems cada una" },
-      { "titulo": "Interpretación", "detalle": "qué dice esa combinación" },
-      { "titulo": "Preguntas y plan", "detalle": "qué puedes hacer con ella" }
+      {
+        "titulo": "Tus respuestas",
+        "detalle": "60 afirmaciones, de 1 a 5"
+      },
+      {
+        "titulo": "5 dimensiones",
+        "detalle": "doce ítems cada una"
+      },
+      {
+        "titulo": "15 facetas",
+        "detalle": "cuatro ítems cada una"
+      },
+      {
+        "titulo": "Interpretación",
+        "detalle": "qué dice esa combinación"
+      },
+      {
+        "titulo": "Preguntas y plan",
+        "detalle": "qué puedes hacer con ella"
+      }
     ],
     "pliegues": {
       "queAporta": {
@@ -60,12 +84,30 @@
         "resumen": "Comprende tus tendencias, reconoce tus recursos y detecta en qué contextos puedes necesitar un ajuste diferente.",
         "intro": "Muchas respuestas aparecen de forma automática. Identify convierte esas tendencias en un mapa comprensible para que puedas reconocer qué te impulsa, qué puede desgastarte y qué alternativas puedes incorporar según la situación.",
         "tarjetas": [
-          { "titulo": "Autoconocimiento con matices", "texto": "Comprende tu combinación particular de cinco dimensiones y quince facetas sin reducirte a una etiqueta." },
-          { "titulo": "Fortalezas contextualizadas", "texto": "Identifica tendencias que pueden ayudarte y los contextos en los que aportan más valor." },
-          { "titulo": "Riesgos por exceso o desajuste", "texto": "Detecta cuándo una fortaleza puede dejar de ayudarte por intensidad, desequilibrio o contexto." },
-          { "titulo": "Decisiones más conscientes", "texto": "Observa cómo tus tendencias pueden influir en prioridades, hábitos y decisiones." },
-          { "titulo": "Relaciones más comprensibles", "texto": "Comprende cómo tiendes a conectar, confiar, expresarte y responder ante otras personas." },
-          { "titulo": "Desarrollo orientado a la acción", "texto": "Transforma los resultados en preguntas y acciones concretas que puedas experimentar." }
+          {
+            "titulo": "Autoconocimiento con matices",
+            "texto": "Comprende tu combinación particular de cinco dimensiones y quince facetas sin reducirte a una etiqueta."
+          },
+          {
+            "titulo": "Fortalezas contextualizadas",
+            "texto": "Identifica tendencias que pueden ayudarte y los contextos en los que aportan más valor."
+          },
+          {
+            "titulo": "Riesgos por exceso o desajuste",
+            "texto": "Detecta cuándo una fortaleza puede dejar de ayudarte por intensidad, desequilibrio o contexto."
+          },
+          {
+            "titulo": "Decisiones más conscientes",
+            "texto": "Observa cómo tus tendencias pueden influir en prioridades, hábitos y decisiones."
+          },
+          {
+            "titulo": "Relaciones más comprensibles",
+            "texto": "Comprende cómo tiendes a conectar, confiar, expresarte y responder ante otras personas."
+          },
+          {
+            "titulo": "Desarrollo orientado a la acción",
+            "texto": "Transforma los resultados en preguntas y acciones concretas que puedas experimentar."
+          }
         ],
         "destacado": "El objetivo no es decirte cómo eres de forma absoluta, sino ayudarte a observar cómo funcionan tus tendencias y qué puedes hacer con esa información."
       },
@@ -79,10 +121,22 @@
         ],
         "destacado": "La ciencia no te convierte en una etiqueta: aporta un marco para comprender matices y formular mejores preguntas.",
         "confianza": [
-          { "dato": "60 ítems", "texto": "Cuestionario de autoinforme." },
-          { "dato": "5 dimensiones", "texto": "Los grandes dominios del modelo Big Five." },
-          { "dato": "15 facetas", "texto": "Tres matices dentro de cada dimensión." },
-          { "dato": "Adaptación española", "texto": "Estudiada en investigación publicada." }
+          {
+            "dato": "60 ítems",
+            "texto": "Cuestionario de autoinforme."
+          },
+          {
+            "dato": "5 dimensiones",
+            "texto": "Los grandes dominios del modelo Big Five."
+          },
+          {
+            "dato": "15 facetas",
+            "texto": "Tres matices dentro de cada dimensión."
+          },
+          {
+            "dato": "Adaptación española",
+            "texto": "Estudiada en investigación publicada."
+          }
         ]
       },
       "dimensiones": {
@@ -90,10 +144,22 @@
         "resumen": "Big Five no divide a las personas en categorías cerradas: todas presentamos las cinco en distintos grados.",
         "intro": "Big Five/OCEAN no divide a las personas en categorías cerradas. Todas las personas presentan las cinco dimensiones en distintos grados, y el valor del resultado está en observar cómo se combinan.",
         "tarjetas": [
-          { "titulo": "Un modelo dimensional", "texto": "Representa grados y no categorías absolutas." },
-          { "titulo": "Una lectura jerárquica", "texto": "Combina cinco dominios con quince facetas." },
-          { "titulo": "Más matices que una tipología", "texto": "Dos personas con un dominio similar pueden presentar facetas diferentes." },
-          { "titulo": "Interpretación contextual", "texto": "Una tendencia puede ayudar o dificultar dependiendo de la situación." }
+          {
+            "titulo": "Un modelo dimensional",
+            "texto": "Representa grados y no categorías absolutas."
+          },
+          {
+            "titulo": "Una lectura jerárquica",
+            "texto": "Combina cinco dominios con quince facetas."
+          },
+          {
+            "titulo": "Más matices que una tipología",
+            "texto": "Dos personas con un dominio similar pueden presentar facetas diferentes."
+          },
+          {
+            "titulo": "Interpretación contextual",
+            "texto": "Una tendencia puede ayudar o dificultar dependiendo de la situación."
+          }
         ],
         "destacado": "Big Five no busca encasillarte. Busca describir, con matices, cómo tiendes a desenvolverte."
       },
@@ -108,11 +174,26 @@
         "resumen": "Cómo se notan al relacionarte, al organizarte, al gestionar la tensión y al aprender algo nuevo.",
         "intro": "Conocerte no significa etiquetarte. Significa comprender qué tendencias te impulsan, cuáles pueden desgastarte y qué ajustes pueden ayudarte a responder mejor a cada situación.",
         "tarjetas": [
-          { "titulo": "Relacionarte", "texto": "Comprender cómo buscas contacto, expresas opiniones, muestras empatía y construyes confianza." },
-          { "titulo": "Actuar y organizarte", "texto": "Reconocer cómo conviertes intenciones en acciones, estructuras tareas y sostienes compromisos." },
-          { "titulo": "Gestionar la tensión", "texto": "Observar cómo registras preocupación, desánimo y cambios emocionales cuando aumenta la presión." },
-          { "titulo": "Aprender y crear", "texto": "Comprender cómo exploras ideas, imaginas alternativas y conectas con experiencias intelectuales o estéticas." },
-          { "titulo": "Ampliar tu repertorio", "texto": "Elegir respuestas diferentes cuando tu tendencia automática no es la más útil para la situación." }
+          {
+            "titulo": "Relacionarte",
+            "texto": "Comprender cómo buscas contacto, expresas opiniones, muestras empatía y construyes confianza."
+          },
+          {
+            "titulo": "Actuar y organizarte",
+            "texto": "Reconocer cómo conviertes intenciones en acciones, estructuras tareas y sostienes compromisos."
+          },
+          {
+            "titulo": "Gestionar la tensión",
+            "texto": "Observar cómo registras preocupación, desánimo y cambios emocionales cuando aumenta la presión."
+          },
+          {
+            "titulo": "Aprender y crear",
+            "texto": "Comprender cómo exploras ideas, imaginas alternativas y conectas con experiencias intelectuales o estéticas."
+          },
+          {
+            "titulo": "Ampliar tu repertorio",
+            "texto": "Elegir respuestas diferentes cuando tu tendencia automática no es la más útil para la situación."
+          }
         ]
       },
       "informe": {
@@ -163,21 +244,53 @@
         "titulo": "Conoce la base científica de Identify",
         "resumen": "Modelo, instrumento, estructura, adaptación española y referencias con su DOI.",
         "ficha": [
-          { "dato": "Modelo", "texto": "Big Five/OCEAN, como marco dimensional de personalidad." },
-          { "dato": "Instrumento", "texto": "Big Five Inventory-2 (BFI-2), de Christopher J. Soto y Oliver P. John." },
-          { "dato": "Estructura", "texto": "60 ítems, cinco dominios y quince facetas; cuatro ítems por faceta y doce por dominio, en una escala de 1 a 5." },
-          { "dato": "Adaptación española", "texto": "Adaptación estudiada por Gallardo-Pujol y colaboradores." },
-          { "dato": "Interpretación", "texto": "Los resultados se presentan como tendencias y asociaciones, no como diagnósticos ni predicciones deterministas. Las combinaciones, las preguntas y el plan de acción son elaboración propia de IMPAUSA sobre esa base, y no forman parte del instrumento original." }
+          {
+            "dato": "Modelo",
+            "texto": "Big Five/OCEAN, como marco dimensional de personalidad."
+          },
+          {
+            "dato": "Instrumento",
+            "texto": "Big Five Inventory-2 (BFI-2), de Christopher J. Soto y Oliver P. John."
+          },
+          {
+            "dato": "Estructura",
+            "texto": "60 ítems, cinco dominios y quince facetas; cuatro ítems por faceta y doce por dominio, en una escala de 1 a 5."
+          },
+          {
+            "dato": "Adaptación española",
+            "texto": "Adaptación estudiada por Gallardo-Pujol y colaboradores."
+          },
+          {
+            "dato": "Interpretación",
+            "texto": "Los resultados se presentan como tendencias y asociaciones, no como diagnósticos ni predicciones deterministas. Las combinaciones, las preguntas y el plan de acción son elaboración propia de IMPAUSA sobre esa base, y no forman parte del instrumento original."
+          }
         ],
         "referencias": "Referencias",
         "berkeley": "Berkeley Personality Lab. Información oficial sobre el BFI-2:",
         "atribucion": "BFI-2 © Oliver P. John y Christopher J. Soto."
       }
+    },
+    "pie": {
+      "herramienta": "Identify es una herramienta de",
+      "coaching": "Acompañamiento y coaching"
     }
   },
   "test": {
     "titulo": "Test Identify",
-    "meses": ["enero", "febrero", "marzo", "abril", "mayo", "junio", "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"],
+    "meses": [
+      "enero",
+      "febrero",
+      "marzo",
+      "abril",
+      "mayo",
+      "junio",
+      "julio",
+      "agosto",
+      "septiembre",
+      "octubre",
+      "noviembre",
+      "diciembre"
+    ],
     "fechaLarga": "{dia} de {mes} de {ano}",
     "puerta": {
       "etiqueta": "Código de acceso",
@@ -344,18 +457,39 @@
       "comparacion": "Contra qué se compara:",
       "cierre": "No hay puntuaciones buenas ni malas. Son tendencias que ayudan o estorban según el contexto, y una puntuación intermedia suele indicar flexibilidad."
     },
-    "resumen": { "eyebrow": "Resumen del perfil" },
-    "vistazo": { "eyebrow": "De un vistazo", "titulo": "Los cinco dominios" },
+    "resumen": {
+      "eyebrow": "Resumen del perfil"
+    },
+    "vistazo": {
+      "eyebrow": "De un vistazo",
+      "titulo": "Los cinco dominios"
+    },
     "dominios": {
       "eyebrow": "En detalle",
       "titulo": "Los cinco dominios, faceta a faceta",
       "intro": "Cada dominio se compone de tres facetas. Dos personas con la misma puntuación general pueden tenerlas repartidas de forma muy distinta, y ahí está lo característico de cada perfil. Cuando una faceta se separa claramente de las otras dos, va señalada en naranja."
     },
-    "combinaciones": { "eyebrow": "Combinaciones del perfil", "titulo": "Lo que aparece al cruzar las facetas" },
-    "senalesSeccion": { "eyebrow": "Cerca, pero no", "titulo": "Señales de atención" },
-    "trabajo": { "eyebrow": "Aplicación", "titulo": "En el trabajo" },
-    "preguntas": { "eyebrow": "Para pensar", "titulo": "Preguntas poderosas" },
-    "plan": { "eyebrow": "Para hacer", "titulo": "Plan de acción", "indicador": "Cómo sabrás si sirve:" },
+    "combinaciones": {
+      "eyebrow": "Combinaciones del perfil",
+      "titulo": "Lo que aparece al cruzar las facetas"
+    },
+    "senalesSeccion": {
+      "eyebrow": "Cerca, pero no",
+      "titulo": "Señales de atención"
+    },
+    "trabajo": {
+      "eyebrow": "Aplicación",
+      "titulo": "En el trabajo"
+    },
+    "preguntas": {
+      "eyebrow": "Para pensar",
+      "titulo": "Preguntas poderosas"
+    },
+    "plan": {
+      "eyebrow": "Para hacer",
+      "titulo": "Plan de acción",
+      "indicador": "Cómo sabrás si sirve:"
+    },
     "imagenes": {
       "eyebrow": "Entre sesiones",
       "titulo": "Imágenes para recordar",
@@ -363,7 +497,10 @@
       "ancla": "Si te quedas con una",
       "porTu": "por tu {faceta} {banda}"
     },
-    "conclusiones": { "eyebrow": "Para cerrar", "titulo": "Conclusiones" },
+    "conclusiones": {
+      "eyebrow": "Para cerrar",
+      "titulo": "Conclusiones"
+    },
     "fuentesSeccion": {
       "titulo": "Fuentes y metodología",
       "intro": "Instrumento: <b>BFI-2</b>, Big Five Inventory-2, en su adaptación española. 60 ítems, escala de 1 a 5, cinco dominios y quince facetas. Cada faceta es la media de sus cuatro ítems; cada dominio, la media de sus doce. Las combinaciones proceden de la base de conocimiento de IMPAUSA sobre el BFI-2, construida sobre los trabajos que se listan a continuación.",

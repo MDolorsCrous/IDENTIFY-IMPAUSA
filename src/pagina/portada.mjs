@@ -239,7 +239,7 @@ function plegable({ id, numero, titulo, resumen, cuerpo }) {
  * @returns {string} HTML con los huecos MARCA_* sin rellenar.
  */
 export function paginaDeInicio(recursos) {
-  const { fuentes } = recursos;
+  const { fuentes, marca } = recursos;
   const t = recursos.textos.portada;
   const ref = (f) =>
     `<li>${esc(f.autores)} (${f.anio}). <i>${esc(f.titulo)}</i>. ${esc(f.publicacion)}. ` +
@@ -405,6 +405,23 @@ export function paginaDeInicio(recursos) {
       <p class="micro">${t.cierre.micro}</p>
     </div>
   </section>
+
+  <footer class="pie-marca">
+    <div class="ancho pie-marca__caja">
+      <div class="pie-marca__logos">
+        <img src="${marca.logo.src}" alt="${esc(marca.logo.alt)}"
+          width="${marca.logo.ancho}" height="${marca.logo.alto}" class="pie-marca__impausa">
+        <img src="${marca.logoLive.src}" alt="${esc(marca.logoLive.alt)}"
+          width="${marca.logoLive.ancho}" height="${marca.logoLive.alto}" class="pie-marca__live">
+      </div>
+      <p class="pie-marca__contacto">
+        <a href="mailto:${esc(marca.correo)}">${esc(marca.correo)}</a>
+        <span aria-hidden="true"> · </span>
+        <a href="https://${esc(marca.web)}">${esc(marca.web)}</a>
+      </p>
+      <p class="pie-marca__legal">${esc(marca.copyright)}</p>
+    </div>
+  </footer>
 
 </div>`;
 }

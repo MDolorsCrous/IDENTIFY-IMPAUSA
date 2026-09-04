@@ -111,9 +111,12 @@ test("el informe se firma: logotipo, contacto y copyright", () => {
   assert.ok(html.includes("IMPAUSA POWER, S.L."), "falta la razón social");
   assert.ok(html.includes("Todos los derechos reservados"), "falta la reserva de derechos");
 
-  // El logotipo va DENTRO del fichero, no enlazado: el informe se manda por
-  // correo, se guarda y se imprime, y tiene que verse igual sin conexión.
-  assert.ok(html.includes('class="firma__logo" src="data:image/png;base64,'), "el logotipo no viaja dentro");
+  // Los dos logotipos van DENTRO del fichero, no enlazados: el informe se manda
+  // por correo, se guarda y se imprime, y tiene que verse igual sin conexión.
+  // Son SVG: vectoriales, nítidos en el papel, y los dos juntos pesan 34 KB
+  // frente a los 161 del PNG que había antes.
+  assert.ok(html.includes('class="firma__logo" src="data:image/svg+xml,'), "el logotipo no viaja dentro");
+  assert.ok(html.includes('class="firma__live" src="data:image/svg+xml,'), "falta LivePausa en el cierre");
   assert.ok(!html.includes('firma__logo" src="http'), "el logotipo está enlazado en vez de incrustado");
 });
 

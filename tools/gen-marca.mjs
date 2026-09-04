@@ -21,10 +21,28 @@ const RAIZ = fileURLToPath(new URL("../", import.meta.url));
 const FUENTES = path.join(homedir(), ".claude", "skills", "impausa-brand-book", "assets", "fonts");
 const leerFuente = (nombre) => readFileSync(path.join(FUENTES, nombre + ".b64.txt"), "utf8").trim();
 
-const png = readFileSync(RAIZ + "src/assets/impausa-logo.png");
-if (png[0] !== 0x89 || png[1] !== 0x50) {
-  console.error("\n✖ src/assets/impausa-logo.png no es un PNG.\n");
-  process.exit(1);
+/**
+ * Un logotipo listo para meter en cualquier documento.
+ *
+ * Los dos ficheros vienen en un lienzo de 1024×1024 casi vacío: el dibujo de
+ * IMPAUSA ocupa 804×103, o sea el 10 % del alto. Puesto tal cual, a 20 px de
+ * alto el logotipo sale de dos píxeles. Aquí se recorta el lienzo vacío —el
+ * viewBox— y **no se toca ni un trazo ni un color**: solo se dice qué parte del
+ * tablero se mira. Las cajas están medidas con getBBox en el navegador.
+ *
+ * Van como data URI de SVG y no en base64: el SVG es texto, así que ocupa menos
+ * sin codificar, y encima es vectorial — se ve nítido a cualquier tamaño y en el
+ * papel. El PNG anterior pesaba 161 KB; estos dos juntos, treinta.
+ */
+function logoDe(fichero, caja, alt) {
+  const [, , ancho, alto] = caja.split(" ").map(Number);
+  const svg = readFileSync(RAIZ + "src/assets/" + fichero, "utf8")
+    .replace(/<\?xml[^>]*\?>\s*/, "")
+    .replace(/viewBox="[^"]*"/, `viewBox="${caja}"`)
+    .replace(/\s+/g, " ")
+    .trim();
+  if (!svg.startsWith("<svg")) throw new Error(fichero + " no parece un SVG");
+  return { alt, ancho, alto, src: "data:image/svg+xml," + encodeURIComponent(svg) };
 }
 
 const marca = {
@@ -74,18 +92,15 @@ const marca = {
     lato700: leerFuente("lato-700"),
   },
 
-  logo: {
-    alt: "IMPAUSA",
-    ancho: png.readUInt32BE(16),
-    alto: png.readUInt32BE(20),
-    src: "data:image/png;base64," + png.toString("base64"),
-  },
+  logo: logoDe("impausa.svg", "128 451 804 103", "IMPAUSA"),
+  logoLive: logoDe("livepausa.svg", "94 237 858 474", "LivePausa by ImPausa"),
 };
 
 writeFileSync(RAIZ + "src/config/marca.json", JSON.stringify(marca, null, 2) + "\n", "utf8");
 
 const kb = (s) => (s.length / 1024).toFixed(0) + " KB";
 console.log("escrito src/config/marca.json");
-console.log(`  logotipo ${marca.logo.ancho}×${marca.logo.alto} · ${kb(marca.logo.src)}`);
+console.log(`  IMPAUSA ${marca.logo.ancho}×${marca.logo.alto} · ${kb(marca.logo.src)}`);
+console.log(`  LivePausa ${marca.logoLive.ancho}×${marca.logoLive.alto} · ${kb(marca.logoLive.src)}`);
 console.log(`  tipografías · ${kb(Object.values(marca.tipografias).join(""))}`);
 console.log(`  ${Object.keys(marca.dominios).length} colores de dominio · ${Object.keys(marca.paleta).length} de paleta`);

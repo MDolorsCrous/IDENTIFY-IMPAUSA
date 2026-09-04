@@ -243,6 +243,34 @@ export const estilosPortada = `
   .lectura .lista li{color:var(--ink-soft)}
   .lectura .lista b{color:var(--ink)}
 
+  /* ---- El pie de marca ----
+     Las dos marcas de la casa, juntas y al final: IMPAUSA, que firma el
+     producto, y LivePausa, que es el acompanamiento que hay detras. Aqui abajo
+     y no en el hero, donde competirian con el rotulo. */
+  .pie-marca{background:var(--tarjeta);border-top:1px solid var(--borde);
+    padding:clamp(2rem,5vw,3rem) 0}
+  .pie-marca__caja{display:flex;flex-direction:column;align-items:center;
+    text-align:center;gap:1rem}
+  .pie-marca__logos{display:flex;align-items:center;justify-content:center;
+    gap:clamp(1.5rem,5vw,3rem);flex-wrap:wrap}
+  /* Los dos logotipos tienen proporciones muy distintas —uno es una linea de
+     texto y el otro casi cuadrado—, asi que se igualan por lo que se ve y no
+     por una altura comun. */
+  .pie-marca__impausa{height:26px;width:auto}
+  .pie-marca__live{height:52px;width:auto}
+  .pie-marca__contacto{margin:0;font-size:.94rem}
+  .pie-marca__contacto a{color:var(--verde);text-decoration:none;
+    border-bottom:1px solid var(--borde)}
+  .pie-marca__legal{margin:0;font-size:.82rem;color:var(--ink-soft)}
+  /* Los logotipos llevan sus colores fijos y el verde oscuro se pierde sobre el
+     fondo oscuro. No se pueden retocar, asi que se les da suelo claro. */
+  @media (prefers-color-scheme:dark){
+    :root:not([data-theme="light"]) .pie-marca__logos{background:#F7F4EE;
+      border-radius:14px;padding:1rem 1.6rem}
+  }
+  :root[data-theme="dark"] .pie-marca__logos{background:#F7F4EE;
+    border-radius:14px;padding:1rem 1.6rem}
+
   /* ---- Movil ---- */
   @media (max-width:640px){
     .ancho{padding-inline:20px}
