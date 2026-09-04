@@ -36,11 +36,12 @@ export const estilosPortada = `
     padding:clamp(2.5rem,6vw,4.5rem) 0 clamp(4rem,9vw,7rem);text-align:center}
   .hero__caja{display:flex;flex-direction:column;align-items:center;gap:1.15rem;
     position:relative;z-index:1;max-width:56rem}
-  /* El logotipo de la casa, encima del rotulo del producto: primero de quien
-     es, y despues como se llama. Va contenido para no competir con el rotulo,
-     que es lo que tiene que leerse primero al entrar. */
-  .hero__logo{height:clamp(26px,4.4vw,36px);width:auto;display:block;
-    margin:0 auto .4rem}
+  /* El logotipo de la casa, arriba a la izquierda, como la cabecera de
+     cualquier pagina suya. El hero va centrado, asi que la marca tiene su
+     propia fila: si estuviera dentro de la columna centrada, se centraria. */
+  .hero__marca{position:relative;z-index:1;text-align:left;
+    margin-bottom:clamp(1.6rem,5vw,3rem)}
+  .hero__logo{height:clamp(26px,4.4vw,36px);width:auto;display:block;margin:0}
   /* Lleva colores fijos y el verde se pierde sobre el fondo oscuro. Como no se
      puede retocar el logotipo, se le da suelo claro. */
   @media (prefers-color-scheme:dark){

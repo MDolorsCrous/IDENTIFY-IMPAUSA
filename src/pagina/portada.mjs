@@ -375,9 +375,11 @@ export function paginaDeInicio(recursos) {
 
   <header class="hero">
     ${ondas}
-    <div class="ancho hero__caja">
+    <div class="ancho hero__marca">
       <img class="hero__logo" src="${marca.logo.src}" alt="${esc(marca.logo.alt)}"
         width="${marca.logo.ancho}" height="${marca.logo.alto}">
+    </div>
+    <div class="ancho hero__caja">
       <h1 class="rotulo"><span id="rn">Identify</span><span class="rotulo__by" id="rb">by Impausa</span></h1>
       <p class="hero__titular">${t.hero.titular}</p>
       <p class="hero__base">${t.hero.base}</p>
