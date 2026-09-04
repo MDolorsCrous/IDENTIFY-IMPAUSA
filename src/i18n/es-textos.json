@@ -304,14 +304,16 @@
     "inicio": {
       "empezar": "Comenzar el test ahora",
       "alCodigo": "Introducir el código de acceso",
-      "avisoFallos": "Aviso: la autocomprobación del cálculo no coincide en: {lista}. No uses estos resultados."
+      "avisoFallos": "Aviso: la autocomprobación del cálculo no coincide en: {lista}. No uses estos resultados.",
+      "seguir": "Continuar donde lo dejaste",
+      "seguirDetalle": "Tienes {n} de 60 respuestas guardadas en este navegador.",
+      "empezarDeCero": "Empezar de nuevo"
     },
     "pregunta": {
       "de60": "Pregunta {n} de 60",
-      "completado": "{pct}% completado",
-      "ariaEscala": "Escala de respuesta",
       "anterior": "← Anterior",
-      "teclas": "Puedes responder con las teclas 1 a 5"
+      "teclas": "Puedes responder con las teclas 1 a 5",
+      "ariaAvance": "Preguntas respondidas"
     },
     "resultados": {
       "ariaEje": "{nombre}: {valor} sobre 5",

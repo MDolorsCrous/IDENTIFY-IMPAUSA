@@ -69,6 +69,10 @@ const marca = {
     grisCalido: "#6F6B65",
     linea: "#DDD8CE",
     blanco: "#FFFDFC",
+    // El verde del propio logotipo, el de «AUSA». Marca la respuesta elegida en
+    // el cuestionario: la persona ve su elección en el color de la casa y no en
+    // uno inventado para la ocasión. Texto #302A26 encima da 7,57 de contraste.
+    verdeLogo: "#A7C6A1",
   },
 
   // Un color por dominio, estable en todo el informe: gráfico general, barras de

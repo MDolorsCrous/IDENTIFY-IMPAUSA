@@ -347,3 +347,51 @@ test("cada tipografía viaja una sola vez en la página", () => {
   assert.match(pagina, /function ponerTipografias\(\)/, "nadie declara las tipografías");
   assert.ok(!pagina.includes("tipografiasDeLaCasa"), "el generador vuelve a emitirlas");
 });
+
+test("el informe se puede leer en un móvil abierto suelto", () => {
+  // Dentro del iframe de la aplicación manda el ancho del marco y no se notaba,
+  // pero el informe se guarda, se manda por correo y se abre solo. Sin viewport,
+  // el teléfono lo maqueta en un lienzo de 980 px y lo aleja hasta que cabe.
+  const recursos = cargarRecursos();
+  const respuestasEjemplo = Object.fromEntries(
+    Object.entries(cargarEjemplo().responses).map(([k, v]) => [Number(k), Number(v)]),
+  );
+  const modelo = construirModelo(respuestasEjemplo, recursos, {});
+  const html = renderInforme(modelo, {}, recursos.labels, {
+    textos: recursos.textos.informe,
+    facetas: recursos.facetas,
+    metaforas: recursos.metaforas,
+    marca: recursos.marca,
+    fecha: "1 de enero de 2026",
+  });
+  assert.ok(html.includes('name="viewport"'), "el informe no declara viewport");
+  assert.ok(html.includes('<meta charset="utf-8">'), "el informe no declara charset");
+  assert.ok(html.includes("<!doctype html>"), "al informe le falta el doctype");
+});
+
+test("la pantalla del cuestionario no pierde el trabajo ni al teclado", () => {
+  const pagina = readFileSync(join(raiz, "test-identify.html"), "utf8");
+
+  // Las respuestas se guardan en el aparato de quien contesta, y no se
+  // restauran solas: se le ofrece continuar.
+  assert.match(pagina, /localStorage\.setItem\(CAJON/, "las respuestas no se guardan");
+  assert.match(pagina, /id="seguir"/, "no se ofrece continuar un test a medias");
+  assert.match(pagina, /guardado\.olvidar\(\)/, "no se borra nunca lo guardado");
+
+  // El foco no se pierde en cada respuesta: va al enunciado, que además hace que
+  // un lector de pantalla lea la pregunta nueva.
+  assert.match(pagina, /getElementById\("enunciado"\)\.focus/, "el foco se pierde al responder");
+
+  // Grupo de radio de verdad: una sola parada de tabulación y flechas.
+  assert.match(pagina, /ArrowDown: 1, ArrowRight: 1/, "las flechas no recorren las opciones");
+  assert.match(pagina, /tabindex="\$\{\(elegido/, "las cinco opciones siguen en el orden de tabulación");
+
+  // La barra dice su valor.
+  assert.match(pagina, /role="progressbar"/, "la barra no expone su valor");
+  assert.match(pagina, /aria-valuenow=/, "la barra no dice cuántas van");
+
+  // Y el verde de la elegida sale de la paleta de marca, no escrito a mano.
+  const marca = cargarRecursos().marca;
+  assert.ok(pagina.includes(`--verde-logo:${marca.paleta.verdeLogo}`), "el verde no viene de marca.json");
+  assert.ok(pagina.includes("background:var(--verde-logo)"), "la elegida no lleva el verde del logotipo");
+});

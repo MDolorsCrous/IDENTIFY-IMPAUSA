@@ -297,6 +297,9 @@ export function renderInforme(modelo, prosa = {}, labels, opciones = {}) {
   const conProsa = Boolean(prosa && Object.keys(prosa).length);
   const fecha = opciones.fecha ?? "";
   const persona = modelo.meta.generatedFor ?? "";
+  // La lengua del documento. Sin ella, `hyphens` parte con las reglas de otro
+  // idioma; y con el informe ya en dos lenguas, ponerla fija sería mentir.
+  const lang = opciones.lang ?? opciones.idioma ?? "es";
 
   // El motor trabaja con los ids de banda (baja…alta); lo que se lee sale del
   // mapa de labels, que en castellano es la identidad. Ya llega escapado.
@@ -422,7 +425,15 @@ const INDICE = [
 
 // El <html lang> es lo que le dice al navegador con qué reglas partir las
 // palabras. Sin él, `hyphens:auto` no hace nada y el justificado abre huecos.
-const html = `<html lang="es">
+//
+// El viewport hacía falta y no estaba. Dentro del iframe de la aplicación no se
+// notaba, porque manda el ancho del marco; pero este documento se guarda, se
+// manda por correo y se abre suelto, y abierto en un móvil el teléfono lo
+// maquetaba en un lienzo de 980 px y lo alejaba hasta que cabía. Texto diminuto.
+const html = `<!doctype html>
+<html lang="${lang}">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>${textos.titulo}</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>

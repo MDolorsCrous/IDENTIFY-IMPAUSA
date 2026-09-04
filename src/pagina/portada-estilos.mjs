@@ -82,6 +82,17 @@ export const estilosPortada = `
   .puerta .campo{align-items:center;text-align:center;margin:0;gap:.15rem}
   .puerta__error{color:#B3401A;font-size:.9rem;margin:0}
 
+  /* ---- Retomar un test a medias ---- */
+  .seguir{display:flex;flex-direction:column;align-items:center;gap:.8rem;
+    background:var(--menta);border:1px solid var(--verde-suave-borde);
+    border-radius:14px;padding:1.2rem 1.4rem;max-width:30rem;width:100%}
+  .seguir__texto{margin:0;font-size:.96rem;color:var(--ink);text-align:center}
+  .seguir__botones{display:flex;align-items:center;gap:1rem;flex-wrap:wrap;
+    justify-content:center}
+  .seguir__botones .enlace{background:none;border:0;color:var(--verde);
+    font-weight:600;cursor:pointer;min-height:44px;padding:.5rem .3rem;
+    text-decoration:underline;text-underline-offset:3px}
+
   /* ---- Tarjetas ---- */
   .rejilla{display:grid;gap:1rem}
   .rejilla--3{grid-template-columns:repeat(auto-fit,minmax(16rem,1fr))}

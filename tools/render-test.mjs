@@ -87,6 +87,7 @@ const html = `<!doctype html>
     --ground:#F7F4EE; --tarjeta:#FFFDFC; --ink:#302A26; --ink-soft:#6E6862;
     --borde:#E4DDD5; --track:#E7E0D6; --titulo:#27624F;
     --sombra:0 1px 3px rgba(26,74,58,.07); --sombra-alta:0 6px 24px rgba(26,74,58,.10);
+    --verde-logo:${recursos.marca.paleta.verdeLogo};
   }
   @media (prefers-color-scheme:dark){
     :root:not([data-theme="light"]){
@@ -146,15 +147,22 @@ const html = `<!doctype html>
      La cabecera del cuestionario. Lleva el logotipo porque esta pantalla se ve
      sesenta veces seguidas y era la unica del producto sin nada de la casa:
      parecia otra aplicacion. Va pequeno y arriba, sin robar sitio. */
-  .progreso{position:sticky;top:0;background:var(--ground);padding:.75rem 1.25rem 0;
-    z-index:3}
+  /* El aire de abajo va en la cabecera y no en la pregunta. Al ser sticky, ese
+     aire viaja con ella: la tarjeta nunca se le pega, ni arriba del todo ni a
+     medio scroll, y es el mismo en las sesenta pantallas. Antes no lo habia, y
+     en una pantalla corta la pregunta se metia debajo de la barra sin un
+     milimetro de separacion. La sombra marca donde acaba la cabecera cuando hay
+     algo pasando por debajo. */
+  .progreso{position:sticky;top:0;background:var(--ground);
+    padding:.75rem 1.25rem 1.15rem;z-index:3;
+    box-shadow:0 6px 14px -10px rgba(39,98,79,.35)}
   .progreso__marca{display:flex;align-items:center;gap:1rem;max-width:42rem;
     margin:0 auto .55rem}
   .progreso__marca img{height:20px;width:auto;flex:none}
   .progreso__fila{display:flex;justify-content:space-between;align-items:baseline;
     gap:1rem;flex:1;font-family:"Montserrat",system-ui,sans-serif;font-size:.74rem;
     font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-soft);
-    font-variant-numeric:tabular-nums}
+    font-variant-numeric:tabular-nums;white-space:nowrap}
   .barra{max-width:42rem;margin:0 auto;height:6px;background:var(--track);
     border-radius:99px;overflow:hidden}
   /* El degradado de la casa, el mismo del boton y de las ondas. */
@@ -181,19 +189,24 @@ const html = `<!doctype html>
     border-radius:12px;padding:.75rem 1.1rem;cursor:pointer;
     transition:border-color .12s ease, background .12s ease, transform .12s ease}
   .opcion:hover{border-color:var(--verde-suave-borde);transform:translateX(2px)}
-  /* Elegida: verde y menta, no naranja. Sesenta veces seguidas, el naranja
-     cansa y se lee como aviso; esto es una confirmacion. */
-  .opcion[aria-checked="true"]{border-color:var(--verde-medio);background:var(--menta)}
+  /* Elegida: el verde del propio logotipo, que llega de marca.json y no escrito
+     aqui. Verde y no naranja porque sesenta veces seguidas el naranja cansa y se
+     lee como aviso, y esto es una confirmacion. El texto encima da 7,57 de
+     contraste, asi que se lee de sobra. */
+  .opcion[aria-checked="true"]{border-color:var(--verde);background:var(--verde-logo);
+    color:#302A26}
   .opcion__num{flex:none;width:2rem;height:2rem;border-radius:50%;display:grid;
     place-items:center;background:var(--track);font-family:"Montserrat",system-ui,sans-serif;
     font-size:.85rem;font-weight:700;color:var(--ink-soft);transition:background .12s ease}
   .opcion[aria-checked="true"] .opcion__num{background:var(--verde);color:#FFFDFC}
   .opcion__texto{flex:1}
   /* La marca de elegida no es solo el color: quien no distinga verde de beige
-     ve igualmente que esa es la suya. */
-  .opcion__marca{flex:none;color:var(--verde);font-weight:700;opacity:0;
+     ve igualmente que esa es la suya. En tinta y no en verde: sobre el verde del
+     logotipo, el verde de la casa se queda en 3,8 de contraste. */
+  .opcion__marca{flex:none;color:var(--ink);font-weight:700;opacity:0;
     transition:opacity .12s ease}
   .opcion[aria-checked="true"] .opcion__marca{opacity:1}
+  .opcion[aria-checked="true"] .opcion__texto{font-weight:700}
 
   .pie-preg{display:flex;justify-content:space-between;align-items:center;gap:1rem;
     margin-top:.2rem}
@@ -278,7 +291,7 @@ const html = `<!doctype html>
 
   /* Idiomas: ES y EN cambian la lengua al instante; CA explica por qué no puede */
   .idiomas{display:flex;gap:.15rem;align-items:center;font-size:.82rem;color:var(--ink-soft)}
-  .idioma{background:none;border:0;padding:.3rem .5rem;border-radius:4px;cursor:pointer;
+  .idioma{background:none;border:0;min-height:44px;padding:.3rem .7rem;border-radius:4px;cursor:pointer;
     color:var(--verde-medio);font-weight:600;letter-spacing:.04em}
   .idioma:hover{background:var(--tarjeta)}
   .idioma[aria-current="true"]{color:var(--ink-soft);cursor:default;font-weight:400}
@@ -292,7 +305,7 @@ const html = `<!doctype html>
   .campo{display:flex;flex-direction:column;gap:.3rem;font-size:.9rem;margin-bottom:1rem}
   .campo span{color:var(--ink-soft);font-weight:400}
   .campo input{font:inherit;color:inherit;background:var(--ground);border:1px solid var(--borde);
-    border-radius:5px;padding:.55rem .7rem;max-width:20rem}
+    border-radius:5px;padding:.65rem .8rem;max-width:20rem;min-height:44px}
   .barra-informe{display:flex;justify-content:space-between;align-items:center;gap:1rem;
     flex-wrap:wrap;padding:.7rem 1.25rem;background:var(--ground);
     border-bottom:1px solid var(--borde);position:sticky;top:0;z-index:3}
@@ -430,7 +443,39 @@ const FALLOS = comprobar();
 // ---- Estado ----
 let pantalla = "portada";
 let indice = 0;
-const respuestas = {};   // solo en memoria: no se guarda nada
+const respuestas = {};
+
+/**
+ * Las respuestas, guardadas en el aparato de quien contesta.
+ *
+ * Antes vivian solo en memoria, y sesenta preguntas en un movil se pierden
+ * facil: basta con que se bloquee la pantalla, que el sistema descarte la
+ * pestana o que alguien recargue sin querer. Se perdia todo, sin aviso.
+ *
+ * Se guardan en localStorage, o sea **en su navegador y en ningun sitio mas**:
+ * al servidor solo van si pide el informe escrito, igual que antes. Y no se
+ * restauran solas — al volver se le pregunta si quiere seguir o empezar de
+ * nuevo, porque encontrarte el test de otro a medias en un ordenador compartido
+ * seria peor que perderlo.
+ */
+const CAJON = "identify-respuestas";
+const guardado = {
+  poner(){
+    try {
+      localStorage.setItem(CAJON, JSON.stringify({ respuestas, indice, cuando: Date.now() }));
+    } catch {}
+  },
+  leer(){
+    try {
+      const d = JSON.parse(localStorage.getItem(CAJON) || "null");
+      if (!d || typeof d.respuestas !== "object") return null;
+      const cuantas = Object.keys(d.respuestas).length;
+      // Ni un test vacio ni uno ya terminado: no hay nada que reanudar.
+      return cuantas > 0 && cuantas < 60 ? d : null;
+    } catch { return null; }
+  },
+  olvidar(){ try { localStorage.removeItem(CAJON); } catch {} },
+};
 let persona = "";
 // Mientras Claude escribe, el informe ya se ve: se dibuja con todo lo que
 // calcula el codigo y los pasajes se rellenan cuando llegan. Un minuto mirando
@@ -476,6 +521,20 @@ function portada(){
   // fichero local tiene por donde empezar— encuentra lo que busca.
   const botonHero = '<button class="cta" id="empezar" type="button">' +
     T.inicio.empezar + ' <span aria-hidden="true">→</span></button>';
+
+  // Si quedo un test a medias en este navegador, se ofrece — no se restaura
+  // solo. Encontrarte de golpe el test de otro por la mitad en un ordenador
+  // compartido seria peor que perderlo.
+  const aMedias = guardado.leer();
+  const tarjetaSeguir = aMedias
+    ? '<div class="seguir">' +
+        '<p class="seguir__texto">' +
+        rellena(T.inicio.seguirDetalle, { n: Object.keys(aMedias.respuestas).length }) +
+        '</p><div class="seguir__botones">' +
+        '<button class="cta" id="seguir" type="button">' + T.inicio.seguir + '</button>' +
+        '<button class="enlace" id="deCero" type="button">' + T.inicio.empezarDeCero + '</button>' +
+      '</div></div>'
+    : "";
   const botonCierre = '<button class="cta" id="empezar2" type="button">' +
     T.inicio.empezar + ' <span aria-hidden="true">→</span></button>';
 
@@ -497,7 +556,7 @@ function portada(){
     '</div>';
 
   app.innerHTML = PORTADA_HTML
-    .replace(HUECO_CTA_HERO, puertaCerrada ? laPuerta : botonHero)
+    .replace(HUECO_CTA_HERO, puertaCerrada ? laPuerta : (tarjetaSeguir || botonHero))
     .replace(HUECO_CTA_FINAL, alCierre)
     .replace(HUECO_IDIOMAS, selectorDeIdiomas)
     .replace(HUECO_AVISO, FALLOS.length
@@ -544,8 +603,29 @@ function portada(){
     };
   }
 
+  const deCero = () => {
+    guardado.olvidar();
+    for (const k in respuestas) delete respuestas[k];
+    indice = 0;
+    pantalla = "test";
+    pintar();
+  };
+
+  const seguir = document.getElementById("seguir");
+  if (seguir) seguir.onclick = () => {
+    const antes = guardado.leer();
+    if (!antes) return deCero();
+    for (const k in respuestas) delete respuestas[k];
+    Object.assign(respuestas, antes.respuestas);
+    indice = Math.min(Math.max(0, antes.indice | 0), 59);
+    pantalla = "test";
+    pintar();
+  };
+  const botonDeCero = document.getElementById("deCero");
+  if (botonDeCero) botonDeCero.onclick = deCero;
+
   const empezar2 = document.getElementById("empezar2");
-  if (empezar2) empezar2.onclick = () => { pantalla = "test"; pintar(); };
+  if (empezar2) empezar2.onclick = deCero;
 
   const alaPuerta = document.getElementById("alaPuerta");
   if (alaPuerta) alaPuerta.onclick = () => {
@@ -639,26 +719,36 @@ function pregunta(){
   const q = CFG.questions[indice];
   const elegido = respuestas[q.id];
   const hechas = Object.keys(respuestas).length;
+  const pct = Math.round(hechas / 60 * 100);
   app.innerHTML = \`
     <div class="progreso">
       <div class="progreso__marca">
         <img src="\${D.comun.marca.logo.src}" alt="\${esc(D.comun.marca.logo.alt)}">
+        <!-- Una sola etiqueta. Poner el contador Y las respondidas era la
+             manera de que dejaran de contradecirse —al volver atras salia
+             «Pregunta 40 de 60» junto a «75% completado»—, pero a 390 px las
+             dos no caben y se salian por la derecha. La posicion es lo que
+             importa mientras se contesta; cuantas van hechas lo dice la barra,
+             y su valor exacto va en aria-valuenow para quien no la ve. -->
         <div class="progreso__fila">
           <span>\${rellena(T.pregunta.de60, { n: indice + 1 })}</span>
-          <span>\${rellena(T.pregunta.completado, { pct: Math.round(hechas / 60 * 100) })}</span>
         </div>
       </div>
-      <div class="barra"><div class="barra__relleno" style="width:\${hechas / 60 * 100}%"></div></div>
+      <div class="barra" role="progressbar" aria-valuemin="0" aria-valuemax="60"
+           aria-valuenow="\${hechas}" aria-label="\${T.pregunta.ariaAvance}">
+        <div class="barra__relleno" style="width:\${pct}%"></div>
+      </div>
     </div>
     <div class="contenido">
       <div class="pregunta">
         <div class="tarjeta-preg">
           <p class="stem">\${esc(CUES.stem)}</p>
-          <h2 class="enunciado">\${esc(CUES.questions[q.id])}</h2>
+          <h2 class="enunciado" id="enunciado" tabindex="-1">\${esc(CUES.questions[q.id])}</h2>
         </div>
-        <div class="opciones" role="radiogroup" aria-label="\${T.pregunta.ariaEscala}">
-          \${[1,2,3,4,5].map(v => \`
-            <button class="opcion" role="radio" aria-checked="\${elegido === v}" data-v="\${v}">
+        <div class="opciones" role="radiogroup" aria-labelledby="enunciado">
+          \${[1,2,3,4,5].map((v, i) => \`
+            <button class="opcion" role="radio" aria-checked="\${elegido === v}" data-v="\${v}"
+                    tabindex="\${(elegido === undefined ? i === 0 : elegido === v) ? 0 : -1}">
               <span class="opcion__num">\${v}</span><span class="opcion__texto">\${esc(CUES.scale[v])}</span>
               <span class="opcion__marca" aria-hidden="true">✓</span>
             </button>\`).join("")}
@@ -669,22 +759,73 @@ function pregunta(){
         </div>
       </div>
     </div>\`;
-  app.querySelectorAll(".opcion").forEach(b => b.onclick = () => responder(+b.dataset.v));
-  document.getElementById("atras").onclick = () => { if (indice > 0) { indice--; pintar(); } };
+
+  const opciones = [...app.querySelectorAll(".opcion")];
+  opciones.forEach(b => b.onclick = () => responder(+b.dataset.v));
+
+  // Un grupo de radio de verdad. Decia serlo —role="radiogroup"— pero las cinco
+  // opciones estaban en el orden de tabulacion y las flechas no hacian nada.
+  // Un grupo de radio tiene UNA parada y se recorre con las flechas.
+  app.querySelector(".opciones").addEventListener("keydown", (e) => {
+    const salto = { ArrowDown: 1, ArrowRight: 1, ArrowUp: -1, ArrowLeft: -1 }[e.key];
+    if (!salto) return;
+    e.preventDefault();
+    const ahora = opciones.findIndex(b => b.tabIndex === 0);
+    const va = opciones[(ahora + salto + 5) % 5];
+    for (const b of opciones) b.tabIndex = b === va ? 0 : -1;
+    va.focus();
+  });
+
+  // El foco, al enunciado de la pregunta nueva. Antes se perdia en cada
+  // respuesta —pintar() rehace el bloque entero— y quien navega con teclado
+  // acababa en el body y tenia que tabular desde arriba sesenta veces. Ademas
+  // esto hace que un lector de pantalla lea la pregunta al cambiar, que antes
+  // no decia nada.
+  document.getElementById("enunciado").focus({ preventScroll: true });
+
+  document.getElementById("atras").onclick = () => { if (indice > 0) { indice--; guardado.poner(); pintar(); } };
 }
+
+/** Cuanto se queda la respuesta encendida antes de pasar a la siguiente. */
+const PAUSA = 180;
 
 function responder(valor){
   const q = CFG.questions[indice];
   respuestas[q.id] = valor;
-  if (indice < 59) { indice++; pintar(); }
-  else if (Object.keys(respuestas).length === 60) { pantalla = "resultados"; pintar(); }
-  else { indice = CFG.questions.findIndex(x => respuestas[x.id] === undefined); pintar(); }
+  guardado.poner();
+
+  // La eleccion se pinta ANTES de avanzar. Sin esto no se veia nunca hacia
+  // delante: la pantalla saltaba a la siguiente en el mismo instante y el verde
+  // no llegaba a dibujarse. Ahora se enciende, se ve que la respuesta ha
+  // entrado, y pasa. Sesenta veces son once segundos.
+  for (const b of app.querySelectorAll(".opcion")) {
+    b.setAttribute("aria-checked", String(+b.dataset.v === valor));
+  }
+
+  const seguir = () => {
+    if (indice < 59) { indice++; pintar(); }
+    else if (Object.keys(respuestas).length === 60) {
+      guardado.olvidar();   // terminado: ya no hay nada que reanudar
+      pantalla = "resultados"; pintar();
+    }
+    else { indice = CFG.questions.findIndex(x => respuestas[x.id] === undefined); pintar(); }
+  };
+
+  // Quien pide menos movimiento no quiere esperas de adorno.
+  const quieto = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  quieto ? seguir() : setTimeout(seguir, PAUSA);
 }
 
 document.addEventListener("keydown", e => {
   if (pantalla !== "test") return;
   if (e.key >= "1" && e.key <= "5") { responder(+e.key); e.preventDefault(); }
-  if (e.key === "Backspace" && indice > 0) { indice--; pintar(); e.preventDefault(); }
+  // Backspace nunca se le deja al navegador: en la pregunta 1 la guarda fallaba
+  // y el preventDefault no llegaba, asi que el navegador hacia lo suyo — salir
+  // de la pagina — con el test a medias.
+  if (e.key === "Backspace") {
+    if (indice > 0) { indice--; pintar(); }
+    e.preventDefault();
+  }
 });
 
 function filas(items, etiquetas, valores, color){
@@ -763,6 +904,7 @@ function resultados(){
     </div>\`;
 
   document.getElementById("reiniciar").onclick = () => {
+    guardado.olvidar();
     for (const k in respuestas) delete respuestas[k];
     persona = ""; prosa = {};
     redactando = false; yaPedida = false; // otro test, otra redacción

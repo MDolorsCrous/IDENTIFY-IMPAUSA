@@ -304,14 +304,16 @@
     "inicio": {
       "empezar": "Start the test now",
       "alCodigo": "Enter the access code",
-      "avisoFallos": "Warning: the calculation self-check does not match in: {lista}. Do not use these results."
+      "avisoFallos": "Warning: the calculation self-check does not match in: {lista}. Do not use these results.",
+      "seguir": "Pick up where you left off",
+      "seguirDetalle": "You have {n} of 60 answers saved in this browser.",
+      "empezarDeCero": "Start over"
     },
     "pregunta": {
       "de60": "Question {n} of 60",
-      "completado": "{pct}% complete",
-      "ariaEscala": "Response scale",
       "anterior": "← Previous",
-      "teclas": "You can answer with keys 1 to 5"
+      "teclas": "You can answer with keys 1 to 5",
+      "ariaAvance": "Questions answered"
     },
     "resultados": {
       "ariaEje": "{nombre}: {valor} out of 5",
