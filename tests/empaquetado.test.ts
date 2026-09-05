@@ -154,11 +154,21 @@ test("el selector ofrece tres lenguas: dos de verdad y una explicada", () => {
   // BFI-2 al catalán. Si esa explicación desaparece, la herramienta vuelve a
   // parecer descuidada en vez de honesta.
   const pagina = readFileSync(join(raiz, "test-identify.html"), "utf8");
-  for (const idioma of [">ES<", ">CA<", ">EN<"]) {
+  for (const idioma of [">ES<", ">CAT<", ">EN<"]) {
     assert.ok(pagina.includes(idioma), `falta ${idioma} en el selector`);
   }
+  // «CAT» y no «CA»: CA es el código del catalán, pero también el de
+  // California, y hay navegadores que lo expanden solos. Salió en pantalla.
+  assert.ok(!pagina.includes(">CA<"), "el botón del catalán vuelve a ser «CA», que se confunde con California");
   assert.ok(pagina.includes('data-cambia="es"'), "ES ya no cambia el idioma");
   assert.ok(pagina.includes('data-cambia="en"'), "EN ya no cambia el idioma");
+  // La lengua puesta se marca de verdad, no apagándola: apagada parecía la que
+  // NO estaba, y al pulsar EN daba la impresión de que no había pasado nada.
+  assert.match(
+    pagina,
+    /\.idioma\[aria-current="true"\]\{background:var\(--verde\)/,
+    "la lengua activa no se ve activa",
+  );
   assert.ok(pagina.includes("Per què aquest test no és en català"), "falta la explicación en catalán");
   assert.ok(pagina.includes("no n'hi ha"), "la explicación ya no dice que no existe adaptación");
   assert.ok(pagina.includes("<dialog"), "la explicación no se abre en un panel");

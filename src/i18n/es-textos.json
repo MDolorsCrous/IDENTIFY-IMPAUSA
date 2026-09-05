@@ -307,7 +307,8 @@
       "avisoFallos": "Aviso: la autocomprobación del cálculo no coincide en: {lista}. No uses estos resultados.",
       "seguir": "Continuar donde lo dejaste",
       "seguirDetalle": "Tienes {n} de 60 respuestas guardadas en este navegador.",
-      "empezarDeCero": "Empezar de nuevo"
+      "empezarDeCero": "Empezar de nuevo",
+      "idiomas": "Idioma"
     },
     "pregunta": {
       "de60": "Pregunta {n} de 60",

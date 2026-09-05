@@ -39,7 +39,11 @@ export const estilosPortada = `
   /* El logotipo de la casa, arriba a la izquierda, como la cabecera de
      cualquier pagina suya. El hero va centrado, asi que la marca tiene su
      propia fila: si estuviera dentro de la columna centrada, se centraria. */
+  /* El logotipo a la izquierda y el selector de lengua a la derecha, arriba del
+     todo: es donde se busca, y donde estaba antes —abajo, entre el codigo de
+     acceso y la ola— habia que bajar hasta el final para encontrarlo. */
   .hero__marca{position:relative;z-index:1;text-align:left;
+    display:flex;align-items:center;justify-content:space-between;gap:1rem;
     margin-bottom:clamp(1.6rem,5vw,3rem)}
   .hero__logo{height:clamp(26px,4.4vw,36px);width:auto;display:block;margin:0}
   /* Lleva colores fijos y el verde se pierde sobre el fondo oscuro. Como no se

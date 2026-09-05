@@ -304,12 +304,19 @@ const html = `<!doctype html>
   @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .puerta__error{color:#E88}}
 
   /* Idiomas: ES y EN cambian la lengua al instante; CA explica por qué no puede */
-  .idiomas{display:flex;gap:.15rem;align-items:center;font-size:.82rem;color:var(--ink-soft)}
-  .idioma{background:none;border:0;min-height:44px;padding:.3rem .7rem;border-radius:4px;cursor:pointer;
-    color:var(--verde-texto);font-weight:600;letter-spacing:.04em}
-  .idioma:hover{background:var(--tarjeta)}
-  .idioma[aria-current="true"]{color:var(--ink-soft);cursor:default;font-weight:400}
-  .idioma[aria-current="true"]:hover{background:none}
+  /* El selector de lengua, arriba a la derecha. Los tres botones juntos en una
+     pastilla: asi se lee como un mando de tres posiciones y no como tres
+     enlaces sueltos, y se ve cual esta puesta sin tener que compararlos. */
+  .idiomas{display:flex;align-items:center;gap:.15rem;flex:none;
+    background:var(--tarjeta);border:1px solid var(--borde);border-radius:999px;padding:.15rem}
+  .idioma{background:none;border:0;min-height:36px;padding:.3rem .8rem;border-radius:999px;
+    cursor:pointer;font-size:.78rem;color:var(--verde-texto);font-weight:600;letter-spacing:.04em}
+  .idioma:hover{background:var(--menta)}
+  /* La puesta, marcada de verdad. Antes se apagaba —gris y peso normal— y
+     parecia justo lo contrario: que esa era la que NO estaba. Al pulsar EN, EN
+     se volvia palido y daba la impresion de que no habia pasado nada. */
+  .idioma[aria-current="true"]{background:var(--verde);color:#F7F2EB;cursor:default}
+  .idioma[aria-current="true"]:hover{background:var(--verde)}
   .panel{border:1px solid var(--borde);border-radius:8px;background:var(--tarjeta);
     color:var(--ink);max-width:34rem;padding:1.6rem 1.7rem;box-shadow:var(--sombra-alta)}
   .panel::backdrop{background:rgba(15,32,26,.45)}
@@ -598,14 +605,20 @@ function portada(){
       ' <span aria-hidden="true">↑</span></button>'
     : botonCierre;
 
-  // ES y EN cambian la lengua de verdad; CA abre la explicacion de por que no
+  // ES y EN cambian la lengua de verdad; CAT abre la explicacion de por que no
   // hay catalan. El activo lleva aria-current y no hace nada al pulsarlo.
+  //
+  // **CAT y no CA.** «CA» es el codigo del catalan, pero tambien el de
+  // California, y hay navegadores y extensiones que lo expanden solo: en una
+  // pantalla salia «ES · California · EN». No hay forma de impedir que un
+  // programa de fuera reescriba la pagina, pero sí de no darle la ocasion.
+  const puesta = (lengua) => (idioma === lengua ? ' aria-current="true"' : '');
   const selectorDeIdiomas =
-    '<div class="idiomas">' +
-      '<button class="idioma" data-cambia="es"' + (idioma === "es" ? ' aria-current="true"' : '') + '>ES</button><span aria-hidden="true">·</span>' +
-      '<button class="idioma" data-idioma="ca">CA</button><span aria-hidden="true">·</span>' +
-      '<button class="idioma" data-cambia="en"' + (idioma === "en" ? ' aria-current="true"' : '') + '>EN</button>' +
-    '</div>';
+    '<nav class="idiomas" aria-label="' + T.inicio.idiomas + '">' +
+      '<button class="idioma" data-cambia="es" lang="es"' + puesta("es") + '>ES</button>' +
+      '<button class="idioma" data-idioma="ca" lang="ca">CAT</button>' +
+      '<button class="idioma" data-cambia="en" lang="en"' + puesta("en") + '>EN</button>' +
+    '</nav>';
 
   app.innerHTML = PORTADA_HTML
     .replace(HUECO_CTA_HERO, puertaCerrada ? laPuerta : (tarjetaSeguir || botonHero))

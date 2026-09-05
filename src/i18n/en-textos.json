@@ -307,7 +307,8 @@
       "avisoFallos": "Warning: the calculation self-check does not match in: {lista}. Do not use these results.",
       "seguir": "Pick up where you left off",
       "seguirDetalle": "You have {n} of 60 answers saved in this browser.",
-      "empezarDeCero": "Start over"
+      "empezarDeCero": "Start over",
+      "idiomas": "Language"
     },
     "pregunta": {
       "de60": "Question {n} of 60",

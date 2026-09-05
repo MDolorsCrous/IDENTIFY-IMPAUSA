@@ -378,6 +378,7 @@ export function paginaDeInicio(recursos) {
     <div class="ancho hero__marca">
       <img class="hero__logo" src="${marca.logo.src}" alt="${esc(marca.logo.alt)}"
         width="${marca.logo.ancho}" height="${marca.logo.alto}">
+      ${MARCA_IDIOMAS}
     </div>
     <div class="ancho hero__caja">
       <h1 class="rotulo"><span id="rn">Identify</span><span class="rotulo__by" id="rb">by Impausa</span></h1>
@@ -387,7 +388,6 @@ export function paginaDeInicio(recursos) {
       <p class="hero__rigor">${icono("balanza")}<span>${t.hero.rigor}</span></p>
       ${MARCA_CTA_HERO}
       <p class="micro">${t.hero.micro}</p>
-      ${MARCA_IDIOMAS}
       ${MARCA_AVISO}
     </div>
   </header>
