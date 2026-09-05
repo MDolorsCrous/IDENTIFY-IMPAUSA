@@ -336,7 +336,7 @@
       "ariaJson": "Resultado en JSON",
       "reiniciar": "Empezar de nuevo",
       "nadaGuardado": "Estos números están en tu navegador y no han salido de tu dispositivo.",
-      "alPedirInforme": "Si pides el informe escrito, tus respuestas se envían a IMPAUSA para redactarlo y el informe queda guardado, para que puedas volver a él y para que tu coach pueda leerlo contigo."
+      "alPedirInforme": "Si pides el informe escrito, tus respuestas se envían a IMPAUSA para redactarlo y el informe queda guardado un año, para que puedas volver a él y para que tu coach pueda leerlo contigo. Puedes borrarlo antes cuando quieras."
     },
     "copiar": {
       "copiado": "Copiado",
@@ -356,8 +356,12 @@
       "jsonInvalido": "Eso no es un JSON válido. Cópialo entero, desde la primera llave hasta la última.",
       "noEncaja": "La redacción no encaja con el esquema:\n\n· {lista}",
       "guardadoTitulo": "Guarda este enlace",
-      "guardadoTexto": "Tu informe queda en esta dirección. Guárdala si quieres volver a él: hará falta el mismo código de acceso.",
-      "copiarEnlace": "Copiar el enlace"
+      "guardadoTexto": "Tu informe queda en esta dirección durante un año. Guárdala si quieres volver a él: hará falta el mismo código de acceso.",
+      "copiarEnlace": "Copiar el enlace",
+      "borrar": "Borrar mi informe",
+      "borrarConfirma": "Se va a borrar tu informe del servidor: las respuestas, el nombre y el texto redactado.\n\nNo se puede deshacer, y este enlace dejará de funcionar. Lo que ya tengas impreso o guardado en PDF se queda contigo.\n\n¿Lo borro?",
+      "borrado": "Tu informe ya no está en el servidor.",
+      "noBorrado": "No se ha podido borrar el informe. Inténtalo otra vez o avisa a IMPAUSA."
     },
     "trabajando": {
       "titulo": "Claude está redactando",

@@ -37,6 +37,16 @@
   to = "/.netlify/functions/resultado"
   status = 200
 
+# Retirar el informe. Lo pide quien lo tiene delante, con el mismo código con el
+# que lo abre: es su material y no debería tener que pedirlo por correo.
+[[redirects]]
+  from = "/api/olvidar"
+  to = "/.netlify/functions/olvidar"
+  status = 200
+
+# La limpieza NO lleva redirección: no es una dirección que nadie pueda visitar.
+# La dispara el programador de Netlify una vez al día (netlify/functions/limpieza.mjs).
+
 [build.environment]
   # Fijar la versión de Node: sin esto, un cambio del valor por defecto de
   # Netlify puede romper el build sin que nadie haya tocado nada. Hace falta

@@ -336,7 +336,7 @@
       "ariaJson": "Result as JSON",
       "reiniciar": "Start over",
       "nadaGuardado": "These numbers are in your browser and have not left your device.",
-      "alPedirInforme": "If you ask for the written report, your answers are sent to IMPAUSA to write it and the report is stored, so you can come back to it and so your coach can read it with you."
+      "alPedirInforme": "If you ask for the written report, your answers are sent to IMPAUSA to write it and the report is kept for a year, so you can come back to it and so your coach can read it with you. You can delete it sooner whenever you want."
     },
     "copiar": {
       "copiado": "Copied",
@@ -356,8 +356,12 @@
       "jsonInvalido": "That is not valid JSON. Copy it whole, from the first brace to the last.",
       "noEncaja": "The draft does not fit the schema:\n\n· {lista}",
       "guardadoTitulo": "Keep this link",
-      "guardadoTexto": "Your report lives at this address. Save it if you want to come back: it will ask for the same access code.",
-      "copiarEnlace": "Copy the link"
+      "guardadoTexto": "Your report lives at this address for a year. Save it if you want to come back: it will ask for the same access code.",
+      "copiarEnlace": "Copy the link",
+      "borrar": "Delete my report",
+      "borrarConfirma": "Your report is about to be deleted from the server: the answers, the name and the written text.\n\nThis cannot be undone, and this link will stop working. Anything you have already printed or saved as a PDF stays with you.\n\nDelete it?",
+      "borrado": "Your report is no longer on the server.",
+      "noBorrado": "The report could not be deleted. Try again, or let IMPAUSA know."
     },
     "trabajando": {
       "titulo": "Claude is writing",

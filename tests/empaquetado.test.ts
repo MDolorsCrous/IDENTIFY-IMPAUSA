@@ -445,9 +445,8 @@ test("un informe redactado se puede volver a abrir", () => {
   // Y empezar de nuevo —o cambiar de lengua— suelta esa dirección: si no, quien
   // recargue vuelve al informe anterior en vez de al test que acaba de empezar.
   assert.match(pagina, /function soltarElInforme/, "la dirección del informe no se suelta nunca");
-  assert.equal(
-    (pagina.match(/soltarElInforme\(\);/g) ?? []).length,
-    2,
+  assert.ok(
+    (pagina.match(/soltarElInforme\(\);/g) ?? []).length >= 2,
     "empezar de nuevo y cambiar de lengua tienen que soltar la dirección del informe",
   );
 

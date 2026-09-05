@@ -110,13 +110,13 @@ La tubería `respuestas → modelo` está en `src/services/pipeline.ts`, en una 
 
 ## Qué se guarda, dónde, y quién puede leerlo
 
-| Qué | Dónde | Cuándo sale del aparato |
-| --- | --- | --- |
-| Las 60 respuestas y por dónde iba | `localStorage` del navegador | Nunca. Se borra al terminar y al reiniciar |
-| El idioma elegido | `localStorage` | Nunca |
-| El código de acceso | `sessionStorage` | Solo hacia `/api/entrar` y `/api/redactar`, para comprobarlo |
-| Respuestas, nombre, idioma y prosa | Netlify Blobs, almacén `identify-informes` | **Al pedir el informe escrito**, y se quedan |
-| El recuento de informes del día | Netlify Blobs, almacén `identify-cuota` | Un número por fecha, sin nada de nadie |
+| Qué | Dónde | Cuándo sale del aparato | Cuánto dura |
+| --- | --- | --- | --- |
+| Las 60 respuestas y por dónde iba | `localStorage` del navegador | Nunca | Hasta terminar o reiniciar; y **30 días** como mucho |
+| El idioma elegido | `localStorage` | Nunca | Hasta que se cambie |
+| El código de acceso | `sessionStorage` | Solo hacia `/api/entrar`, `/api/redactar`, `/api/resultado` y `/api/olvidar`, para comprobarlo | Hasta cerrar la pestaña |
+| Respuestas, nombre, idioma y prosa | Netlify Blobs, almacén `identify-informes` | **Al pedir el informe escrito** | **1 año** |
+| El recuento de informes del día | Netlify Blobs, almacén `identify-cuota` | Un número por fecha, sin nada de nadie | 35 días |
 
 Las respuestas se guardan junto a la prosa **a propósito**: el informe se dibuja desde el
 modelo, y el modelo se monta desde las respuestas. Guardar solo el texto haría que el
@@ -133,9 +133,32 @@ Desde el ordenador de quien administra, `node tools/informes.mjs` lista lo que h
 con credenciales de Netlify, no con el código del test: no abre ninguna dirección pública
 nueva.
 
-**Lo que todavía no está decidido: cuánto tiempo se guarda.** Hoy no se borra nada nunca.
-Hace falta un plazo —y algo que lo aplique— antes de que esto pase de las pruebas a
-personas que no sean del equipo.
+### El plazo: un año, y tres maneras de que algo desaparezca antes
+
+Un año es tiempo de sobra para volver al informe meses después, releerlo con el coach o
+compararlo con un segundo test; pasado eso, no hay razón para seguir teniendo las
+respuestas de nadie.
+
+1. **Solo.** `netlify/functions/limpieza.mjs` es una función programada —cada noche a las
+   cuatro, sin dirección pública por la que se pueda llamar— que borra los informes de más
+   de un año y los contadores de cuota de más de 35 días. El plazo se cambia con
+   `DIAS_GUARDADOS` en Netlify; si se cambia, **hay que cambiar también el texto de la
+   pantalla**, que dice el número. `tests/retencion.test.ts` comprueba que coinciden.
+2. **Porque lo pide quien lo tiene.** El botón «Borrar mi informe» de la pantalla llama a
+   `/api/olvidar`, que pide la misma llave que para leerlo: el identificador y el código.
+   Quien puede abrir el informe ya lo tiene entero delante, así que poder borrarlo no
+   afloja nada — pero borrar no se deshace y la página pregunta antes.
+3. **Porque te lo piden a ti.** `node tools/informes.mjs --borrar <id>`, con el
+   identificador entero: para sacar un informe, equivocarse no cuesta nada; para borrarlo,
+   sí. No guarda una copia antes a propósito — si alguien te ha pedido que lo quites,
+   dejártelo en el ordenador no es quitarlo.
+
+Un informe **sin fecha** no lo borra la limpieza: es material de alguien y la duda no se
+resuelve borrando. Si apareciera alguno, sale en el registro de la función.
+
+El test a medias del navegador caduca a los 30 días. Nadie retoma en octubre lo que dejó
+en septiembre, y unas respuestas guardadas para siempre en un aparato que a lo mejor es
+compartido no están guardadas: están olvidadas ahí.
 
 ## Modelo
 

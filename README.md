@@ -94,9 +94,10 @@ en la cuenta de claude.ai, así que las instrucciones viajan con la petición.
 ## Los informes que se han hecho en la web
 
 ```
-node tools/informes.mjs              la lista de lo que hay
-node tools/informes.mjs <id>         saca uno: JSON y HTML, en salidas/
-node tools/informes.mjs --todos      saca todos
+node tools/informes.mjs                 la lista de lo que hay
+node tools/informes.mjs <id>            saca uno: JSON y HTML, en salidas/
+node tools/informes.mjs --todos         saca todos
+node tools/informes.mjs --borrar <id>   lo quita del servidor, para siempre
 ```
 
 Cuando alguien pide el informe escrito, sus respuestas, su nombre y la redacción quedan
@@ -109,8 +110,13 @@ propósito:** una dirección pública más por la que pedir informes de otras pe
 una puerta nueva, y esta no abre ninguna.
 
 Lo que sale son datos de personas concretas. Va a `salidas/`, que está en el `.gitignore`.
-Lo que todavía no está decidido es **cuánto tiempo se guardan**: hoy no se borra nada
-nunca ([`docs/04`](docs/04-arquitectura-hibrida.md)).
+
+**Los informes se guardan un año** y luego se borran solos: una función programada barre
+cada noche lo caducado. Quien tiene un informe puede retirarlo él mismo desde su pantalla,
+y `--borrar` es para cuando te lo piden a ti. El plazo se cambia con `DIAS_GUARDADOS` en
+Netlify — pero el texto de la pantalla dice el número, así que hay que cambiar los dos:
+`tests/retencion.test.ts` comprueba que coinciden. Todo esto, con el porqué, en
+[`docs/04`](docs/04-arquitectura-hibrida.md).
 
 ## La skill
 

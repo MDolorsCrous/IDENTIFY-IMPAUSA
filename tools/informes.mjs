@@ -3,6 +3,11 @@
 //   node tools/informes.mjs              la lista de lo que hay
 //   node tools/informes.mjs <id>         saca uno: el JSON y el HTML, en salidas/
 //   node tools/informes.mjs --todos      saca todos
+//   node tools/informes.mjs --borrar <id>   lo quita del servidor, para siempre
+//
+// Los informes se borran solos al año (netlify/functions/limpieza.mjs) y quien
+// lo tiene puede retirarlo desde su pantalla. `--borrar` es para cuando alguien
+// te lo pide a ti.
 //
 // **Por que un comando y no una pantalla de administracion.** Una pantalla asi
 // seria una direccion publica mas por la que se pueden pedir informes de otras
@@ -149,12 +154,33 @@ export function sacar(ficha) {
 // el modulo intente hablar con Netlify al cargarse.
 if (process.argv[1] && import.meta.url === `file:///${process.argv[1].replace(/\\/g, "/")}`) {
   const que = process.argv[2];
-  const fichas = await todos(abrirAlmacen());
+  const almacen = abrirAlmacen();
+  const fichas = await todos(almacen);
+  const buscar = (aguja) => fichas.find((f) => f.id === aguja || f.id.startsWith(aguja));
 
   if (!que) listar(fichas);
   else if (que === "--todos") fichas.forEach((f) => sacar(f));
-  else {
-    const ficha = fichas.find((f) => f.id === que || f.id.startsWith(que));
+  else if (que === "--borrar") {
+    // Aqui el identificador va entero, no vale el principio. Para sacar un
+    // informe, equivocarse de uno no cuesta nada; para borrarlo, no se deshace.
+    // Y no se guarda una copia antes: si alguien te ha pedido que lo quites,
+    // dejartelo en el ordenador no es quitarlo. Si la quieres, sacalo primero.
+    const id = process.argv[3] ?? "";
+    const ficha = fichas.find((f) => f.id === id);
+    if (!ficha) {
+      console.error(
+        "No hay ningun informe con ese identificador exacto: " + id +
+          "\n(para borrar hace falta el identificador entero)",
+      );
+      process.exit(1);
+    }
+    await almacen.delete(ficha.id);
+    console.log(
+      "borrado del servidor: " + dia(ficha.cuando) + " · " + (ficha.persona || "sin nombre") +
+        " · " + ficha.id,
+    );
+  } else {
+    const ficha = buscar(que);
     if (!ficha) {
       console.error("No hay ningun informe con ese identificador: " + que);
       process.exit(1);

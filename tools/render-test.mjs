@@ -333,6 +333,10 @@ const html = `<!doctype html>
   .guardado__t{margin:0;font-weight:600;color:var(--titulo)}
   .guardado__d{margin:0;flex:1;min-width:15rem;color:var(--ink-soft)}
   .guardado .boton{padding:.45rem .9rem;font-size:.85rem}
+  /* Borrar es del mismo peso que copiar el enlace, no un boton rojo: es una
+     opcion normal de quien decide sobre su material, no una alarma. */
+  .enlace--sobrio{color:var(--ink-soft);font-weight:400;font-size:.85rem;
+    text-decoration:underline;text-underline-offset:3px}
   @media print{.guardado{display:none}}
   #marco{flex:1;width:100%;border:0;min-height:calc(100vh - 4rem);background:#fff}
   .json{width:100%;min-height:9rem;margin-top:.9rem;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;
@@ -484,6 +488,8 @@ const respuestas = {};
  * seria peor que perderlo.
  */
 const CAJON = "identify-respuestas";
+/** Cuanto se ofrece reanudar un test a medias. Un mes. */
+const DIAS_A_MEDIAS = 30;
 const guardado = {
   poner(){
     try {
@@ -496,7 +502,15 @@ const guardado = {
       if (!d || typeof d.respuestas !== "object") return null;
       const cuantas = Object.keys(d.respuestas).length;
       // Ni un test vacio ni uno ya terminado: no hay nada que reanudar.
-      return cuantas > 0 && cuantas < 60 ? d : null;
+      if (!(cuantas > 0 && cuantas < 60)) return null;
+      // Ni uno de hace un mes. Nadie retoma en octubre las preguntas que dejo a
+      // medias en septiembre, y guardar respuestas de alguien en un navegador
+      // para siempre —a lo mejor compartido— no es guardarlas, es olvidarselas.
+      if (!(typeof d.cuando === "number" && Date.now() - d.cuando < DIAS_A_MEDIAS * 864e5)) {
+        this.olvidar();
+        return null;
+      }
+      return d;
     } catch { return null; }
   },
   olvidar(){ try { localStorage.removeItem(CAJON); } catch {} },
@@ -1054,6 +1068,7 @@ function informe(){
              <p class="guardado__t">\${T.informe.guardadoTitulo}</p>
              <p class="guardado__d">\${T.informe.guardadoTexto}</p>
              <button class="boton boton--claro" id="copiarEnlace">\${T.informe.copiarEnlace}</button>
+             <button class="enlace enlace--sobrio" id="borrarInforme">\${T.informe.borrar}</button>
            </aside>\`
         : ""
     }
@@ -1096,6 +1111,30 @@ function informe(){
   const copiarEnlace = document.getElementById("copiarEnlace");
   if (copiarEnlace) copiarEnlace.onclick = e =>
     copiarEnBoton(e.target, location.origin + location.pathname + "#informe=" + informeGuardado, T.informe.copiarEnlace);
+
+  // Retirar el informe del servidor. Lo que queda en pantalla no se toca: quien
+  // acaba de decir que no lo quiere guardado sigue queriendo leerlo ahora, y
+  // cerrarselo de golpe seria castigar la decision. Lo que desaparece es la
+  // tarjeta del enlace, que ya no lleva a ninguna parte.
+  const borrar = document.getElementById("borrarInforme");
+  if (borrar) borrar.onclick = async () => {
+    if (!window.confirm(T.informe.borrarConfirma)) return;
+    borrar.disabled = true;
+    try {
+      const r = await fetch("/api/olvidar", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ id: informeGuardado, codigo: recuerdaCodigo.leer() }),
+      });
+      if (!r.ok) throw new Error("no");
+      window.alert(T.informe.borrado);
+      soltarElInforme();
+      pintar();
+    } catch {
+      borrar.disabled = false;
+      window.alert(T.informe.noBorrado);
+    }
+  };
 
   document.getElementById("volver").onclick = () => { pantalla = "resultados"; pintar(); };
   document.getElementById("imprimir").onclick = () => marco.contentWindow?.print();
