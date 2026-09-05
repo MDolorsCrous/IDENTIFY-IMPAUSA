@@ -698,6 +698,9 @@ function portada(){
       });
       if (r.ok) {
         recuerdaCodigo.guardar(codigo);
+        // Si venia siguiendo el enlace de su informe, no empieza un test nuevo:
+        // el codigo era justo lo que faltaba para poder abrirlo.
+        if (await recuperarInforme()) return;
         pantalla = "test";
         pintar();
         return;
@@ -1272,11 +1275,16 @@ function ajustarRotulo(){
  *
  * Vuelven la prosa Y las respuestas, porque el informe se dibuja desde el
  * modelo: sin las respuestas no hay grafico, ni bandas, ni facetas.
+ *
+ * No pregunta el codigo: si no lo tiene, se rinde en silencio y quien abre el
+ * enlace ve la portada con la puerta de siempre. Al entrar por ahi se vuelve a
+ * llamar a esto, y entonces si. Un window.prompt sobre una pagina en blanco,
+ * antes de que se vea nada, no parece la aplicacion sino un aviso del navegador.
  */
 async function recuperarInforme(){
   const marca = /^#informe=([A-Za-z0-9-]{8,80})$/.exec(location.hash || "");
   if (!marca || !HAY_SERVIDOR) return false;
-  const codigo = recuerdaCodigo.leer() || window.prompt(T.puerta.pedirCodigo, "");
+  const codigo = recuerdaCodigo.leer();
   if (!codigo) return false;
   try {
     const r = await fetch("/api/resultado", {
@@ -1286,7 +1294,6 @@ async function recuperarInforme(){
     });
     const datos = await r.json().catch(() => ({}));
     if (datos.estado !== "listo" || !datos.respuestas) return false;
-    recuerdaCodigo.guardar(codigo);
     // El informe se lee en la lengua en que se redacto, aunque quien lo abra
     // tenga otra elegida: la prosa guardada no se traduce sola.
     if (datos.idioma && D.idiomas[datos.idioma]) aplicarIdioma(datos.idioma);
@@ -1304,8 +1311,11 @@ async function recuperarInforme(){
   }
 }
 
-if (!(location.hash || "").startsWith("#informe=")) pintar();
-else recuperarInforme().then((salioBien) => { if (!salioBien) pintar(); });
+pintar();
+// Y si la direccion trae un informe, se abre encima de lo que se acaba de
+// pintar. Primero pintar y luego ir a buscarlo, no al reves: la pagina se ve
+// enseguida y, si no se puede recuperar, ya esta la portada delante.
+recuperarInforme();
 </script>
 `;
 

@@ -103,6 +103,21 @@ test("la página generada lleva el paquete y no se corta", () => {
   assert.ok((pagina.match(/<script>/g) ?? []).length >= 2);
 });
 
+test("los dos bloques de script de la página son JavaScript válido", () => {
+  // La aplicación se escribe dentro de una plantilla de `tools/render-test.mjs`,
+  // y ahí un error no se nota al generar: el fichero sale, y es la página la que
+  // queda muerta. Ha pasado dos veces —una comilla invertida sin escapar, y un
+  // `};` que quedó suelto tras mover un bloque— y las dos veces se descubrió
+  // mirando la pantalla en blanco. Esto lo cierra: se compila lo que se publica.
+  const pagina = readFileSync(join(raiz, "test-identify.html"), "utf8");
+  const bloques = [...pagina.matchAll(/<script>([\s\S]*?)<\/script>/g)].map((m) => m[1]);
+  assert.ok(bloques.length >= 2, "no hay dos bloques de script");
+  for (const [i, cuerpo] of bloques.entries()) {
+    // `new Function` compila sin ejecutar: si el bloque no es válido, lanza.
+    assert.doesNotThrow(() => new Function(cuerpo), `el bloque de script ${i + 1} no compila`);
+  }
+});
+
 test("el motor empotrado en la página no sabe nada de la API ni de la clave", () => {
   // La página es un HTML suelto que se abre con doble clic: cualquier clave que
   // llevara dentro quedaría a la vista de quien lo abriera. Por eso la llamada
@@ -420,8 +435,10 @@ test("un informe redactado se puede volver a abrir", () => {
   // quedaba guardado en el servidor y era inalcanzable al cerrar la pestaña.
   assert.match(pagina, /history\.replaceState\(null, "", "#informe=" \+ id\)/, "el informe no deja rastro en la dirección");
   assert.match(pagina, /async function recuperarInforme/, "no hay manera de volver a un informe");
-  // Y no se recupera solo con conocer la dirección: hace falta el mismo código.
-  assert.match(pagina, /recuerdaCodigo\.leer\(\) \|\| window\.prompt\(T\.puerta\.pedirCodigo/, "se recuperaría sin código");
+  // Y no se recupera solo con conocer la dirección: hace falta el mismo código,
+  // que se pide por la puerta de siempre y no con un aviso del navegador.
+  assert.match(pagina, /const codigo = recuerdaCodigo\.leer\(\);\s*\n\s*if \(!codigo\) return false;/, "se recuperaría sin código");
+  assert.match(pagina, /if \(await recuperarInforme\(\)\) return;/, "entrar por la puerta no lleva al informe del enlace");
   // La página ofrece copiar el enlace, que si no hay que sacarlo de la barra.
   assert.match(pagina, /id="copiarEnlace"/, "no se puede copiar el enlace del informe");
 
