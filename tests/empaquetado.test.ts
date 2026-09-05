@@ -98,7 +98,13 @@ test("la página generada lleva el paquete y no se corta", () => {
   const pagina = readFileSync(join(raiz, "test-identify.html"), "utf8");
   assert.ok(pagina.includes("function construirModelo"), "la página no lleva el motor");
   assert.ok(pagina.includes('id="informe"'), "falta el botón del informe");
-  assert.ok(pagina.includes('id="ver"'), "falta el botón del JSON");
+  // El JSON solo en el fichero local: ahí no hay servidor que redacte y copiarlo
+  // es la única manera de sacar las respuestas para `node generar.js`.
+  assert.match(
+    pagina,
+    /HAY_SERVIDOR\s*\n?\s*\?\s*""\s*\n?\s*:\s*'<button class="boton boton--claro" id="ver">/,
+    "el botón del JSON ya no está reservado al fichero local",
+  );
   // Dos bloques de script: el motor y la aplicación
   assert.ok((pagina.match(/<script>/g) ?? []).length >= 2);
 });

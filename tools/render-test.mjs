@@ -996,9 +996,18 @@ function resultados(){
           </label>
           <div class="acciones">
             <button class="boton" id="informe">\${T.informe.nombre}</button>
-            <button class="boton boton--claro" id="ver">\${T.resultados.verJson}</button>
+            \${
+              // El JSON solo en el fichero local, que es donde hace falta: ahi no
+              // hay servidor que redacte, y copiarlo es la unica manera de sacar
+              // las respuestas para «node generar.js». En la web sobra — el
+              // informe se pide con el boton de al lado — y una pantalla de
+              // resultados no es sitio para ensenarle a nadie su JSON.
+              HAY_SERVIDOR
+                ? ""
+                : '<button class="boton boton--claro" id="ver">' + T.resultados.verJson + "</button>"
+            }
           </div>
-          <textarea id="json" class="json" readonly hidden aria-label="\${T.resultados.ariaJson}"></textarea>
+          \${HAY_SERVIDOR ? "" : '<textarea id="json" class="json" readonly hidden aria-label="' + T.resultados.ariaJson + '"></textarea>'}
         </div>
         <div class="acciones">
           <button class="boton boton--claro" id="reiniciar">\${T.resultados.reiniciar}</button>
@@ -1027,7 +1036,8 @@ function resultados(){
   }, null, 2);
 
   const caja = document.getElementById("json");
-  document.getElementById("ver").onclick = e => {
+  const ver = document.getElementById("ver");
+  if (ver) ver.onclick = e => {
     caja.value = paraElInforme();
     caja.hidden = !caja.hidden;
     e.target.textContent = caja.hidden ? T.resultados.verJson : T.resultados.ocultarJson;
