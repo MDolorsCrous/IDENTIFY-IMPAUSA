@@ -118,12 +118,14 @@ export default async function handler(peticion) {
   // ninguno. Aqui solo llegan las 60 respuestas, nunca un perfil ya montado:
   // asi esto no se puede usar para pedirle a Claude cualquier otra cosa.
   let modelo;
+  let respuestas;
+  const persona = typeof cuerpo.persona === "string" ? cuerpo.persona.slice(0, 80).trim() : "";
   try {
-    const respuestas = Object.fromEntries(
+    respuestas = Object.fromEntries(
       Object.entries(cuerpo.respuestas ?? {}).map(([k, v]) => [Number(k), Number(v)]),
     );
     modelo = construirModelo(respuestas, recursos, {
-      persona: typeof cuerpo.persona === "string" ? cuerpo.persona.slice(0, 80).trim() : undefined,
+      persona: persona || undefined,
     });
   } catch (e) {
     if (e instanceof ScoringError) {
@@ -155,7 +157,12 @@ export default async function handler(peticion) {
         `${r.uso.input_tokens} entrada / ${r.uso.output_tokens} salida · ` +
         `${r.coste.toFixed(3)} $ · ${cuota.usados ?? "?"}/${cuota.tope ?? "?"} hoy`,
     );
-    return guardar(id, { estado: "listo", prosa: r.prosa });
+    // Se guardan tambien las respuestas, el nombre y el idioma. No es un
+    // capricho de archivo: el informe se dibuja desde el modelo, y el modelo se
+    // reconstruye desde las respuestas. Sin ellas, la prosa guardada no se
+    // puede volver a montar y el informe seria inalcanzable en cuanto se
+    // cerrara la pestaña. Es lo que permite volver con `#informe=<id>`.
+    return guardar(id, { estado: "listo", prosa: r.prosa, respuestas, persona, idioma });
   } catch (e) {
     const segundos = ((Date.now() - empezo) / 1000).toFixed(0);
     if (e instanceof FalloDeRedaccion) {

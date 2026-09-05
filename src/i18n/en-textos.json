@@ -335,7 +335,8 @@
       "ocultarJson": "Hide the JSON",
       "ariaJson": "Result as JSON",
       "reiniciar": "Start over",
-      "nadaGuardado": "None of this has been saved or sent anywhere. If you close the page, it is gone."
+      "nadaGuardado": "These numbers are in your browser and have not left your device.",
+      "alPedirInforme": "If you ask for the written report, your answers are sent to IMPAUSA to write it and the report is stored, so you can come back to it and so your coach can read it with you."
     },
     "copiar": {
       "copiado": "Copied",
@@ -353,7 +354,10 @@
       "imprimir": "Print",
       "pegarInstrucciones": "Paste here the JSON that Claude returned with the draft.\n\nIt is checked before going in: if any section is missing, I will tell you and leave the report untouched.",
       "jsonInvalido": "That is not valid JSON. Copy it whole, from the first brace to the last.",
-      "noEncaja": "The draft does not fit the schema:\n\n· {lista}"
+      "noEncaja": "The draft does not fit the schema:\n\n· {lista}",
+      "guardadoTitulo": "Keep this link",
+      "guardadoTexto": "Your report lives at this address. Save it if you want to come back: it will ask for the same access code.",
+      "copiarEnlace": "Copy the link"
     },
     "trabajando": {
       "titulo": "Claude is writing",

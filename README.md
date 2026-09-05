@@ -91,6 +91,27 @@ en `tools/` y no en `src/services/`, que es lo único que se empaqueta, y
 Usa el **encargo largo**, no el corto: la API no ve las skills instaladas en Claude Code ni
 en la cuenta de claude.ai, así que las instrucciones viajan con la petición.
 
+## Los informes que se han hecho en la web
+
+```
+node tools/informes.mjs              la lista de lo que hay
+node tools/informes.mjs <id>         saca uno: JSON y HTML, en salidas/
+node tools/informes.mjs --todos      saca todos
+```
+
+Cuando alguien pide el informe escrito, sus respuestas, su nombre y la redacción quedan
+guardados en Netlify para que pueda volver a su informe con el enlace y para que se pueda
+leer con él. Esto es lo que los saca de ahí.
+
+Hacen falta dos variables de entorno, `NETLIFY_SITE_ID` y `NETLIFY_AUTH_TOKEN` — el
+comando dice dónde encontrarlas si faltan. **No es una pantalla de administración a
+propósito:** una dirección pública más por la que pedir informes de otras personas sería
+una puerta nueva, y esta no abre ninguna.
+
+Lo que sale son datos de personas concretas. Va a `salidas/`, que está en el `.gitignore`.
+Lo que todavía no está decidido es **cuánto tiempo se guardan**: hoy no se borra nada
+nunca ([`docs/04`](docs/04-arquitectura-hibrida.md)).
+
 ## La skill
 
 `skill/identify-bfi2-knowledge/` lleva el conocimiento del BFI-2 a cualquier conversación:

@@ -324,6 +324,16 @@ const html = `<!doctype html>
     flex-wrap:wrap;padding:.7rem 1.25rem;background:var(--ground);
     border-bottom:1px solid var(--borde);position:sticky;top:0;z-index:3}
   .barra-informe .boton{padding:.5rem 1rem;font-size:.9rem}
+  /* La direccion del informe, cuando ya esta guardado en el servidor. Va aqui
+     arriba y no en una tarjeta flotante: no puede taparle el informe a nadie. */
+  .guardado{display:flex;gap:.6rem 1rem;align-items:baseline;flex-wrap:wrap;
+    margin:.9rem 1.25rem 0;padding:.75rem .95rem;font-size:.88rem;
+    background:var(--tarjeta);border:1px solid var(--borde);
+    border-left:3px solid var(--verde);border-radius:0 6px 6px 0}
+  .guardado__t{margin:0;font-weight:600;color:var(--titulo)}
+  .guardado__d{margin:0;flex:1;min-width:15rem;color:var(--ink-soft)}
+  .guardado .boton{padding:.45rem .9rem;font-size:.85rem}
+  @media print{.guardado{display:none}}
   #marco{flex:1;width:100%;border:0;min-height:calc(100vh - 4rem);background:#fff}
   .json{width:100%;min-height:9rem;margin-top:.9rem;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;
     font-size:.8rem;line-height:1.5;background:var(--ground);color:var(--ink-soft);
@@ -498,6 +508,8 @@ let redactando = false;
 let yaPedida = false;
 let empezoLaRedaccion = 0;
 let prosa = {};          // la redaccion, si se pega
+/** El identificador del informe ya redactado, para poder volver a el. */
+let informeGuardado = "";
 const app = document.getElementById("app");
 // esc, num y pos ya vienen en el paquete del motor: no se redeclaran aqui,
 // que en un ambito plano seria un choque de nombres.
@@ -949,7 +961,7 @@ function resultados(){
         <div class="acciones">
           <button class="boton boton--claro" id="reiniciar">\${T.resultados.reiniciar}</button>
         </div>
-        <p class="ayuda">\${T.resultados.nadaGuardado}</p>
+        <p class="ayuda">\${T.resultados.nadaGuardado}\${HAY_SERVIDOR ? " " + T.resultados.alPedirInforme : ""}</p>
       </div>
     </div>\`;
 
@@ -1020,6 +1032,15 @@ function informe(){
         <button class="boton boton--claro" id="imprimir">\${T.informe.imprimir}</button>
       </div>
     </div>
+    \${
+      informeGuardado && !redactando
+        ? \`<aside class="guardado">
+             <p class="guardado__t">\${T.informe.guardadoTitulo}</p>
+             <p class="guardado__d">\${T.informe.guardadoTexto}</p>
+             <button class="boton boton--claro" id="copiarEnlace">\${T.informe.copiarEnlace}</button>
+           </aside>\`
+        : ""
+    }
     <iframe id="marco" title="\${T.informe.nombre}"></iframe>
     \${
       redactando
@@ -1055,6 +1076,10 @@ function informe(){
     });
     return;
   }
+
+  const copiarEnlace = document.getElementById("copiarEnlace");
+  if (copiarEnlace) copiarEnlace.onclick = e =>
+    copiarEnBoton(e.target, location.origin + location.pathname + "#informe=" + informeGuardado, T.informe.copiarEnlace);
 
   document.getElementById("volver").onclick = () => { pantalla = "resultados"; pintar(); };
   document.getElementById("imprimir").onclick = () => marco.contentWindow?.print();
@@ -1181,6 +1206,12 @@ async function redactarEnElServidor(boton, modelo){
         if (fallos.length) return fallo(T.servidor.incompleta);
         recuerdaCodigo.guardar(codigo);
         prosa = datos.prosa;
+        // El identificador pasa a la direccion. Sin esto el informe quedaba
+        // guardado en el servidor y era inalcanzable: quien cerraba la pestana
+        // lo perdia, aunque siguiera ahi. Va en el fragmento, detras de la
+        // almohadilla, que no se manda al servidor en cada peticion.
+        informeGuardado = id;
+        try { history.replaceState(null, "", "#informe=" + id); } catch {}
         if (boton) pintar(); // sin botón, quien ha llamado dibuja el informe después
         return true;
       }
@@ -1219,7 +1250,49 @@ function ajustarRotulo(){
   window.addEventListener("resize", ajustar);
 }
 
-pintar();
+/**
+ * Volver a un informe ya redactado.
+ *
+ * Si la direccion trae \`#informe=<id>\`, se va a buscar al servidor con el mismo
+ * codigo de acceso. Antes esto no existia: el informe quedaba guardado y era
+ * inalcanzable en cuanto se cerraba la pestana.
+ *
+ * Vuelven la prosa Y las respuestas, porque el informe se dibuja desde el
+ * modelo: sin las respuestas no hay grafico, ni bandas, ni facetas.
+ */
+async function recuperarInforme(){
+  const marca = /^#informe=([A-Za-z0-9-]{8,80})$/.exec(location.hash || "");
+  if (!marca || !HAY_SERVIDOR) return false;
+  const codigo = recuerdaCodigo.leer() || window.prompt(T.puerta.pedirCodigo, "");
+  if (!codigo) return false;
+  try {
+    const r = await fetch("/api/resultado", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ id: marca[1], codigo }),
+    });
+    const datos = await r.json().catch(() => ({}));
+    if (datos.estado !== "listo" || !datos.respuestas) return false;
+    recuerdaCodigo.guardar(codigo);
+    // El informe se lee en la lengua en que se redacto, aunque quien lo abra
+    // tenga otra elegida: la prosa guardada no se traduce sola.
+    if (datos.idioma && D.idiomas[datos.idioma]) aplicarIdioma(datos.idioma);
+    for (const k in respuestas) delete respuestas[k];
+    for (const k in datos.respuestas) respuestas[+k] = Number(datos.respuestas[k]);
+    prosa = datos.prosa ?? {};
+    persona = datos.persona ?? "";
+    informeGuardado = marca[1];
+    yaPedida = true;      // ya esta redactado: que no se pida —ni se pague— otra vez
+    pantalla = "informe";
+    pintar();
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+if (!(location.hash || "").startsWith("#informe=")) pintar();
+else recuperarInforme().then((salioBien) => { if (!salioBien) pintar(); });
 </script>
 `;
 

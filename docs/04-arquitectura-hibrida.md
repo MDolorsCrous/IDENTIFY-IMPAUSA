@@ -108,6 +108,35 @@ La tubería `respuestas → modelo` está en `src/services/pipeline.ts`, en una 
 5. **Coherencia.** El prompt lleva las reglas de tono, los niveles de evidencia y las
    inferencias prohibidas de [`02`](02-modelo-interpretacion.md).
 
+## Qué se guarda, dónde, y quién puede leerlo
+
+| Qué | Dónde | Cuándo sale del aparato |
+| --- | --- | --- |
+| Las 60 respuestas y por dónde iba | `localStorage` del navegador | Nunca. Se borra al terminar y al reiniciar |
+| El idioma elegido | `localStorage` | Nunca |
+| El código de acceso | `sessionStorage` | Solo hacia `/api/entrar` y `/api/redactar`, para comprobarlo |
+| Respuestas, nombre, idioma y prosa | Netlify Blobs, almacén `identify-informes` | **Al pedir el informe escrito**, y se quedan |
+| El recuento de informes del día | Netlify Blobs, almacén `identify-cuota` | Un número por fecha, sin nada de nadie |
+
+Las respuestas se guardan junto a la prosa **a propósito**: el informe se dibuja desde el
+modelo, y el modelo se monta desde las respuestas. Guardar solo el texto haría que el
+informe fuese irrecuperable en cuanto se cerrara la pestaña — que es exactamente lo que
+pasaba antes.
+
+Se llega a un informe guardado por su dirección, `#informe=<id>`, y hace falta **además**
+el código de acceso: el identificador es un UUID que nadie va a acertar, pero un informe
+es material personal y no se sirve solo por conocer su nombre (`resultado.mjs` vuelve a
+comprobar el código en cada lectura).
+
+Desde el ordenador de quien administra, `node tools/informes.mjs` lista lo que hay y
+`node tools/informes.mjs <id>` lo saca a `salidas/` como JSON y como HTML. Lee el almacén
+con credenciales de Netlify, no con el código del test: no abre ninguna dirección pública
+nueva.
+
+**Lo que todavía no está decidido: cuánto tiempo se guarda.** Hoy no se borra nada nunca.
+Hace falta un plazo —y algo que lo aplique— antes de que esto pase de las pruebas a
+personas que no sean del equipo.
+
 ## Modelo
 
 Claude Sonnet 5 (`claude-sonnet-5`) para la redacción por defecto; Opus 5

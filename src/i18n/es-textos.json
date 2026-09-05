@@ -335,7 +335,8 @@
       "ocultarJson": "Ocultar el JSON",
       "ariaJson": "Resultado en JSON",
       "reiniciar": "Empezar de nuevo",
-      "nadaGuardado": "Nada de esto se ha guardado ni enviado a ningún sitio. Si cierras la página, se pierde."
+      "nadaGuardado": "Estos números están en tu navegador y no han salido de tu dispositivo.",
+      "alPedirInforme": "Si pides el informe escrito, tus respuestas se envían a IMPAUSA para redactarlo y el informe queda guardado, para que puedas volver a él y para que tu coach pueda leerlo contigo."
     },
     "copiar": {
       "copiado": "Copiado",
@@ -353,7 +354,10 @@
       "imprimir": "Imprimir",
       "pegarInstrucciones": "Pega aquí el JSON que te haya devuelto Claude con la redacción.\n\nSe comprueba antes de meterlo: si le falta alguna sección, te lo digo y no toco el informe.",
       "jsonInvalido": "Eso no es un JSON válido. Cópialo entero, desde la primera llave hasta la última.",
-      "noEncaja": "La redacción no encaja con el esquema:\n\n· {lista}"
+      "noEncaja": "La redacción no encaja con el esquema:\n\n· {lista}",
+      "guardadoTitulo": "Guarda este enlace",
+      "guardadoTexto": "Tu informe queda en esta dirección. Guárdala si quieres volver a él: hará falta el mismo código de acceso.",
+      "copiarEnlace": "Copiar el enlace"
     },
     "trabajando": {
       "titulo": "Claude está redactando",

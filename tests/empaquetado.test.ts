@@ -395,3 +395,42 @@ test("la pantalla del cuestionario no pierde el trabajo ni al teclado", () => {
   assert.ok(pagina.includes(`--verde-logo:${marca.paleta.verdeLogo}`), "el verde no viene de marca.json");
   assert.ok(pagina.includes("background:var(--verde-logo)"), "la elegida no lleva el verde del logotipo");
 });
+
+test("la página no promete que no se guarda nada, porque sí se guarda", () => {
+  // Decía «Nada de esto se ha guardado ni enviado a ningún sitio. Si cierras la
+  // página, se pierde». Dejó de ser verdad dos veces: cuando las respuestas
+  // empezaron a guardarse en el aparato, y cuando el informe empezó a quedarse
+  // en el servidor. Una promesa así no se puede tener escrita a medias.
+  const pagina = readFileSync(join(raiz, "test-identify.html"), "utf8");
+  for (const promesa of [
+    "Nada de esto se ha guardado ni enviado",
+    "None of this has been saved or sent",
+  ]) {
+    assert.ok(!pagina.includes(promesa), `la página todavía promete «${promesa}»`);
+  }
+  // Y dice, en las dos lenguas, qué pasa al pedir el informe escrito.
+  assert.match(pagina, /tus respuestas se envían a IMPAUSA/, "no se avisa en castellano");
+  assert.match(pagina, /your answers are sent to IMPAUSA/i, "no se avisa en inglés");
+});
+
+test("un informe redactado se puede volver a abrir", () => {
+  const pagina = readFileSync(join(raiz, "test-identify.html"), "utf8");
+
+  // El identificador pasa a la dirección en cuanto el informe está: sin esto
+  // quedaba guardado en el servidor y era inalcanzable al cerrar la pestaña.
+  assert.match(pagina, /history\.replaceState\(null, "", "#informe=" \+ id\)/, "el informe no deja rastro en la dirección");
+  assert.match(pagina, /async function recuperarInforme/, "no hay manera de volver a un informe");
+  // Y no se recupera solo con conocer la dirección: hace falta el mismo código.
+  assert.match(pagina, /recuerdaCodigo\.leer\(\) \|\| window\.prompt\(T\.puerta\.pedirCodigo/, "se recuperaría sin código");
+  // La página ofrece copiar el enlace, que si no hay que sacarlo de la barra.
+  assert.match(pagina, /id="copiarEnlace"/, "no se puede copiar el enlace del informe");
+
+  // El servidor tiene que guardar las respuestas, no solo la prosa: el informe
+  // se dibuja desde el modelo y el modelo se monta desde las respuestas.
+  const fondo = readFileSync(join(raiz, "netlify/functions/redactar-background.mjs"), "utf8");
+  assert.match(
+    fondo,
+    /estado: "listo", prosa: r\.prosa, respuestas, persona, idioma/,
+    "el informe se guarda sin las respuestas: no se podrá volver a montar",
+  );
+});
