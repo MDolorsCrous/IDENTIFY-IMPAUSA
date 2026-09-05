@@ -437,6 +437,20 @@ test("la pantalla del cuestionario no pierde el trabajo ni al teclado", () => {
   assert.match(pagina, /role="progressbar"/, "la barra no expone su valor");
   assert.match(pagina, /aria-valuenow=/, "la barra no dice cuántas van");
 
+  // Una pregunta avanza UNA vez. Dos pulsaciones dentro de la pausa de 180 ms
+  // —un doble toque impaciente, una tecla mantenida— programaban dos pasos: se
+  // saltaba una pregunta sin responder, y al llegar al final el test devolvía a
+  // la primera sin contestar. Desde fuera parecía un bucle.
+  assert.match(pagina, /if \(pasando\) return;/, "dos pulsaciones seguidas vuelven a programar dos pasos");
+  assert.match(pagina, /pasando = setTimeout\(\(\) => \{ pasando = 0; seguir\(\); \}, PAUSA\)/, "el paso no se guarda para poder cancelarlo");
+  assert.match(pagina, /if \(e\.repeat\) \{ e\.preventDefault\(\); return; \}/, "una tecla mantenida contesta en ráfaga");
+  // Y navegar a mano cancela el paso pendiente, o te devuelve hacia delante.
+  assert.equal(
+    (pagina.match(/cancelarPaso\(\);/g) ?? []).length,
+    2,
+    "«Anterior» y Backspace tienen que cancelar el paso pendiente",
+  );
+
   // Y el verde de la elegida sale de la paleta de marca, no escrito a mano.
   const marca = cargarRecursos().marca;
   assert.ok(pagina.includes(`--verde-logo:${marca.paleta.verdeLogo}`), "el verde no viene de marca.json");

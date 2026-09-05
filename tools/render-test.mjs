@@ -851,11 +851,35 @@ function pregunta(){
   // no decia nada.
   document.getElementById("enunciado").focus({ preventScroll: true });
 
-  document.getElementById("atras").onclick = () => { if (indice > 0) { indice--; guardado.poner(); pintar(); } };
+  // Volver atras cancela el paso pendiente: si no, el temporizador de la
+  // respuesta que se acaba de dar te devolvia hacia delante al instante.
+  document.getElementById("atras").onclick = () => {
+    if (indice > 0) { cancelarPaso(); indice--; guardado.poner(); pintar(); }
+  };
 }
 
 /** Cuanto se queda la respuesta encendida antes de pasar a la siguiente. */
 const PAUSA = 180;
+
+/**
+ * El paso a la siguiente pregunta, mientras se esta dejando ver la elegida.
+ *
+ * **Sin esto el test se iba en bucle.** Dos pulsaciones dentro de esos 180 ms
+ * —un doble toque impaciente en el movil, o una tecla mantenida— programaban
+ * DOS pasos: la primera pregunta se respondia y la segunda se saltaba sin
+ * responder. Al llegar al final faltaban respuestas, y el codigo hacia lo unico
+ * sensato que podia hacer: mandar a la primera sin contestar. Desde fuera eso
+ * es «he llegado a la 60 y me ha devuelto a la 32».
+ *
+ * Con esto, una pregunta avanza una vez. Contestar otra vez dentro de la pausa
+ * cambia la respuesta —la ultima manda— pero no programa otro paso.
+ */
+let pasando = 0;
+
+/** Deja quieto el paso pendiente. Lo llama quien navega a mano. */
+function cancelarPaso(){
+  if (pasando) { clearTimeout(pasando); pasando = 0; }
+}
 
 function responder(valor){
   const q = CFG.questions[indice];
@@ -870,28 +894,38 @@ function responder(valor){
     b.setAttribute("aria-checked", String(+b.dataset.v === valor));
   }
 
+  // Ya hay un paso en marcha: la respuesta se cambia, pero no se programa otro.
+  if (pasando) return;
+
   const seguir = () => {
     if (indice < 59) { indice++; pintar(); }
     else if (Object.keys(respuestas).length === 60) {
       guardado.olvidar();   // terminado: ya no hay nada que reanudar
       pantalla = "resultados"; pintar();
     }
+    // La red de seguridad: si al final faltara alguna, se va a por ella en vez
+    // de dar por bueno un test incompleto. Con el paso unico ya no deberia
+    // pasar nunca — era justo esto lo que se veia como un bucle.
     else { indice = CFG.questions.findIndex(x => respuestas[x.id] === undefined); pintar(); }
   };
 
   // Quien pide menos movimiento no quiere esperas de adorno.
   const quieto = matchMedia("(prefers-reduced-motion: reduce)").matches;
-  quieto ? seguir() : setTimeout(seguir, PAUSA);
+  if (quieto) seguir();
+  else pasando = setTimeout(() => { pasando = 0; seguir(); }, PAUSA);
 }
 
 document.addEventListener("keydown", e => {
   if (pantalla !== "test") return;
+  // Una tecla mantenida repite el keydown cada pocas decimas. Sin esto, dejar
+  // el dedo puesto en el 4 contestaba en rafaga.
+  if (e.repeat) { e.preventDefault(); return; }
   if (e.key >= "1" && e.key <= "5") { responder(+e.key); e.preventDefault(); }
   // Backspace nunca se le deja al navegador: en la pregunta 1 la guarda fallaba
   // y el preventDefault no llegaba, asi que el navegador hacia lo suyo — salir
   // de la pagina — con el test a medias.
   if (e.key === "Backspace") {
-    if (indice > 0) { indice--; pintar(); }
+    if (indice > 0) { cancelarPaso(); indice--; pintar(); }
     e.preventDefault();
   }
 });
