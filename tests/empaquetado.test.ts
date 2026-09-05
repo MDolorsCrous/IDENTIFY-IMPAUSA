@@ -425,6 +425,15 @@ test("un informe redactado se puede volver a abrir", () => {
   // La página ofrece copiar el enlace, que si no hay que sacarlo de la barra.
   assert.match(pagina, /id="copiarEnlace"/, "no se puede copiar el enlace del informe");
 
+  // Y empezar de nuevo —o cambiar de lengua— suelta esa dirección: si no, quien
+  // recargue vuelve al informe anterior en vez de al test que acaba de empezar.
+  assert.match(pagina, /function soltarElInforme/, "la dirección del informe no se suelta nunca");
+  assert.equal(
+    (pagina.match(/soltarElInforme\(\);/g) ?? []).length,
+    2,
+    "empezar de nuevo y cambiar de lengua tienen que soltar la dirección del informe",
+  );
+
   // El servidor tiene que guardar las respuestas, no solo la prosa: el informe
   // se dibuja desde el modelo y el modelo se monta desde las respuestas.
   const fondo = readFileSync(join(raiz, "netlify/functions/redactar-background.mjs"), "utf8");

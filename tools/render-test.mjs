@@ -423,6 +423,7 @@ function cambiarIdioma(nuevo){
   for (const k in respuestas) delete respuestas[k];
   persona = ""; prosa = {};
   redactando = false; yaPedida = false; indice = 0;
+  soltarElInforme();
   pantalla = "portada";
   pintar();
 }
@@ -510,6 +511,17 @@ let empezoLaRedaccion = 0;
 let prosa = {};          // la redaccion, si se pega
 /** El identificador del informe ya redactado, para poder volver a el. */
 let informeGuardado = "";
+/**
+ * Quitar el informe de la direccion.
+ *
+ * Al empezar de nuevo o al cambiar de lengua, la direccion no puede seguir
+ * apuntando al informe anterior: quien recargara volveria al informe de antes
+ * en vez de al test que acaba de empezar.
+ */
+function soltarElInforme(){
+  informeGuardado = "";
+  try { history.replaceState(null, "", location.pathname + location.search); } catch {}
+}
 const app = document.getElementById("app");
 // esc, num y pos ya vienen en el paquete del motor: no se redeclaran aqui,
 // que en un ambito plano seria un choque de nombres.
@@ -970,6 +982,7 @@ function resultados(){
     for (const k in respuestas) delete respuestas[k];
     persona = ""; prosa = {};
     redactando = false; yaPedida = false; // otro test, otra redacción
+    soltarElInforme();
     indice = 0; pantalla = "portada"; pintar();
   };
   // Lo que se copia son las RESPUESTAS, no las puntuaciones: quien genera el
