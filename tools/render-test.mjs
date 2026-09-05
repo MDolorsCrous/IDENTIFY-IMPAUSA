@@ -1081,7 +1081,18 @@ function informe(){
       <div class="acciones">
         \${conProsa || redactando || !HAY_SERVIDOR || sinLectura() ? "" : '<button class="boton" id="generar">' + T.informe.generar + '</button>'}
         \${conProsa || redactando || HAY_SERVIDOR ? "" : '<button class="boton boton--claro" id="encargo">' + T.informe.encargo + '</button><button class="enlace" id="encargoLargo" title="' + T.informe.encargoLargoTitulo + '">' + T.informe.encargoLargo + '</button>'}
-        \${redactando || (HAY_SERVIDOR && !conProsa) ? "" : '<button class="boton boton--claro" id="pegar">' + (conProsa ? T.informe.cambiarRedaccion : T.informe.pegarRedaccion) + '</button>'}
+        \${
+          // Pegar la redaccion a mano es la otra mitad del camino local: se
+          // copia el encargo, se lleva a una conversacion con Claude y se pega
+          // lo que devuelve. En la web ese camino no existe —la redaccion la
+          // pide el propio boton— y el JSON de la redaccion no es cosa de quien
+          // hace el test. Va con los botones del encargo, que ya son de alli.
+          redactando || HAY_SERVIDOR
+            ? ""
+            : '<button class="boton boton--claro" id="pegar">' +
+              (conProsa ? T.informe.cambiarRedaccion : T.informe.pegarRedaccion) +
+              "</button>"
+        }
         <button class="boton boton--claro" id="imprimir">\${T.informe.imprimir}</button>
       </div>
     </div>

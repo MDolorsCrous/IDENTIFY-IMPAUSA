@@ -98,15 +98,31 @@ test("la página generada lleva el paquete y no se corta", () => {
   const pagina = readFileSync(join(raiz, "test-identify.html"), "utf8");
   assert.ok(pagina.includes("function construirModelo"), "la página no lleva el motor");
   assert.ok(pagina.includes('id="informe"'), "falta el botón del informe");
-  // El JSON solo en el fichero local: ahí no hay servidor que redacte y copiarlo
-  // es la única manera de sacar las respuestas para `node generar.js`.
+  // Dos bloques de script: el motor y la aplicación
+  assert.ok((pagina.match(/<script>/g) ?? []).length >= 2);
+});
+
+test("el camino de copiar y pegar a mano solo sale en el fichero local", () => {
+  // Copiar el JSON, copiar el encargo y pegar la redacción son las tres piezas
+  // del mismo camino: el que hay que recorrer cuando no hay servidor que
+  // redacte. En la web sobran —el informe se pide de un clic— y una pantalla de
+  // resultados no es sitio para enseñarle a nadie su JSON.
+  const pagina = readFileSync(join(raiz, "test-identify.html"), "utf8");
   assert.match(
     pagina,
     /HAY_SERVIDOR\s*\n?\s*\?\s*""\s*\n?\s*:\s*'<button class="boton boton--claro" id="ver">/,
     "el botón del JSON ya no está reservado al fichero local",
   );
-  // Dos bloques de script: el motor y la aplicación
-  assert.ok((pagina.match(/<script>/g) ?? []).length >= 2);
+  assert.match(
+    pagina,
+    /redactando \|\| HAY_SERVIDOR\s*\n?\s*\?\s*""\s*\n?\s*:\s*'<button class="boton boton--claro" id="pegar">/,
+    "el botón de pegar la redacción ya no está reservado al fichero local",
+  );
+  assert.match(
+    pagina,
+    /conProsa \|\| redactando \|\| HAY_SERVIDOR \? "" : '<button class="boton boton--claro" id="encargo">/,
+    "los botones del encargo ya no están reservados al fichero local",
+  );
 });
 
 test("los dos bloques de script de la página son JavaScript válido", () => {
