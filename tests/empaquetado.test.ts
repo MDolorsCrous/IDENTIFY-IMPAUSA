@@ -453,9 +453,13 @@ test("un informe redactado se puede volver a abrir", () => {
   // El servidor tiene que guardar las respuestas, no solo la prosa: el informe
   // se dibuja desde el modelo y el modelo se monta desde las respuestas.
   const fondo = readFileSync(join(raiz, "netlify/functions/redactar-background.mjs"), "utf8");
-  assert.match(
-    fondo,
-    /estado: "listo", prosa: r\.prosa, respuestas, persona, idioma/,
-    "el informe se guarda sin las respuestas: no se podrá volver a montar",
-  );
+  const guardado = /guardar\(id, \{\s*estado: "listo",([\s\S]*?)\n\s*\}\);/.exec(fondo);
+  assert.ok(guardado, "no se encuentra dónde se guarda el informe terminado");
+  for (const campo of ["prosa", "respuestas", "persona", "idioma"]) {
+    assert.match(
+      guardado[1],
+      new RegExp(`\\b${campo}\\b`),
+      `el informe se guarda sin «${campo}»: no se podrá volver a montar`,
+    );
+  }
 });

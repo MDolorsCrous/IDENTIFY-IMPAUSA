@@ -5,7 +5,12 @@
 // dia que hubo que mejorar el tratamiento de errores hubo que hacerlo en los
 // dos sitios: por eso vive aqui.
 import { clienteDeApi, queHaPasado } from "./clave-api.mjs";
-import { encargoParaLaApi, validarProsa } from "../src/services/prompt.ts";
+import {
+  encargoParaLaApi,
+  validarProsa,
+  avisosDeLongitud,
+  avisosDeContenido,
+} from "../src/services/prompt.ts";
 
 const MODELO = "claude-opus-5";
 
@@ -163,10 +168,17 @@ function leerRespuesta(respuesta, modelo, empezo, idioma = "es") {
     });
   }
 
+  // Y lo que la validacion no puede mirar: si el texto afirma algo que este
+  // instrumento no sostiene —un percentil, un porcentaje, una etiqueta, una
+  // cifra que no sale del perfil—. No invalida nada: viaja con el resultado
+  // para que se pueda ver despues.
+  const avisos = [...avisosDeLongitud(prosa, modelo), ...avisosDeContenido(prosa, modelo)];
+
   const uso = respuesta.usage;
   const entrada = (uso.input_tokens ?? 0) + (uso.cache_read_input_tokens ?? 0);
   return {
     prosa,
+    avisos,
     uso,
     modelo: respuesta.model,
     segundos: (Date.now() - empezo) / 1000,

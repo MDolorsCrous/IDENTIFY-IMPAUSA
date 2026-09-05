@@ -157,12 +157,24 @@ export default async function handler(peticion) {
         `${r.uso.input_tokens} entrada / ${r.uso.output_tokens} salida · ` +
         `${r.coste.toFixed(3)} $ · ${cuota.usados ?? "?"}/${cuota.tope ?? "?"} hoy`,
     );
+    // Lo que la redaccion dice y no debería. No la invalida —una redaccion se
+    // paga una vez y un falso positivo saldría caro— pero se registra Y se
+    // guarda con el informe, para que `tools/informes.mjs` lo enseñe. Un aviso
+    // que no llega a nadie no es un control.
+    if (r.avisos?.length) console.warn(`avisos [${id}]:\n  · ${r.avisos.join("\n  · ")}`);
     // Se guardan tambien las respuestas, el nombre y el idioma. No es un
     // capricho de archivo: el informe se dibuja desde el modelo, y el modelo se
     // reconstruye desde las respuestas. Sin ellas, la prosa guardada no se
     // puede volver a montar y el informe seria inalcanzable en cuanto se
     // cerrara la pestaña. Es lo que permite volver con `#informe=<id>`.
-    return guardar(id, { estado: "listo", prosa: r.prosa, respuestas, persona, idioma });
+    return guardar(id, {
+      estado: "listo",
+      prosa: r.prosa,
+      respuestas,
+      persona,
+      idioma,
+      ...(r.avisos?.length ? { avisos: r.avisos } : {}),
+    });
   } catch (e) {
     const segundos = ((Date.now() - empezo) / 1000).toFixed(0);
     if (e instanceof FalloDeRedaccion) {

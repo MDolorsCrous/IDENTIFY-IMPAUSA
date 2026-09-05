@@ -23,6 +23,22 @@ export interface FichaFaceta {
 /** Dos decimales: el modelo no debe copiar colas decimales al informe. */
 const dos = (v: number) => Math.round(v * 100) / 100;
 
+/**
+ * La clave con la que viaja el pasaje de una combinación.
+ *
+ * Es el id de la regla con los guiones cambiados por barras bajas
+ * (`relaciones-positivas` → `relaciones_positivas`). No es cosmético: los ids
+ * de las reglas son la única parte del esquema con guiones —los dominios ya van
+ * con barra baja— y la documentación de los esquemas estructurados no dice
+ * nada sobre qué caracteres admite un nombre de propiedad. No se puede
+ * comprobar sin gastar una llamada, y si no los admitiera fallarían justo los
+ * informes que más tienen que decir. Un cambio de un carácter lo evita.
+ *
+ * La vuelta no se calcula: se busca en las reglas que han disparado, que se
+ * conocen. Y una prueba comprueba que las 26 dan claves distintas.
+ */
+export const claveDeCombinacion = (id: string) => id.replace(/[^A-Za-z0-9_]/g, "_");
+
 export const INSTRUCCIONES = `Eres quien redacta los informes de Identify by Impausa, el test de personalidad
 BFI-2 de LivePausa. Recibes un perfil YA INTERPRETADO y devuelves únicamente los
 pasajes redactados, en JSON.
@@ -70,6 +86,22 @@ sin saber nada de las otras dos:
 
 Nombra las puntuaciones cuando ayuden a situarse, pero no vuelvas a explicar qué
 es cada faceta ni qué implica su nivel: eso ya está escrito justo debajo.
+
+LAS COMBINACIONES SÍ LAS ESCRIBES TÚ
+Cada regla de \`reglasQueHanDisparado\` lleva una \`clave\`, y bajo esa clave
+devuelves su pasaje en \`combinaciones\`. Una por regla, ni una más.
+
+Encima de tu pasaje, el informe ya imprime el efecto de la regla, lo que
+significa y su cita. **No lo repitas.** Tu pasaje aterriza esa regla en ESTE
+perfil, y para eso tienes \`seCumplePor\`, que dice qué facetas y en qué banda la
+han hecho saltar:
+- qué se ve en esta persona por cumplirse las condiciones que se han cumplido
+- qué tensión o qué ventaja concreta introduce, y con qué otra cosa del perfil
+  se cruza
+- qué hacer con eso
+
+Van afirmadas: todas sus condiciones se cumplen y puedes citar su referencia.
+Esa es la diferencia con las señales.
 
 LAS SEÑALES NO LAS ESCRIBES TÚ
 Las reglas «casi cumplidas» las redacta el código, que sabe exactamente cuál
@@ -120,6 +152,7 @@ LONGITUDES
 - perfilEnUnaFrase: 120-150 palabras
 - cada dominio: 80-110 palabras. Son cortos a propósito: la descripción de cada
   faceta ya la pone el informe debajo
+- cada combinación: 80-120 palabras
 - enElTrabajo: 200-250 palabras
 - preguntas: entre 5 y 7, una línea cada una
 - planAccion: exactamente 3 pasos, unas 60 palabras cada uno
@@ -175,6 +208,22 @@ nothing about the other two:
 Name the scores when they help the reader get oriented, but do not explain again
 what each facet is or what its level implies: that is already written just below.
 
+YOU DO WRITE THE COMBINATIONS
+Every rule in \`reglasQueHanDisparado\` carries a \`clave\`, and under that key you
+return its passage in \`combinaciones\`. One per rule, not one more.
+
+Above your passage, the report already prints the rule's effect, what it means
+and its citation. **Do not repeat that.** Your passage lands the rule in THIS
+profile, and for that you have \`seCumplePor\`, which says which facets and which
+bands made it fire:
+- what shows up in this person because the conditions that were met were met
+- what concrete tension or advantage it introduces, and what else in the profile
+  it crosses with
+- what to do about it
+
+They are stated, not hedged as hypotheses: all their conditions are met and you
+may cite their reference. That is what separates them from the signals.
+
 YOU DO NOT WRITE THE SIGNALS
 The "almost met" rules are written by the code, which knows exactly which
 condition is missing and in which band it sits. You do not need to mention them
@@ -227,6 +276,7 @@ LENGTHS
 - perfilEnUnaFrase: 120-150 words
 - each domain: 80-110 words. They are short on purpose: the report prints each
   facet's description just below
+- each combination: 80-120 words
 - enElTrabajo: 200-250 words
 - preguntas: between 5 and 7, one line each
 - planAccion: exactly 3 steps, about 60 words each
@@ -329,11 +379,18 @@ export function materialParaRedactar(
       }),
     })),
     reglasQueHanDisparado: modelo.fired.map((m) => ({
+      // La llave: es con este nombre con el que hay que devolver el pasaje de
+      // esta combinación en `combinaciones`.
+      clave: claveDeCombinacion(m.rule.id),
       efecto: m.rule.effect,
       queSignifica: m.rule.summary,
       ambito: m.rule.scope,
       seguridad: m.rule.safety ?? null,
       referencias: m.rule.references,
+      // Qué puntuaciones concretas la han hecho saltar. Sin esto, el pasaje no
+      // puede aterrizar la regla en ESTE perfil y se queda en la generalidad
+      // que ya dice `queSignifica`, impresa justo encima.
+      seCumplePor: m.met.map((x) => ({ faceta: x.condition.facet, banda: banda(x.band) })),
     })),
     senales: modelo.nearMisses.map((m) => ({
       efecto: m.rule.effect,
@@ -379,6 +436,32 @@ export function pasosDelPlan(plan: unknown): unknown[] {
 /** El esqueleto de la respuesta. Una clave por sección, nada de prosa libre. */
 export function esquemaSalida(modelo: ReportModel): object {
   const dominios = Object.fromEntries(modelo.domains.map((d) => [d.id, TEXTO(900)]));
+
+  /**
+   * Las combinaciones disparadas, una clave por regla.
+   *
+   * El bloque entero desaparece cuando no ha disparado ninguna: pedir un objeto
+   * vacío obligatorio no significa nada, y la mayoría de los perfiles no
+   * disparan ninguna regla.
+   *
+   * Con `required` puesto a los ids que han disparado, la API garantiza que
+   * vuelven todos y ninguno de más — igual que con los cinco dominios. Es la
+   * misma razón por la que el plan son tres claves con nombre y no una lista.
+   */
+  const disparadas = modelo.fired.map((m) => claveDeCombinacion(m.rule.id));
+  const combinaciones = disparadas.length
+    ? {
+        combinaciones: {
+          type: "object",
+          description:
+            "Un pasaje por cada combinación que ha disparado, bajo la «clave» que trae cada una.",
+          additionalProperties: false,
+          required: disparadas,
+          properties: Object.fromEntries(disparadas.map((id) => [id, TEXTO(900)])),
+        },
+      }
+    : {};
+
   return {
     type: "object",
     additionalProperties: false,
@@ -386,6 +469,7 @@ export function esquemaSalida(modelo: ReportModel): object {
       "titular",
       "perfilEnUnaFrase",
       "dominios",
+      ...(disparadas.length ? ["combinaciones"] : []),
       "enElTrabajo",
       "preguntas",
       "planAccion",
@@ -400,6 +484,7 @@ export function esquemaSalida(modelo: ReportModel): object {
         required: modelo.domains.map((d) => d.id),
         properties: dominios,
       },
+      ...combinaciones,
       enElTrabajo: TEXTO(2000),
       preguntas: { type: "array", minItems: 5, maxItems: 7, items: TEXTO(200) },
       // Tres pasos con nombre, no una lista de tres.
@@ -591,6 +676,7 @@ const FALLOS_POR_IDIOMA: Record<string, {
   noObjeto: string;
   falta: (clave: string) => string;
   faltaDominio: (id: string) => string;
+  faltaCombinacion: (efecto: string) => string;
   preguntas: string;
   pasos: (n: number) => string;
   pasoIncompleto: (n: number, campo: string) => string;
@@ -599,6 +685,7 @@ const FALLOS_POR_IDIOMA: Record<string, {
     noObjeto: "La respuesta no es un objeto.",
     falta: (clave) => `falta «${clave}»`,
     faltaDominio: (id) => `falta el texto del dominio «${id}»`,
+    faltaCombinacion: (efecto) => `falta la lectura de la combinación «${efecto}»`,
     preguntas: "«preguntas» debe tener entre 5 y 7 entradas",
     pasos: (n) => `«planAccion» debe tener exactamente 3 pasos, y tiene ${n}`,
     pasoIncompleto: (n, campo) => `al paso ${n} del plan le falta «${campo}»`,
@@ -607,6 +694,7 @@ const FALLOS_POR_IDIOMA: Record<string, {
     noObjeto: "The response is not an object.",
     falta: (clave) => `"${clave}" is missing`,
     faltaDominio: (id) => `the text for the "${id}" domain is missing`,
+    faltaCombinacion: (efecto) => `the reading of the "${efecto}" combination is missing`,
     preguntas: '"preguntas" must have between 5 and 7 entries',
     pasos: (n) => `"planAccion" must have exactly 3 steps, and it has ${n}`,
     pasoIncompleto: (n, campo) => `step ${n} of the plan is missing "${campo}"`,
@@ -627,6 +715,16 @@ export function validarProsa(prosa: unknown, modelo: ReportModel, idioma = "es")
   for (const d of modelo.domains) {
     if (typeof dominios?.[d.id] !== "string") fallos.push(dice.faltaDominio(d.id));
   }
+  // Una lectura por combinación disparada. La sección 5 es «la parte que
+  // justifica el informe entero» (docs/03) y hasta ahora salía sin una línea
+  // escrita para esta persona: solo el efecto y el resumen del fichero de
+  // reglas, iguales para todo el mundo a quien le disparase la misma.
+  const combinaciones = p.combinaciones as Record<string, unknown> | undefined;
+  for (const m of modelo.fired) {
+    const texto = combinaciones?.[claveDeCombinacion(m.rule.id)];
+    if (typeof texto !== "string" || !texto.trim()) fallos.push(dice.faltaCombinacion(m.rule.effect));
+  }
+
   const preguntas = p.preguntas;
   if (!Array.isArray(preguntas) || preguntas.length < 5 || preguntas.length > 7) {
     fallos.push(dice.preguntas);
@@ -653,6 +751,7 @@ const LONGITUDES: Record<string, [number, number]> = {
   // Cortos a propósito: la lectura de cada faceta la imprime el informe justo
   // debajo, así que este párrafo solo dice lo que esas fichas no pueden decir.
   dominio: [80, 110],
+  combinacion: [80, 120],
 };
 
 const palabras = (s: string) => s.trim().split(/\s+/).length;
@@ -677,8 +776,117 @@ export function avisosDeLongitud(prosa: Record<string, any>, modelo: ReportModel
     const texto = prosa.dominios?.[d.id];
     if (typeof texto === "string") revisar(`dominio ${d.id}`, texto, LONGITUDES.dominio);
   }
+  for (const m of modelo.fired) {
+    const texto = prosa.combinaciones?.[claveDeCombinacion(m.rule.id)];
+    if (typeof texto === "string") revisar(`combinación ${m.rule.id}`, texto, LONGITUDES.combinacion);
+  }
   if (typeof prosa.titular === "string" && prosa.titular.length > 80) {
     avisos.push(`titular: ${prosa.titular.length} caracteres, el encargo pide menos de 80`);
   }
+  return avisos;
+}
+
+/* ------------------------------------------------------------------------- *
+ * Qué dice la redacción, no solo qué forma tiene.
+ * ------------------------------------------------------------------------- */
+
+/**
+ * Todo el texto redactado, en una sola cadena, para poder buscarlo.
+ *
+ * Se recorre lo que exista: una redacción a medias también se revisa, y las
+ * claves de más —de un esquema viejo— no molestan.
+ */
+function todoElTexto(prosa: Record<string, any>): string {
+  const trozos: string[] = [];
+  const meter = (v: unknown) => {
+    if (typeof v === "string") trozos.push(v);
+    else if (Array.isArray(v)) v.forEach(meter);
+    else if (v && typeof v === "object") Object.values(v).forEach(meter);
+  };
+  meter(prosa);
+  return trozos.join("\n");
+}
+
+/** Los números que el informe SÍ puede decir: los que ha calculado el motor. */
+function numerosDelModelo(modelo: ReportModel): Set<string> {
+  const de = (n: number) => {
+    const v = dos(n);
+    return [v.toFixed(2), v.toFixed(1), String(v)];
+  };
+  const validos = new Set<string>();
+  for (const d of modelo.domains) {
+    de(d.score).forEach((x) => validos.add(x));
+    for (const f of d.facets) de(f.score).forEach((x) => validos.add(x));
+  }
+  // La escala. «de 1 a 5», «el punto medio, 3» y el «2,5» de media escala son
+  // referencias legítimas y no hallazgos inventados.
+  for (const x of ["1", "2", "3", "4", "5", "2.5", "2,5", "3.0", "3,0"]) validos.add(x);
+  return validos;
+}
+
+/** Lo que no puede aparecer en un informe, con la razón al lado. */
+const PROHIBIDO: { que: RegExp; porque: string }[] = [
+  {
+    // Sin baremos españoles no hay percentiles. Es el límite del producto:
+    // las bandas salen de cortes sobre la escala, no de una población.
+    que: /\bpercentil(es)?\b|\bpercentile(s)?\b/i,
+    porque: "habla de percentiles, y no hay baremos: las bandas salen de cortes sobre la escala",
+  },
+  {
+    que: /\b\d{1,3}\s?%|\bpor ciento\b|\bper ?cent\b/i,
+    porque: "da un porcentaje: no hay ninguna población con la que comparar",
+  },
+  {
+    que: /\bdiagn[óo]stic|\bdiagnos(is|e|ed|tic)|\btrastorn|\bdisorder|\bpatol[óo]g|\bpatholog|\bs[íi]ndrome\b|\bsyndrome\b|\bcl[íi]nicamente\b|\bclinically\b/i,
+    porque: "usa lenguaje diagnóstico, y esto no es un instrumento clínico",
+  },
+  {
+    // «Nunca etiquetes» está en las instrucciones. Es lo primero que se cuela.
+    que: /\beres una? \w|\byou are an? \w/i,
+    porque: "etiqueta a la persona («eres un…») en vez de hablar de los resultados",
+  },
+  {
+    que: /\bmás que el\b|\bmejor que (la|el) \w*media|\bbetter than\b|\babove average\b/i,
+    porque: "compara con otras personas, y no hay con quién comparar",
+  },
+];
+
+/**
+ * Avisos sobre el contenido. **No invalidan la redacción**, igual que los de
+ * longitud: se enseñan.
+ *
+ * `validarProsa` comprueba la forma —que estén todas las secciones y con el
+ * número de piezas que toca— y eso lo cumple igual un texto que se invente un
+ * percentil. Esto mira lo otro: si el texto afirma algo que este instrumento no
+ * puede sostener.
+ *
+ * Es una red, no un juez. Puede saltar de más —una cita legítima con un número,
+ * un «no eres una persona de…»— y por eso avisa en vez de rechazar: rechazar
+ * cuesta pagar la redacción otra vez, y un falso positivo saldría caro.
+ */
+export function avisosDeContenido(prosa: Record<string, any>, modelo: ReportModel): string[] {
+  const avisos: string[] = [];
+  const texto = todoElTexto(prosa);
+
+  for (const { que, porque } of PROHIBIDO) {
+    const encontrado = texto.match(que);
+    if (encontrado) avisos.push(`«${encontrado[0].trim()}» — ${porque}`);
+  }
+
+  // Cifras que no ha calculado el motor. Solo decimales: los enteros aparecen
+  // por mil razones legítimas (tres pasos, cinco dominios, un año) y buscarlos
+  // daría ruido en vez de señal.
+  const validos = numerosDelModelo(modelo);
+  const inventados = new Set<string>();
+  for (const n of texto.match(/\d+[.,]\d+/g) ?? []) {
+    if (!validos.has(n) && !validos.has(n.replace(",", "."))) inventados.add(n);
+  }
+  if (inventados.size) {
+    avisos.push(
+      `cifras que no salen del perfil: ${[...inventados].join(", ")} — ` +
+        "si no son de una cita, están inventadas",
+    );
+  }
+
   return avisos;
 }

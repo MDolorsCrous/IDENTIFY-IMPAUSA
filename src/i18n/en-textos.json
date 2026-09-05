@@ -406,6 +406,7 @@
     },
     "huecos": {
       "dominio": "the combined reading of this domain",
+      "combinacion": "what this combination means in your profile",
       "resumen": "the profile summary",
       "trabajo": "the reading for work",
       "preguntas": "the powerful questions",

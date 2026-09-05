@@ -105,8 +105,13 @@ function listar(fichas) {
         "  " +
         estado.padEnd(10) +
         " " +
-        f.id,
+        f.id +
+        (f.avisos?.length ? "  (!) " + f.avisos.length : ""),
     );
+    // Lo que la redaccion dice y no deberia decir: percentiles, porcentajes,
+    // etiquetas, cifras que no salen del perfil. No invalidan el informe —eso
+    // costaria pagarlo dos veces por un falso positivo— pero se leen aqui.
+    for (const a of f.avisos ?? []) console.log("             · " + a);
   }
   console.log(
     "\n" + fichas.length + " informe(s). Para sacar uno:  node tools/informes.mjs " + fichas[0].id,

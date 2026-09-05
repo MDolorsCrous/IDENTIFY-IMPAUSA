@@ -17,7 +17,7 @@ import path from "node:path";
 
 import { INSTRUCCIONES, esquemaSalida } from "../src/services/prompt.ts";
 import { construirModelo } from "../src/services/pipeline.ts";
-import { cargarRecursos, cargarEjemplo, leer } from "./recursos.mjs";
+import { cargarRecursos, leer } from "./recursos.mjs";
 import { crearZip } from "./zip.mjs";
 
 const RAIZ = fileURLToPath(new URL("../", import.meta.url));
@@ -153,11 +153,29 @@ ${seccion("docs/02-modelo-interpretacion.md", "## Niveles de evidencia")}
 `;
 }
 
+/**
+ * Un perfil que dispara combinaciones, para el esquema de ejemplo.
+ *
+ * El caso del Excel no dispara ninguna —ni ninguno de los de datos/— y con él
+ * el esquema salía SIN el bloque `combinaciones`: la skill enseñaba un contrato
+ * incompleto justo en la sección que docs/03 llama la que justifica el informe.
+ * Sociabilidad y compasión altas con depresión baja disparan dos.
+ */
+function perfilConCombinaciones() {
+  const r = {};
+  for (const q of recursos.config.questions) {
+    const quiero = ["sociability", "compassion"].includes(q.facet)
+      ? 5
+      : q.facet === "depression"
+        ? 1
+        : 3;
+    r[q.id] = q.reverse ? 6 - quiero : quiero;
+  }
+  return r;
+}
+
 function refInforme() {
-  const modelo = construirModelo(
-    Object.fromEntries(Object.entries(cargarEjemplo().responses).map(([k, v]) => [Number(k), v])),
-    recursos,
-  );
+  const modelo = construirModelo(perfilConCombinaciones(), recursos);
   return `# El informe: secciones, tono y esquema de salida
 
 ${seccion("docs/03-estructura-informe.md", "# 03 — Estructura del informe").split("\n---")[0]}
@@ -179,6 +197,10 @@ ${INSTRUCCIONES}
 
 Una clave por sección, con longitud máxima. Nada de prosa libre que luego haya que
 parsear. Los identificadores de dominio son fijos.
+
+**El bloque \`combinaciones\` se arma para cada perfil**: lleva una clave por regla
+disparada —la \`clave\` que trae cada una en el material— y no aparece cuando no dispara
+ninguna. El ejemplo de abajo es un perfil que dispara dos.
 
 \`\`\`json
 ${JSON.stringify(esquemaSalida(modelo), null, 2)}

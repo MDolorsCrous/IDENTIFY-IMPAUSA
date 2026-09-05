@@ -19,6 +19,7 @@ import { construirModelo } from "./src/services/pipeline.ts";
 import { ScoringError } from "./src/services/scoring.ts";
 import {
   avisosDeLongitud,
+  avisosDeContenido,
   promptCompleto,
   promptCorto,
   validarProsa,
@@ -162,7 +163,9 @@ if (pedirRedaccion && !Object.keys(prosa).length) {
   }
 }
 
-const avisos = Object.keys(prosa).length ? avisosDeLongitud(prosa, modelo) : [];
+const avisos = Object.keys(prosa).length
+  ? [...avisosDeLongitud(prosa, modelo), ...avisosDeContenido(prosa, modelo)]
+  : [];
 
 const html = renderInforme(modelo, prosa, recursos.labels, {
   facetas: recursos.facetas,

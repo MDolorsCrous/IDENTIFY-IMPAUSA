@@ -143,6 +143,24 @@ disparado; la 6, las que se quedan a una condición.
 | Cuándo | Todas las condiciones cumplidas | Falta exactamente una |
 | Cómo se escribe | Afirmación | Condicional: «si además…» |
 | Cita | Disponible | No se cita: no se ha cumplido |
+| Quién la redacta | **Claude**, un pasaje por regla | El código |
+
+**Por qué la 5 la escribe Claude y la 6 no.** La 6 es una lista que el motor ya tiene
+resuelta —qué regla se queda cerca, cuál condición falta y en qué banda está—, y ponerla
+en prosa sería pagar por eso; además es donde más fácil sería afirmar como hecho algo que
+no se ha cumplido, y escrita por el código eso no puede pasar.
+
+La 5 es al revés. El efecto y el resumen vienen de `combinations.json` y son **iguales
+para todo el que dispare la misma regla**: sin un pasaje redactado, la sección que
+justifica el informe entero no dice ni una línea sobre esta persona. Claude recibe, por
+cada regla disparada, su `clave`, su efecto, su resumen, su ámbito y `seCumplePor` —qué
+facetas y en qué banda la han hecho saltar— y devuelve un pasaje bajo esa clave: qué se
+ve en esta persona, con qué se cruza y qué hacer con ello. No repite el efecto ni el
+resumen, que el informe imprime justo encima.
+
+El esquema de salida lleva una clave obligatoria por regla disparada, así que la API
+garantiza que vuelven todas; `validarProsa` lo comprueba otra vez, igual que con los
+cinco dominios. Si no dispara ninguna regla, el bloque no existe.
 
 Orden: primero las de más condiciones, que son las más específicas y dicen más. Si no
 dispara ninguna regla, la sección lo dice con naturalidad —«tu perfil no activa ninguna
@@ -183,6 +201,25 @@ Confirmado por la autora el 27-08-2026: **ocho páginas**.
 Nunca ve respuestas crudas ni puntúa nada. Recibe el modelo del informe ya resuelto
 —bandas, reglas disparadas, señales— y devuelve **solo texto**, con esquema cerrado: una
 clave por sección y longitud máxima por campo.
+
+### Y lo que se mira de lo que devuelve
+
+El esquema garantiza la **forma**: que estén todas las secciones, con el número de piezas
+que toca. Eso lo cumple igual un texto que se invente un percentil, y por eso hay una
+segunda pasada, `avisosDeContenido`, que busca lo que este instrumento no puede sostener:
+
+| Qué se busca | Por qué |
+| --- | --- |
+| «percentil», «percentile» | No hay baremos: las bandas salen de cortes sobre la escala |
+| Cualquier porcentaje | No hay población con la que comparar |
+| Lenguaje diagnóstico | Esto no es un instrumento clínico |
+| «eres un…» | Las instrucciones prohíben etiquetar; es lo primero que se cuela |
+| Comparaciones con otras personas | No hay con quién comparar |
+| Cifras decimales que no salen del perfil | Si no son de una cita, están inventadas |
+
+**Avisa, no rechaza.** Rechazar significa pagar la redacción otra vez, y un falso positivo
+—una cita legítima con un número dentro— saldría caro. Los avisos se registran, se guardan
+junto al informe y se ven al listarlo con `node tools/informes.mjs`.
 
 Si la llamada falla, el informe sale igualmente con las secciones deterministas y un
 aviso. Ver [`04`](04-arquitectura-hibrida.md).

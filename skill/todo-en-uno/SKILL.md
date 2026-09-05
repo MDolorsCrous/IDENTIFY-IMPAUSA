@@ -649,7 +649,7 @@ Ninguna sección deja que el modelo elija el contenido.
 | 8 | Preguntas poderosas | Claude | 5–7 preguntas ancladas a lo que ha disparado |
 | 9 | Plan de acción | Claude | 3 acciones concretas, cada una con su indicador |
 | 10 | Conclusiones | Claude | Cierre: la fortaleza y el trabajo más rentable a corto plazo |
-| 11 | Fuentes y metodología | código | Instrumento, adaptación, referencias citadas |
+| 11 | Fuentes y metodología | código | Instrumento, adaptación y **la bibliografía completa**, generada desde `src/config/fuentes.json`: cinco referencias con autores, publicación y DOI, cada una diciendo qué aporta, más la atribución del copyright del BFI-2. Ninguna se escribe a mano y todas están verificadas contra Crossref; `tests/fuentes.test.ts` impide que quede una cita sin referencia o una referencia sin usar |
 | 12 | Aviso importante | código | Alcance, prudencia con las facetas, confidencialidad |
 
 
@@ -695,9 +695,41 @@ QUÉ PUEDES AFIRMAR
   citar su referencia.
 - Cualquier otra cosa: pregunta o condicional. Nunca afirmación.
 
-LAS SEÑALES SON CONDICIONALES
-Las reglas «casi cumplidas» no describen a la persona: les falta una condición.
-Escríbelas en condicional («si además…») y no las cites.
+LOS DOMINIOS: DI LO QUE LAS FICHAS NO PUEDEN DECIR
+Debajo de cada texto tuyo, el informe imprime la lectura de cada faceta tal como
+viene de la base de conocimiento, con su cita. **No la repitas ni la
+parafrasees**: quedaría dos veces y casi con las mismas palabras.
+
+Tu párrafo dice lo que esas fichas no pueden decir, porque cada una está escrita
+sin saber nada de las otras dos:
+- qué significa que estas tres facetas concretas estén repartidas así
+- cuál se separa de las demás, y qué noticia trae eso
+- qué orden de prioridad se deriva para esta persona
+
+Nombra las puntuaciones cuando ayuden a situarse, pero no vuelvas a explicar qué
+es cada faceta ni qué implica su nivel: eso ya está escrito justo debajo.
+
+LAS COMBINACIONES SÍ LAS ESCRIBES TÚ
+Cada regla de `reglasQueHanDisparado` lleva una `clave`, y bajo esa clave
+devuelves su pasaje en `combinaciones`. Una por regla, ni una más.
+
+Encima de tu pasaje, el informe ya imprime el efecto de la regla, lo que
+significa y su cita. **No lo repitas.** Tu pasaje aterriza esa regla en ESTE
+perfil, y para eso tienes `seCumplePor`, que dice qué facetas y en qué banda la
+han hecho saltar:
+- qué se ve en esta persona por cumplirse las condiciones que se han cumplido
+- qué tensión o qué ventaja concreta introduce, y con qué otra cosa del perfil
+  se cruza
+- qué hacer con eso
+
+Van afirmadas: todas sus condiciones se cumplen y puedes citar su referencia.
+Esa es la diferencia con las señales.
+
+LAS SEÑALES NO LAS ESCRIBES TÚ
+Las reglas «casi cumplidas» las redacta el código, que sabe exactamente cuál
+falta y en qué banda está. Tú no tienes que mencionarlas en ninguna sección, y
+sobre todo **no las afirmes**: les falta una condición, así que no describen a
+esta persona.
 
 SI HAY MATERIAL DELICADO
 Cuando una regla venga marcada como clínica, no la dejes como veredicto: di qué
@@ -726,10 +758,23 @@ Y una regla que viene de ahí: **no recetes el rasgo que falta**. Decirle a quie
 tiene la organización baja que se organice más no funciona casi nunca; la palanca
 suele ser estructura externa, no más esfuerzo.
 
+PUNTO Y APARTE
+Los pasajes largos van en varios párrafos, separados por una línea en blanco
+dentro de la misma cadena. Doscientas palabras seguidas se leen mal por bien
+escritas que estén: el ojo no encuentra dónde descansar.
+
+Se parte donde cambia la idea, no cada tantas palabras:
+- perfilEnUnaFrase: 2 párrafos
+- enElTrabajo: 3 párrafos — lo que aporta, lo que cuesta, y qué hacer con ello
+- conclusion: 2 párrafos
+- cada dominio y cada paso del plan: uno solo, que ya son cortos
+
 LONGITUDES
 - titular: una línea, menos de 80 caracteres
 - perfilEnUnaFrase: 120-150 palabras
-- cada dominio: 150-200 palabras
+- cada dominio: 80-110 palabras. Son cortos a propósito: la descripción de cada
+  faceta ya la pone el informe debajo
+- cada combinación: 80-120 palabras
 - enElTrabajo: 200-250 palabras
 - preguntas: entre 5 y 7, una línea cada una
 - planAccion: exactamente 3 pasos, unas 60 palabras cada uno
@@ -745,6 +790,10 @@ Devuelve solo el JSON del esquema. Nada más.
 Una clave por sección, con longitud máxima. Nada de prosa libre que luego haya que
 parsear. Los identificadores de dominio son fijos.
 
+**El bloque `combinaciones` se arma para cada perfil**: lleva una clave por regla
+disparada —la `clave` que trae cada una en el material— y no aparece cuando no dispara
+ninguna. El ejemplo de abajo es un perfil que dispara dos.
+
 ```json
 {
   "type": "object",
@@ -753,7 +802,7 @@ parsear. Los identificadores de dominio son fijos.
     "titular",
     "perfilEnUnaFrase",
     "dominios",
-    "senales",
+    "combinaciones",
     "enElTrabajo",
     "preguntas",
     "planAccion",
@@ -781,29 +830,44 @@ parsear. Los identificadores de dominio son fijos.
       "properties": {
         "extraversion": {
           "type": "string",
-          "maxLength": 1600
+          "maxLength": 900
         },
         "agreeableness": {
           "type": "string",
-          "maxLength": 1600
+          "maxLength": 900
         },
         "conscientiousness": {
           "type": "string",
-          "maxLength": 1600
+          "maxLength": 900
         },
         "negative_emotionality": {
           "type": "string",
-          "maxLength": 1600
+          "maxLength": 900
         },
         "open_mindedness": {
           "type": "string",
-          "maxLength": 1600
+          "maxLength": 900
         }
       }
     },
-    "senales": {
-      "type": "string",
-      "maxLength": 600
+    "combinaciones": {
+      "type": "object",
+      "description": "Un pasaje por cada combinación que ha disparado, bajo la «clave» que trae cada una.",
+      "additionalProperties": false,
+      "required": [
+        "relaciones_positivas",
+        "orientacion_prosocial"
+      ],
+      "properties": {
+        "relaciones_positivas": {
+          "type": "string",
+          "maxLength": 900
+        },
+        "orientacion_prosocial": {
+          "type": "string",
+          "maxLength": 900
+        }
+      }
     },
     "enElTrabajo": {
       "type": "string",
@@ -819,29 +883,81 @@ parsear. Los identificadores de dominio son fijos.
       }
     },
     "planAccion": {
-      "type": "array",
-      "minItems": 3,
-      "maxItems": 3,
-      "items": {
-        "type": "object",
-        "additionalProperties": false,
-        "required": [
-          "titulo",
-          "texto",
-          "indicador"
-        ],
-        "properties": {
-          "titulo": {
-            "type": "string",
-            "maxLength": 60
-          },
-          "texto": {
-            "type": "string",
-            "maxLength": 600
-          },
-          "indicador": {
-            "type": "string",
-            "maxLength": 240
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "paso1",
+        "paso2",
+        "paso3"
+      ],
+      "properties": {
+        "paso1": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "titulo",
+            "texto",
+            "indicador"
+          ],
+          "properties": {
+            "titulo": {
+              "type": "string",
+              "maxLength": 60
+            },
+            "texto": {
+              "type": "string",
+              "maxLength": 600
+            },
+            "indicador": {
+              "type": "string",
+              "maxLength": 240
+            }
+          }
+        },
+        "paso2": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "titulo",
+            "texto",
+            "indicador"
+          ],
+          "properties": {
+            "titulo": {
+              "type": "string",
+              "maxLength": 60
+            },
+            "texto": {
+              "type": "string",
+              "maxLength": 600
+            },
+            "indicador": {
+              "type": "string",
+              "maxLength": 240
+            }
+          }
+        },
+        "paso3": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "titulo",
+            "texto",
+            "indicador"
+          ],
+          "properties": {
+            "titulo": {
+              "type": "string",
+              "maxLength": 60
+            },
+            "texto": {
+              "type": "string",
+              "maxLength": 600
+            },
+            "indicador": {
+              "type": "string",
+              "maxLength": 240
+            }
           }
         }
       }

@@ -13,7 +13,7 @@
 // retol-test-impausa, y es la marca del producto, no el cuerpo del texto.
 
 import { POLO, MATIZADA } from "./bandas.js";
-import { pasosDelPlan } from "./prompt.ts";
+import { pasosDelPlan, claveDeCombinacion } from "./prompt.ts";
 
 const esc = (s) =>
   String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
@@ -385,10 +385,16 @@ const combinacionesHtml = modelo.fired
       m.rule.safety === "clinico"
         ? `<span class="combi__aviso">${textos.combis.avisoClinico}</span>`
         : "";
+    // La lectura de esta combinación en ESTE perfil. El efecto y el resumen de
+    // arriba son iguales para todo el que dispare la misma regla; esto es lo
+    // único de la sección que habla de esta persona, y por eso es lo que se le
+    // encarga a Claude. Si falta, se marca como hueco igual que los dominios.
+    const lectura = prosa.combinaciones?.[claveDeCombinacion(m.rule.id)];
     return `
       <li>
         <b>${esc(m.rule.effect)}</b>
         <span>${esc(m.rule.summary)}</span>
+        <div class="combi__lectura">${lectura ? parrafos(lectura) : hueco(textos.huecos.combinacion)}</div>
         <span class="combi__quien">${rellena(textos.combis.seCumplePor, { quien: esc(quien) })} ${esc(m.rule.references.join(" · "))}</span>
         ${cuidado}
       </li>`;
@@ -671,6 +677,11 @@ ${tipografias(opciones.marca)}
      con el filete en verde en vez de gris, porque estas se afirman. */
   .combis li{border-left-color:var(--verde-medio)}
   .combi__quien{font-size:.84rem!important;font-style:italic;margin-top:.15rem}
+  /* La lectura redactada. En tinta normal y no en el gris de los datos: es el
+     texto de la seccion, no un pie de linea. */
+  .combi__lectura{margin:.45rem 0 .2rem}
+  .combi__lectura p{margin:0 0 .5rem;color:var(--ink)}
+  .combi__lectura p:last-child{margin-bottom:0}
   .combi__aviso{font-size:.86rem!important;background:var(--naranja-claro);
     border-radius:3px;padding:.5rem .7rem;margin-top:.4rem;color:var(--ink)!important}
 
