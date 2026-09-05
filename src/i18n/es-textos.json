@@ -368,6 +368,16 @@
       "incompleta": "La redacción ha llegado incompleta. Vuelve a intentarlo.",
       "tardaDemasiado": "El informe está tardando demasiado. Vuelve a intentarlo en un momento.",
       "sinConexion": "No se ha podido conectar. Comprueba la conexión y vuelve a intentarlo."
+    },
+    "atencion": {
+      "nulaTitulo": "Estas respuestas no permiten una lectura",
+      "nulaTexto": "Las 60 preguntas están contestadas con el mismo valor. El cuestionario está construido para que eso dé exactamente el mismo resultado que contestar 3 a todo —la mitad de los ítems van invertidos a propósito, para cancelar ese sesgo—, así que estos números no describen a nadie. Vale la pena volver a hacerlo con calma.",
+      "dudosaTitulo": "Conviene mirar estas respuestas con cuidado",
+      "dudosaTexto": "El patrón de respuesta llama la atención: {motivo}. Puede ser tu manera de contestar, y entonces no pasa nada. Pero también puede querer decir que el cuestionario se ha rellenado deprisa, y en ese caso lo que leas debajo describe el patrón, no a ti.",
+      "motivoRacha": "hay {n} respuestas iguales seguidas",
+      "motivoPocosValores": "solo se han usado {n} de los cinco valores de la escala",
+      "motivoSinVariacion": "las respuestas apenas varían entre sí",
+      "sinInforme": "Por eso no se ofrece el informe escrito: no habría nada que interpretar."
     }
   },
   "informe": {
@@ -511,6 +521,16 @@
     },
     "firma": {
       "quien": "{producto} es una herramienta de IMPAUSA POWER, S.L."
+    },
+    "atencion": {
+      "nulaTitulo": "Estas respuestas no permiten una lectura",
+      "nulaTexto": "Las 60 preguntas están contestadas con el mismo valor. El cuestionario está construido para que eso dé exactamente el mismo resultado que contestar 3 a todo —la mitad de los ítems van invertidos a propósito, para cancelar ese sesgo—, así que estos números no describen a nadie. Vale la pena volver a hacerlo con calma.",
+      "dudosaTitulo": "Conviene mirar estas respuestas con cuidado",
+      "dudosaTexto": "El patrón de respuesta llama la atención: {motivo}. Puede ser tu manera de contestar, y entonces no pasa nada. Pero también puede querer decir que el cuestionario se ha rellenado deprisa, y en ese caso lo que leas debajo describe el patrón, no a ti.",
+      "motivoRacha": "hay {n} respuestas iguales seguidas",
+      "motivoPocosValores": "solo se han usado {n} de los cinco valores de la escala",
+      "motivoSinVariacion": "las respuestas apenas varían entre sí",
+      "sinInforme": "Por eso no se ofrece el informe escrito: no habría nada que interpretar."
     }
   }
 }

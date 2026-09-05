@@ -21,6 +21,7 @@ const MODULOS = [
   "src/services/scoring.ts",
   "src/services/interpretation.ts",
   "src/services/report.ts",
+  "src/services/atencion.ts",
   "src/services/prompt.ts",
   "src/services/pipeline.ts",
   "src/services/render-informe.js",

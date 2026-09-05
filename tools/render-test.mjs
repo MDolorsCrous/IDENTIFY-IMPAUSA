@@ -251,6 +251,13 @@ const html = `<!doctype html>
     font-size:.72rem;color:var(--ink-soft);margin-top:.5rem}
   .escala__e{display:flex;justify-content:space-between}
   .escala__h{min-width:2.7rem}
+  .atencion{background:var(--naranja-claro);border:1px solid var(--naranja);
+    border-radius:12px;padding:1rem 1.2rem;margin-bottom:1.2rem}
+  .atencion b{font-family:"Montserrat",system-ui,sans-serif;display:block;
+    color:var(--titulo);margin-bottom:.4rem}
+  .atencion p{margin:0 0 .5rem;font-size:.95rem;color:var(--ink)}
+  .atencion p:last-child{margin-bottom:0}
+  .atencion--nula{border-width:2px}
   .nota{background:var(--naranja-claro);border-left:3px solid var(--naranja);
     padding:.9rem 1.1rem;border-radius:0 4px 4px 0;font-size:.94rem}
   .nota p{margin:0 0 .5rem}
@@ -853,8 +860,43 @@ function filas(items, etiquetas, valores, color){
   }).join("");
 }
 
+/**
+ * El aviso de si estas respuestas sostienen una lectura.
+ *
+ * Lo escribe el codigo con lo que ha medido el motor, no Claude: aqui no hay
+ * nada que interpretar, solo un dato que hay que decir.
+ */
+/**
+ * Si estas respuestas no sostienen ninguna lectura.
+ *
+ * Cuando las sesenta van con el mismo valor no hay nada que interpretar, y
+ * pedirle a Claude que escriba novecientas palabras sobre eso seria pagar por
+ * un texto inventado. Se comprueba aqui y tambien en el servidor: esta pagina
+ * es de quien la abre y puede tocarla.
+ */
+function sinLectura(){
+  return medirAtencion(respuestas).nivel === "nula";
+}
+
+function avisoDeAtencion(a, t){
+  if (!a || a.nivel === "ok") return "";
+  if (a.nivel === "nula") {
+    return '<div class="atencion atencion--nula"><b>' + t.nulaTitulo + '</b>' +
+      '<p>' + t.nulaTexto + '</p><p>' + t.sinInforme + '</p></div>';
+  }
+  const motivos = a.motivos.map(m => {
+    if (m === "racha") return rellena(t.motivoRacha, { n: a.racha });
+    if (m === "pocosValores") return rellena(t.motivoPocosValores, { n: a.valores });
+    if (m === "sinVariacion") return t.motivoSinVariacion;
+    return "";
+  }).filter(Boolean);
+  return '<div class="atencion"><b>' + t.dudosaTitulo + '</b><p>' +
+    rellena(t.dudosaTexto, { motivo: motivos.join("; ") }) + '</p></div>';
+}
+
 function resultados(){
   const { facetas, dominios } = puntuar(respuestas);
+  const atencion = medirAtencion(respuestas);
   const escalaTest = '<div class="escala"><div></div><div class="escala__e"><span>1</span><span>3</span><span>5</span></div><div class="escala__h"></div></div>';
   const porDominio = CFG.domains.map(d => \`
     <div class="bloque">
@@ -872,6 +914,7 @@ function resultados(){
           <p class="etiqueta">\${T.resultados.etiqueta}</p>
           <h2 style="font-size:1.7rem">\${T.resultados.titulo}</h2>
         </div>
+        \${avisoDeAtencion(atencion, T.atencion)}
         <div class="nota">
           <p>\${T.resultados.nota1}</p>
           <p>\${T.resultados.nota2}</p>
@@ -971,7 +1014,7 @@ function informe(){
     <div class="barra-informe">
       <button class="enlace" id="volver">\${T.informe.volver}</button>
       <div class="acciones">
-        \${conProsa || redactando || !HAY_SERVIDOR ? "" : '<button class="boton" id="generar">' + T.informe.generar + '</button>'}
+        \${conProsa || redactando || !HAY_SERVIDOR || sinLectura() ? "" : '<button class="boton" id="generar">' + T.informe.generar + '</button>'}
         \${conProsa || redactando || HAY_SERVIDOR ? "" : '<button class="boton boton--claro" id="encargo">' + T.informe.encargo + '</button><button class="enlace" id="encargoLargo" title="' + T.informe.encargoLargoTitulo + '">' + T.informe.encargoLargo + '</button>'}
         \${redactando || (HAY_SERVIDOR && !conProsa) ? "" : '<button class="boton boton--claro" id="pegar">' + (conProsa ? T.informe.cambiarRedaccion : T.informe.pegarRedaccion) + '</button>'}
         <button class="boton boton--claro" id="imprimir">\${T.informe.imprimir}</button>
@@ -997,7 +1040,9 @@ function informe(){
   // marcha sigue su camino y no se pide —ni se paga— dos veces.
   if (redactando) moverLaBarra();
 
-  if (HAY_SERVIDOR && !conProsa && !yaPedida) {
+  // Y no arranca si las sesenta respuestas van con el mismo valor: no hay nada
+  // que interpretar y seria pagar por un texto sobre un perfil que no existe.
+  if (HAY_SERVIDOR && !conProsa && !yaPedida && !sinLectura()) {
     yaPedida = true;
     redactando = true;
     empezoLaRedaccion = Date.now();

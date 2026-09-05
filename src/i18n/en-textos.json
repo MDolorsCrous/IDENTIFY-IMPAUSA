@@ -368,6 +368,16 @@
       "incompleta": "The draft arrived incomplete. Try again.",
       "tardaDemasiado": "The report is taking too long. Try again in a moment.",
       "sinConexion": "Could not connect. Check your connection and try again."
+    },
+    "atencion": {
+      "nulaTitulo": "These answers don't support a reading",
+      "nulaTexto": "All 60 questions are answered with the same value. The questionnaire is built so that this gives exactly the same result as answering 3 to everything — half the items are reversed on purpose, to cancel that bias — so these numbers describe nobody. It is worth taking it again, unhurried.",
+      "dudosaTitulo": "These answers are worth a second look",
+      "dudosaTexto": "The response pattern stands out: {motivo}. That may simply be how you answer, in which case there is nothing wrong. But it can also mean the questionnaire was filled in quickly, and then what you read below describes the pattern, not you.",
+      "motivoRacha": "there are {n} identical answers in a row",
+      "motivoPocosValores": "only {n} of the five values on the scale were used",
+      "motivoSinVariacion": "the answers barely vary",
+      "sinInforme": "That is why the written report is not offered: there would be nothing to interpret."
     }
   },
   "informe": {
@@ -511,6 +521,16 @@
     },
     "firma": {
       "quien": "{producto} is a tool by IMPAUSA POWER, S.L."
+    },
+    "atencion": {
+      "nulaTitulo": "These answers don't support a reading",
+      "nulaTexto": "All 60 questions are answered with the same value. The questionnaire is built so that this gives exactly the same result as answering 3 to everything — half the items are reversed on purpose, to cancel that bias — so these numbers describe nobody. It is worth taking it again, unhurried.",
+      "dudosaTitulo": "These answers are worth a second look",
+      "dudosaTexto": "The response pattern stands out: {motivo}. That may simply be how you answer, in which case there is nothing wrong. But it can also mean the questionnaire was filled in quickly, and then what you read below describes the pattern, not you.",
+      "motivoRacha": "there are {n} identical answers in a row",
+      "motivoPocosValores": "only {n} of the five values on the scale were used",
+      "motivoSinVariacion": "the answers barely vary",
+      "sinInforme": "That is why the written report is not offered: there would be nothing to interpret."
     }
   }
 }

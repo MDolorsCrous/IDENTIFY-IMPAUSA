@@ -367,3 +367,65 @@ test("una combinación marcada como clínica nunca aparece sola", () => {
   assert.ok(seccion("burnout-aislamiento").includes("con un profesional"), "una regla clínica sale sin aviso");
   assert.ok(!seccion("compromiso-y-estatus-social").includes("con un profesional"), "el aviso clínico sale donde no toca");
 });
+
+test("un cuestionario contestado sin leer no pasa por bueno", () => {
+  // Los 60 ítems llevan la mitad invertidos para cancelar la aquiescencia, y
+  // funciona tan bien que «5 a todo», «1 a todo» y «3 a todo» dan exactamente
+  // el mismo perfil: 3,00 en los cinco dominios. Correcto psicométricamente y
+  // desastroso como producto — sin esto, quien pulsa sesenta veces el mismo
+  // botón recibe un informe personalizado sobre un perfil que no existe.
+  const recursos = cargarRecursos();
+  const todos = (v: number) => Object.fromEntries(recursos.config.questions.map((q: any) => [q.id, v]));
+
+  for (const v of [1, 3, 5]) {
+    const m = construirModelo(todos(v) as Responses, recursos, {});
+    assert.equal(m.meta.atencion?.nivel, "nula", `contestar ${v} a todo pasa por bueno`);
+    // Y sigue siendo verdad que el perfil sale plano: no se ha tocado el cálculo.
+    assert.ok(m.domains.every((d) => d.score === 3), "el cálculo ha cambiado");
+  }
+
+  // Una persona de verdad no salta.
+  const real = Object.fromEntries(
+    Object.entries(fixture.responses).map(([k, v]) => [Number(k), Number(v)]),
+  ) as Responses;
+  assert.equal(construirModelo(real, recursos, {}).meta.atencion?.nivel, "ok");
+});
+
+test("los dos indicadores se cubren el uno al otro", () => {
+  // Ninguno solo llega: la racha no ve el alternado y la variedad no ve la
+  // racha. Los dos patrones tienen que saltar.
+  const recursos = cargarRecursos();
+  const ids = recursos.config.questions.map((q: any) => q.id);
+
+  const alternado = Object.fromEntries(ids.map((id: number, i: number) => [id, i % 2 ? 4 : 5]));
+  const a = construirModelo(alternado as Responses, recursos, {}).meta.atencion!;
+  assert.equal(a.nivel, "dudosa", "el patrón 5,4,5,4 no salta");
+  assert.equal(a.racha, 1, "y no salta por la racha, que es de 1");
+
+  const treintaIguales = Object.fromEntries(
+    ids.map((id: number, i: number) => [id, i < 30 ? 4 : (i % 5) + 1]),
+  );
+  const b = construirModelo(treintaIguales as Responses, recursos, {}).meta.atencion!;
+  assert.equal(b.nivel, "dudosa", "treinta respuestas iguales seguidas no saltan");
+  assert.equal(b.valores, 5, "y no salta por la variedad, que usa los cinco valores");
+});
+
+test("cuando no hay lectura, el informe lo dice y no se ofrece redactarlo", () => {
+  const recursos = cargarRecursos();
+  const todoCinco = Object.fromEntries(
+    recursos.config.questions.map((q: any) => [q.id, 5]),
+  ) as Responses;
+  const modelo = construirModelo(todoCinco, recursos, {});
+  const html = renderInforme(modelo, {} as any, recursos.labels, {
+    textos: recursos.textos.informe,
+    facetas: recursos.facetas,
+    metaforas: recursos.metaforas,
+    marca: recursos.marca,
+    fecha: "1 de enero de 2026",
+  });
+  assert.ok(html.includes(recursos.textos.informe.atencion.nulaTitulo), "el informe no avisa");
+
+  // Y la página no ofrece el botón de generar cuando no hay lectura.
+  const pagina = readFileSync(join(raiz, "test-identify.html"), "utf8");
+  assert.match(pagina, /sinLectura\(\)/, "la página ofrece redactar un informe sin lectura");
+});

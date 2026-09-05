@@ -8,6 +8,7 @@
 
 import type { Scores } from "./scoring.ts";
 import type { BandResult, Interpretation, Rule, RuleMatch } from "./interpretation.ts";
+import type { Atencion } from "./atencion.ts";
 
 export interface Labels {
   domains: Record<string, string>;
@@ -54,6 +55,12 @@ export interface ReportModel {
     /** Aviso obligatorio en la sección 1 cuando no hay baremo. */
     comparisonNotice: string;
     generatedFor?: string;
+    /**
+     * Si las respuestas sostienen una lectura. Lo pone `construirModelo`, que es
+     * quien ve las respuestas en bruto; `buildReport` solo trabaja con
+     * puntuaciones ya recodificadas y desde ahí no se puede saber.
+     */
+    atencion?: Atencion;
   };
   headline: {
     highestDomain: string;

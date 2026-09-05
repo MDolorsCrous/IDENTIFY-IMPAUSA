@@ -203,3 +203,48 @@ Reglas duras:
 Ya no queda por decidir la transcripción de las reglas: están las 26 en
 `src/config/interpretation/combinations.json`, cada una con sus condiciones, su cita y la
 diapositiva de la que sale.
+
+---
+
+## Si el cuestionario se ha contestado sin leerlo
+
+Los 60 ítems llevan la mitad invertidos para cancelar la aquiescencia, y funciona
+tan bien que **contestar 5 a todo da exactamente el mismo perfil que contestar 1 a
+todo y que contestar 3 a todo**: 3,00 en los cinco dominios, banda media-alta.
+Correcto psicométricamente, y desastroso como producto: sin nada que lo mire,
+quien pulsa sesenta veces el mismo botón recibe un informe de novecientas
+palabras sobre un perfil que no existe.
+
+`src/services/atencion.ts` mira **la forma de las respuestas en bruto** —antes de
+recodificar los inversos, que es lo único que distingue un «todo 5» de un perfil
+moderado de verdad— y no toca ni una puntuación.
+
+### Dos indicadores, porque ninguno solo llega
+
+| Patrón | desviación | racha | valores |
+| --- | --- | --- | --- |
+| Una persona de verdad | 1,42 | 2 | 5 |
+| Todo igual | 0 | 60 | 1 |
+| 5, 4, 5, 4… | 0,50 | **1** | 2 |
+| 30 iguales y luego varía | 1,12 | **30** | 5 |
+
+La racha no ve el alternado; la variedad no ve la racha.
+
+### Los umbrales
+
+**Son decisiones nuestras, no cortes validados.** Están puestos con holgura sobre
+lo que hace una persona de verdad —racha de 2 y cinco valores— para avisar del
+descuido evidente sin acusar a quien contesta de forma moderada:
+
+- **`nula`**: un solo valor en los 60 ítems. No hay lectura posible, y el informe
+  escrito no se ofrece ni se pide al servidor.
+- **`dudosa`**: racha ≥ 12, o dos valores o menos, o desviación < 0,5. Se avisa y
+  se sigue.
+
+Igual que las bandas, esto se recalibra el día que haya datos de más gente.
+
+### Lo que NO detecta
+
+Un ciclo 1, 2, 3, 4, 5 repetido da desviación 1,41, racha 1 y los cinco valores:
+**indistinguible de una persona real** con estas medidas. No hay índice sencillo
+que lo pille, y decir lo contrario sería vender humo.

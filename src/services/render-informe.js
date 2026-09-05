@@ -93,6 +93,32 @@ function introSenales(modelo, labels, t) {
 }
 
 /**
+ * El aviso de si estas respuestas sostienen una lectura.
+ *
+ * Va en «Cómo leer este informe», que es donde toca: quien lo reciba tiene que
+ * saberlo antes de leer nada de lo que viene después. Con «nula» el informe
+ * escrito no llega a pedirse, así que aquí solo se ve el caso dudoso — salvo
+ * que alguien vuelva a montar un informe viejo, y entonces también se dice.
+ */
+function avisoDeAtencion(a, t) {
+  if (!a || a.nivel === "ok" || !t) return "";
+  if (a.nivel === "nula") {
+    return `<div class="aviso aviso--atencion"><p><b>${esc(t.nulaTitulo)}</b></p>
+      <p style="margin-bottom:0">${esc(t.nulaTexto)}</p></div>`;
+  }
+  const motivos = a.motivos
+    .map((m) => {
+      if (m === "racha") return rellena(t.motivoRacha, { n: a.racha });
+      if (m === "pocosValores") return rellena(t.motivoPocosValores, { n: a.valores });
+      if (m === "sinVariacion") return t.motivoSinVariacion;
+      return "";
+    })
+    .filter(Boolean);
+  return `<div class="aviso aviso--atencion"><p><b>${esc(t.dudosaTitulo)}</b></p>
+    <p style="margin-bottom:0">${esc(rellena(t.dudosaTexto, { motivo: motivos.join("; ") }))}</p></div>`;
+}
+
+/**
  * Las tipografias de la casa, dentro del documento.
  *
  * Montserrat para titulos y etiquetas, Lato para el cuerpo — las dos de la skill
@@ -562,6 +588,8 @@ ${tipografias(opciones.marca)}
   .aviso{background:var(--naranja-claro);border-left:3px solid var(--naranja);
     padding:1rem 1.2rem;font-size:.96rem;border-radius:0 3px 3px 0}
   .aviso p{max-width:none}
+  .aviso--atencion{margin-bottom:1.1rem}
+  .aviso--atencion{margin-bottom:1.1rem}
   .aviso ul{margin:.4rem 0 0;padding-left:1.1rem}
   .aviso li{margin-bottom:.25rem}
 
@@ -852,6 +880,7 @@ ${opciones.aviso ? '<div class="maqueta">' + esc(opciones.aviso) + "</div>" : co
   <section class="seccion" id="como-leer">
     <p class="eyebrow">${textos.comoLeer.eyebrow}</p>
     <h2>${textos.comoLeer.titulo}</h2>
+    ${avisoDeAtencion(modelo.meta.atencion, textos.atencion)}
     <p>${textos.comoLeer.intro}</p>
     <div class="aviso">
       <p><b>${textos.comoLeer.noEsTitulo}</b></p>

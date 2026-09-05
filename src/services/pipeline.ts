@@ -13,6 +13,7 @@
 import { score, type Bfi2Config, type Responses } from "./scoring.ts";
 import { bands, interpret, ESTRICTO, type Norm, type Rule, type Strictness } from "./interpretation.ts";
 import { buildReport, type Labels, type ReportModel } from "./report.ts";
+import { medirAtencion } from "./atencion.ts";
 
 /** Todo lo que define el instrumento: qué se pregunta, cómo se agrupa y cómo se llama. */
 export interface Recursos {
@@ -44,7 +45,7 @@ export function construirModelo(
   const puntuaciones = score(responses, recursos.config);
   const banded = bands(puntuaciones, opciones.norms ?? {});
   const interpretacion = interpret(banded.facets, recursos.rules, opciones.strictness ?? ESTRICTO);
-  return buildReport(
+  const modelo = buildReport(
     puntuaciones,
     banded,
     interpretacion,
@@ -52,4 +53,10 @@ export function construirModelo(
     recursos.labels,
     opciones.persona,
   );
+
+  // Si el cuestionario sostiene una lectura o lo han rellenado sin leerlo. Va
+  // sobre las respuestas EN BRUTO, antes de recodificar los inversos: es lo
+  // único que distingue un «5 a todo» de un perfil moderado de verdad.
+  modelo.meta.atencion = medirAtencion(responses as Record<number, number>);
+  return modelo;
 }

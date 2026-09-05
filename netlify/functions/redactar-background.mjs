@@ -36,6 +36,7 @@ const MENSAJES = {
     sinConfigurar: "El servidor no está configurado.",
     codigoIncorrecto: "El código de acceso no es correcto.",
     respuestasInvalidas: "Las respuestas no son válidas.",
+    sinLectura: "Las 60 respuestas van con el mismo valor: no hay nada que interpretar.",
     tope: (n) => `Se ha llegado al tope de ${n} informes por hoy. Vuelve a probarlo mañana.`,
     noGenerado: "No se ha podido generar el informe.",
   },
@@ -43,6 +44,7 @@ const MENSAJES = {
     sinConfigurar: "The server is not configured.",
     codigoIncorrecto: "The access code is not correct.",
     respuestasInvalidas: "The answers are not valid.",
+    sinLectura: "All 60 answers use the same value: there is nothing to interpret.",
     tope: (n) => `Today's limit of ${n} reports has been reached. Try again tomorrow.`,
     noGenerado: "The report could not be generated.",
   },
@@ -128,6 +130,14 @@ export default async function handler(peticion) {
       return guardar(id, { estado: "error", error: dice.respuestasInvalidas });
     }
     throw e;
+  }
+
+  // Si las sesenta respuestas van con el mismo valor no hay nada que
+  // interpretar: el cuestionario cancela ese sesgo por diseño y sale un 3,00
+  // plano. La página ya no ofrece el botón, pero la página es de quien la abre
+  // y puede tocarla; esto se comprueba también aquí, antes de pagar la llamada.
+  if (modelo.meta.atencion?.nivel === "nula") {
+    return guardar(id, { estado: "error", error: dice.sinLectura });
   }
 
   const cuota = await dentroDelTope();
