@@ -88,6 +88,11 @@ const html = `<!doctype html>
     --borde:#E4DDD5; --track:#E7E0D6; --titulo:#27624F;
     --sombra:0 1px 3px rgba(26,74,58,.07); --sombra-alta:0 6px 24px rgba(26,74,58,.10);
     --verde-logo:${recursos.marca.paleta.verdeLogo};
+    /* El verde de la casa se usa de dos maneras: de FONDO —con letra clara
+       encima, y ahi tiene que seguir siendo oscuro siempre— y de LETRA sobre el
+       papel. En modo oscuro esa letra no se leia: 2,08 de contraste donde hacen
+       falta 4,5. Por eso hay dos variables y no una. */
+    --verde-texto:#27624F;
   }
   @media (prefers-color-scheme:dark){
     :root:not([data-theme="light"]){
@@ -95,6 +100,7 @@ const html = `<!doctype html>
       --borde:#2C4238; --track:#22382F; --titulo:#8FCBB2; --verde-medio:#5FA588;
       --naranja-claro:#2A2119; --sombra:0 1px 3px rgba(0,0,0,.35); --sombra-alta:0 6px 24px rgba(0,0,0,.4);
       --menta:#16302A; --melocoton:#2A2119; --verde-suave-borde:#2C4238;
+      --verde-texto:#8FCBB2;
     }
   }
   :root[data-theme="dark"]{
@@ -102,6 +108,7 @@ const html = `<!doctype html>
     --borde:#2C4238; --track:#22382F; --titulo:#8FCBB2; --verde-medio:#5FA588;
     --naranja-claro:#2A2119; --sombra:0 1px 3px rgba(0,0,0,.35); --sombra-alta:0 6px 24px rgba(0,0,0,.4);
     --menta:#16302A; --melocoton:#2A2119; --verde-suave-borde:#2C4238;
+    --verde-texto:#8FCBB2;
   }
   *{box-sizing:border-box}
   body{margin:0;background:var(--ground);color:var(--ink);
@@ -129,7 +136,7 @@ const html = `<!doctype html>
     -webkit-background-clip:text;background-clip:text;color:transparent}
   .portada{text-align:center;display:flex;flex-direction:column;align-items:center;gap:1.4rem}
   .etiqueta{font-family:"Montserrat",system-ui,sans-serif;font-size:.7rem;
-    letter-spacing:.18em;text-transform:uppercase;color:var(--verde);font-weight:700}
+    letter-spacing:.18em;text-transform:uppercase;color:var(--verde-texto);font-weight:700}
   /* El logotipo tambien en la pantalla de puntuaciones: es la unica que queda
      sin nada de la casa, y se ve justo despues de veinte minutos de test. */
   .marca-sup{height:22px;width:auto;display:block;margin:0 0 1.1rem}
@@ -176,7 +183,7 @@ const html = `<!doctype html>
      separarla de las respuestas ahorra un salto de ojo sesenta veces. */
   .tarjeta-preg{background:var(--tarjeta);border:1px solid var(--borde);
     border-radius:16px;padding:1.5rem 1.6rem;box-shadow:var(--sombra)}
-  .stem{color:var(--verde);font-family:"Montserrat",system-ui,sans-serif;
+  .stem{color:var(--verde-texto);font-family:"Montserrat",system-ui,sans-serif;
     font-size:.72rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;
     margin:0 0 .5rem}
   .enunciado{font-family:"Montserrat",system-ui,sans-serif;
@@ -197,7 +204,7 @@ const html = `<!doctype html>
     color:#302A26}
   .opcion__num{flex:none;width:2rem;height:2rem;border-radius:50%;display:grid;
     place-items:center;background:var(--track);font-family:"Montserrat",system-ui,sans-serif;
-    font-size:.85rem;font-weight:700;color:var(--ink-soft);transition:background .12s ease}
+    font-size:.85rem;font-weight:700;color:var(--ink);transition:background .12s ease}
   .opcion[aria-checked="true"] .opcion__num{background:var(--verde);color:#FFFDFC}
   .opcion__texto{flex:1}
   /* La marca de elegida no es solo el color: quien no distinga verde de beige
@@ -210,7 +217,7 @@ const html = `<!doctype html>
 
   .pie-preg{display:flex;justify-content:space-between;align-items:center;gap:1rem;
     margin-top:.2rem}
-  .enlace{background:none;border:0;color:var(--verde);cursor:pointer;font-weight:600;
+  .enlace{background:none;border:0;color:var(--verde-texto);cursor:pointer;font-weight:600;
     padding:.5rem 0;min-height:44px}
   .enlace[disabled]{color:var(--ink-soft);opacity:.45;cursor:default}
   .ayuda{font-size:.8rem;color:var(--ink-soft)}
@@ -292,7 +299,7 @@ const html = `<!doctype html>
   /* Idiomas: ES y EN cambian la lengua al instante; CA explica por qué no puede */
   .idiomas{display:flex;gap:.15rem;align-items:center;font-size:.82rem;color:var(--ink-soft)}
   .idioma{background:none;border:0;min-height:44px;padding:.3rem .7rem;border-radius:4px;cursor:pointer;
-    color:var(--verde-medio);font-weight:600;letter-spacing:.04em}
+    color:var(--verde-texto);font-weight:600;letter-spacing:.04em}
   .idioma:hover{background:var(--tarjeta)}
   .idioma[aria-current="true"]{color:var(--ink-soft);cursor:default;font-weight:400}
   .idioma[aria-current="true"]:hover{background:none}

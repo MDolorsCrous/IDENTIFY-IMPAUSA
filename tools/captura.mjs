@@ -57,7 +57,7 @@ function conectar(url) {
   };
 }
 
-export async function capturar(url, salida, { ancho = 1280, alto = 900, guion = "", espera = 700 } = {}) {
+export async function capturar(url, salida, { ancho = 1280, alto = 900, guion = "", espera = 700, oscuro = false } = {}) {
   const perfil = mkdtempSync(path.join(tmpdir(), "identify-captura-"));
   const chrome = spawn(
     buscarChrome(),
@@ -91,6 +91,7 @@ export async function capturar(url, salida, { ancho = 1280, alto = 900, guion = 
       deviceScaleFactor: 1,
       mobile: ancho < 768,
     });
+    if (oscuro) await cdp.manda("Emulation.setEmulatedMedia", { features: [{ name: "prefers-color-scheme", value: "dark" }] });
     await cdp.manda("Page.navigate", { url });
     // Sin dependencias no hay `waitForLoad` fino: se da tiempo, y despues el
     // guion que deja la aplicacion en la pantalla que se quiere.
@@ -119,6 +120,7 @@ if (import.meta.url.endsWith(process.argv[1].replace(/\\/g, "/"))) {
     ancho: Number(ancho) || 1280,
     alto: Number(alto) || 900,
     guion: i > -1 ? process.argv[i + 1] : "",
+    oscuro: process.argv.includes("--oscuro"),
   });
   console.log("escrito " + salida);
 }

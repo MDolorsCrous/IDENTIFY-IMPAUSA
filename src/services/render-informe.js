@@ -446,6 +446,10 @@ ${tipografias(opciones.marca)}
     --verde:#27624F; --verde-medio:#5F927D; --beige:#F7F4EE; --naranja:#F29A4A;
     --naranja-claro:#FDF0E4; --dorado:#D8B34D; --menta:#E8F0EC;
     --tarjeta:#FFFDFC; --borde:#DDD8CE; --menta-borde:#D3E2DA;
+    /* El verde de la casa de FONDO se queda oscuro siempre —lleva letra clara
+       encima—; el de LETRA se aclara en modo oscuro, donde el oscuro no llega
+       ni a 2 de contraste. */
+    --verde-texto:#27624F; --naranja-texto:#C2410C;
     --ground:#F7F4EE; --ink:#292927; --ink-soft:#6F6B65; --track:#E9E4DA;
     --titulo:#27624F; --sombra:0 1px 2px rgba(39,98,79,.06);
   }
@@ -454,14 +458,14 @@ ${tipografias(opciones.marca)}
       --ground:#10201A; --tarjeta:#162C24; --ink:#EDE6DA; --ink-soft:#A9B8B0;
       --borde:#2C4238; --track:#22382F; --titulo:#8FCBB2; --naranja-claro:#2A2119;
       --verde-medio:#5FA588; --sombra:0 1px 2px rgba(0,0,0,.35);
-      --menta:#163026; --menta-borde:#25453A;
+      --menta:#163026; --menta-borde:#25453A; --verde-texto:#8FCBB2; --naranja-texto:#F59E5B;
     }
   }
   :root[data-theme="dark"]{
     --ground:#10201A; --tarjeta:#162C24; --ink:#EDE6DA; --ink-soft:#A9B8B0;
     --borde:#2C4238; --track:#22382F; --titulo:#8FCBB2; --naranja-claro:#2A2119;
     --verde-medio:#5FA588; --sombra:0 1px 2px rgba(0,0,0,.35);
-    --menta:#163026; --menta-borde:#25453A;
+    --menta:#163026; --menta-borde:#25453A; --verde-texto:#8FCBB2; --naranja-texto:#F59E5B;
   }
   *{box-sizing:border-box}
   body{margin:0;background:var(--ground);color:var(--ink);
@@ -481,7 +485,7 @@ ${tipografias(opciones.marca)}
   .cintillo{display:flex;justify-content:space-between;align-items:baseline;gap:1rem;
     font-family:"Montserrat",system-ui,sans-serif;font-size:7.6pt;letter-spacing:.04em;
     color:var(--ink-soft);text-transform:uppercase}
-  .cintillo__marca{color:var(--verde);font-weight:700;letter-spacing:.1em}
+  .cintillo__marca{color:var(--verde-texto);font-weight:700;letter-spacing:.1em}
   .cintillo__marca i{font-style:italic;font-weight:400}
   /* El correo y el web, tal como se escriben: en minúsculas. Una dirección en
      mayúsculas se lee peor y se copia mal, y aquí no es un rótulo sino algo que
@@ -535,7 +539,7 @@ ${tipografias(opciones.marca)}
   .portada__pie{margin-top:1.5rem;color:var(--ink-soft);font-size:.95rem}
 
   .eyebrow{font-family:"Montserrat",system-ui,sans-serif;font-size:.68rem;
-    letter-spacing:.18em;text-transform:uppercase;color:var(--verde);font-weight:700;
+    letter-spacing:.18em;text-transform:uppercase;color:var(--verde-texto);font-weight:700;
     margin:0 0 .5rem}
   /* Título de sección: chevrón dorado delante y línea fina debajo, como Connect.
      El chevrón es decorativo, así que se dibuja con ::before y no va en el texto:
@@ -572,7 +576,7 @@ ${tipografias(opciones.marca)}
   .barras{display:flex;flex-direction:column;gap:.55rem;margin:.2rem 0 0}
   .fila{display:grid;grid-template-columns:minmax(7rem,10.5rem) 1fr auto;gap:.85rem;align-items:center}
   .fila__nombre{font-size:.93rem;line-height:1.3;display:flex;flex-direction:column}
-  .marca{font-size:.65rem;letter-spacing:.08em;text-transform:uppercase;color:var(--naranja);font-weight:600}
+  .marca{font-size:.65rem;letter-spacing:.08em;text-transform:uppercase;color:var(--naranja-texto);font-weight:600}
   .eje{position:relative;height:9px;background:var(--track);border-radius:2px}
   .eje__medio{position:absolute;left:50%;top:-3px;bottom:-3px;width:1px;background:var(--borde)}
   /* El color de cada dominio llega por --dominio desde marca.json, así que el
@@ -617,7 +621,7 @@ ${tipografias(opciones.marca)}
   .lectura__def{font-size:.86rem;color:var(--ink-soft);margin-bottom:.4rem}
   .lectura p{margin-bottom:.35rem;font-size:.97rem}
   .lectura__ref{font-size:.78rem;color:var(--ink-soft);margin-bottom:0}
-  .matiz{color:var(--naranja);font-style:normal;font-weight:600;font-size:.88rem}
+  .matiz{color:var(--naranja-texto);font-style:normal;font-weight:600;font-size:.88rem}
   .imagen{margin:0 0 1.1rem;padding:0;break-inside:avoid}
   .imagen blockquote{margin:0;padding:.9rem 0 .5rem 1.1rem;border-left:3px solid var(--naranja);
     font-family:"Playfair Display",Georgia,serif;font-size:1.12rem;font-style:italic;
@@ -627,7 +631,7 @@ ${tipografias(opciones.marca)}
     padding:1.15rem 1.35rem;margin-top:1.4rem}
   .imagen--ancla blockquote{padding-top:.2rem;font-size:1.2rem}
   .imagen__etiqueta{font-size:.71rem;letter-spacing:.15em;text-transform:uppercase;
-    color:var(--verde-medio);font-weight:600;margin:0}
+    color:var(--verde-texto);font-weight:600;margin:0}
 
   .vacio{border:1px solid var(--menta-borde);border-radius:10px;padding:1.3rem 1.5rem;background:var(--menta)}
   .senales{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:.75rem}
@@ -689,9 +693,9 @@ ${tipografias(opciones.marca)}
      la cabecera de portada y la firma del final. */
   .firma p,.portada p{max-width:none;text-align:center;hyphens:none}
   .firma__linea{margin:0 0 .5rem;font-size:.92rem}
-  .firma__linea a{color:var(--verde-medio);text-decoration:none;font-weight:600}
+  .firma__linea a{color:var(--verde-texto);text-decoration:none;font-weight:600}
   .firma__linea a:hover{text-decoration:underline}
-  .firma__sep{color:var(--borde);margin:0 .5rem}
+  .firma__sep{color:var(--ink-soft);margin:0 .5rem}
   .firma__copy{margin:.15rem 0 0;font-size:.8rem;color:var(--ink-soft)}
   /* En papel el logotipo va algo menor y el bloque nunca se parte. */
   @media print{.firma{break-inside:avoid;margin-top:1.8rem}

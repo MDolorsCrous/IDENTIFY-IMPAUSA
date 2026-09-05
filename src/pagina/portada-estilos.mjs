@@ -27,7 +27,7 @@ export const estilosPortada = `
     font-size:1.02rem;line-height:1.35;margin:0 0 .35rem;color:var(--titulo)}
   .inicio p{margin:0 0 1rem;max-width:60ch}
   .ojo{font-family:"Montserrat",system-ui,sans-serif;font-size:.7rem;letter-spacing:.18em;
-    text-transform:uppercase;color:var(--verde);font-weight:700;margin:0 0 .55rem}
+    text-transform:uppercase;color:var(--verde-texto);font-weight:700;margin:0 0 .55rem}
   .entradilla{font-size:1.06rem;color:var(--ink-soft);margin-bottom:2rem;max-width:62ch}
   .oculto{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
 
@@ -64,7 +64,7 @@ export const estilosPortada = `
   .realce{background:linear-gradient(90deg,#F47A20 0%,#D5B447 55%,#5F927D 100%);
     -webkit-background-clip:text;background-clip:text;color:transparent}
   .hero__base{font-family:"Montserrat",system-ui,sans-serif;font-size:.78rem;font-weight:600;
-    letter-spacing:.12em;text-transform:uppercase;color:var(--verde);margin:0}
+    letter-spacing:.12em;text-transform:uppercase;color:var(--verde-texto);margin:0}
   .hero__texto{font-size:1.06rem;color:var(--ink-soft);margin:0}
   .hero__rigor{display:flex;align-items:flex-start;gap:.6rem;text-align:left;
     background:var(--tarjeta);border:1px solid var(--borde);border-radius:12px;
@@ -103,7 +103,7 @@ export const estilosPortada = `
   .seguir__texto{margin:0;font-size:.96rem;color:var(--ink);text-align:center}
   .seguir__botones{display:flex;align-items:center;gap:1rem;flex-wrap:wrap;
     justify-content:center}
-  .seguir__botones .enlace{background:none;border:0;color:var(--verde);
+  .seguir__botones .enlace{background:none;border:0;color:var(--verde-texto);
     font-weight:600;cursor:pointer;min-height:44px;padding:.5rem .3rem;
     text-decoration:underline;text-underline-offset:3px}
 
@@ -147,7 +147,7 @@ export const estilosPortada = `
   .pliegue:hover{border-color:var(--verde-suave-borde);box-shadow:0 4px 14px rgba(39,98,79,.07)}
   .pliegue .desplegable__cab{align-items:flex-start;gap:.9rem;padding:1.1rem 1.3rem}
   .pliegue__n{flex:none;display:grid;place-items:center;width:1.9rem;height:1.9rem;
-    border-radius:50%;background:var(--menta);color:var(--verde);font-weight:700;
+    border-radius:50%;background:var(--menta);color:var(--verde-texto);font-weight:700;
     font-family:"Montserrat",system-ui,sans-serif;font-size:.86rem;margin-top:.1rem}
   .pliegue__texto{flex:1;min-width:0}
   .pliegue .desplegable__flecha{margin-top:.1rem}
@@ -176,7 +176,7 @@ export const estilosPortada = `
     margin:2.2rem 0 0;padding:0}
   .confianza > div{background:var(--tarjeta);border:1px solid var(--borde);border-radius:14px;
     padding:1.1rem 1.2rem}
-  .confianza dt{font-family:"Montserrat",system-ui,sans-serif;font-weight:700;color:var(--verde);
+  .confianza dt{font-family:"Montserrat",system-ui,sans-serif;font-weight:700;color:var(--verde-texto);
     font-size:1.05rem;margin-bottom:.2rem}
   .confianza dd{margin:0;font-size:.92rem;color:var(--ink-soft)}
 
@@ -218,13 +218,24 @@ export const estilosPortada = `
   /* ---- La muestra de informe ---- */
   .muestra{position:relative;border:1px solid var(--borde);border-radius:16px;overflow:hidden;
     background:var(--ground)}
-  .muestra__sello{margin:0;padding:.6rem 1.2rem;background:var(--menta);
+  .muestra .muestra__sello{margin:0;padding:.6rem 1.2rem;background:var(--menta);
     font-family:"Montserrat",system-ui,sans-serif;font-size:.7rem;letter-spacing:.14em;
-    text-transform:uppercase;color:var(--verde);font-weight:700;
+    text-transform:uppercase;color:var(--verde-texto);font-weight:700;
     border-bottom:1px solid var(--borde);max-width:none}
-  .muestra__hoja{background:#FFFDFC;padding:1.5rem clamp(1.1rem,3vw,1.8rem) 1.6rem}
+  /* Esta hoja es papel blanco FIJO, no una superficie del tema: imita el
+     informe impreso. Todo lo que lleva encima tenia el color del tema, asi que
+     en modo oscuro salia letra clara sobre blanco —1,22 de contraste—. Aqui
+     dentro las tintas van fijas, como el papel. */
+  .muestra__hoja{background:#FFFDFC;padding:1.5rem clamp(1.1rem,3vw,1.8rem) 1.6rem;
+    color:#302A26}
+  .muestra__hoja .ojo{color:#27624F}
+  .muestra__hoja .muestra__nombre,.muestra__hoja .muestra__dato{color:#302A26}
+  .muestra__hoja .muestra__dato em,.muestra__hoja .muestra__escala,
+  .muestra__hoja .muestra__bloque p{color:#6E6862}
+  .muestra__hoja .muestra__eje{background:#E9E4DA}
+  .muestra__hoja .muestra__bloques{border-top-color:#E4DDD5}
   .muestra__hoja h4{font-family:"Montserrat",system-ui,sans-serif;font-weight:600;
-    color:var(--titulo);margin:0 0 1rem;font-size:1.1rem}
+    color:#27624F;margin:0 0 1rem;font-size:1.1rem}
   .muestra__fila{display:grid;grid-template-columns:minmax(6.5rem,9rem) 1fr auto;gap:.8rem;
     align-items:center;margin-bottom:.55rem}
   .muestra__nombre{font-size:.88rem}
@@ -258,12 +269,12 @@ export const estilosPortada = `
 
   /* ---- Ficha y referencias ---- */
   .ficha{margin:0 0 1.4rem;display:grid;grid-template-columns:auto 1fr;gap:.45rem 1.2rem}
-  .ficha dt{font-family:"Montserrat",system-ui,sans-serif;font-weight:600;color:var(--verde);
+  .ficha dt{font-family:"Montserrat",system-ui,sans-serif;font-weight:600;color:var(--verde-texto);
     font-size:.92rem;white-space:nowrap}
   .ficha dd{margin:0;font-size:.95rem;color:var(--ink-soft)}
   .referencias{margin:0 0 1rem;padding-left:1.3rem;font-size:.9rem;color:var(--ink-soft);
     display:flex;flex-direction:column;gap:.55rem}
-  .referencias a{color:var(--verde)}
+  .referencias a{color:var(--verde-texto)}
   .atribucion{font-size:.88rem;color:var(--ink-soft);margin:0}
   .lectura .lista li{color:var(--ink-soft)}
   .lectura .lista b{color:var(--ink)}
@@ -284,7 +295,7 @@ export const estilosPortada = `
   .pie-marca__impausa{height:26px;width:auto}
   .pie-marca__live{height:52px;width:auto}
   .pie-marca__contacto{margin:0;font-size:.94rem}
-  .pie-marca__contacto a{color:var(--verde);text-decoration:none;
+  .pie-marca__contacto a{color:var(--verde-texto);text-decoration:none;
     border-bottom:1px solid var(--borde)}
   .pie-marca__legal{margin:0;font-size:.82rem;color:var(--ink-soft)}
   /* Los logotipos llevan sus colores fijos y el verde oscuro se pierde sobre el
