@@ -118,6 +118,13 @@ export const estilosPortada = `
   .puerta__fila .cta{padding-inline:1.6rem;white-space:nowrap}
   .puerta .campo{align-items:center;text-align:center;margin:0;gap:.15rem}
   .puerta__error{color:#B3401A;font-size:.9rem;margin:0}
+  /* La puerta vive en el cierre, sobre el verde: la etiqueta y la pista en
+     claro, el campo en blanco, y el error en un salmon que se lea sobre verde
+     —el rojo de la version clara desaparecia ahi—. */
+  .banda--cierre .puerta .campo{color:#FFFDFC}
+  .banda--cierre .puerta .campo span{color:#D9E7DF}
+  .banda--cierre .puerta__fila input{background:#FFFDFC;color:#302A26;border-color:#FFFDFC}
+  .banda--cierre .puerta__error{color:#FFD9CC}
 
   /* ---- Retomar un test a medias ---- */
   .seguir{display:flex;flex-direction:column;align-items:center;gap:.8rem;

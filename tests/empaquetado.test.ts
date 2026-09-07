@@ -171,6 +171,25 @@ test("la cabecera de la portada es la de Connect", () => {
   assert.ok(!pagina.includes("hero__marca"), "sigue la fila antigua del logotipo en el hero");
 });
 
+test("con la puerta puesta, el código se pide abajo, en el cierre", () => {
+  // La puerta va donde acaba la página —donde se acaba de leer qué es el test—
+  // y en el hero queda un botón que baja hasta ella. Antes era al revés: la
+  // puerta arriba y un botón abajo que subía.
+  const pagina = readFileSync(join(raiz, "test-identify.html"), "utf8");
+  assert.ok(
+    pagina.includes(".replace(HUECO_CTA_FINAL, puertaCerrada ? laPuerta : botonCierre)"),
+    "la puerta no está en el cierre",
+  );
+  assert.ok(
+    pagina.includes(".replace(HUECO_CTA_HERO, puertaCerrada ? botonALaPuerta : (tarjetaSeguir || botonHero))"),
+    "el hero no lleva el botón que baja a la puerta",
+  );
+  assert.match(pagina, /id="alaPuerta"[^<]*<\/button>|id="alaPuerta" type="button">' \+ T\.inicio\.alCodigo \+\s*\n?\s*' <span aria-hidden="true">↓<\/span>/, "el botón del hero no apunta hacia abajo");
+  // Y sobre el verde del cierre la puerta se lee: etiqueta clara, campo blanco.
+  assert.ok(pagina.includes(".banda--cierre .puerta .campo{color:#FFFDFC}"), "la etiqueta de la puerta no se ve sobre el verde");
+  assert.ok(pagina.includes(".banda--cierre .puerta__fila input{background:#FFFDFC"), "el campo no va en blanco sobre el verde");
+});
+
 test("los dos bloques de script de la página son JavaScript válido", () => {
   // La aplicación se escribe dentro de una plantilla de `tools/render-test.mjs`,
   // y ahí un error no se nota al generar: el fichero sale, y es la página la que
