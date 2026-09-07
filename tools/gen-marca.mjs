@@ -45,6 +45,22 @@ function logoDe(fichero, caja, alt) {
   return { alt, ancho, alto, src: "data:image/svg+xml," + encodeURIComponent(svg) };
 }
 
+/**
+ * Un logotipo que solo existe como PNG, incrustado igual que los SVG.
+ *
+ * El de LivePausa horizontal no lo hay en vectorial: los tres SVG que circulan
+ * son la version apilada («Live» sobre «Pausa»). Este PNG es el mismo fichero
+ * que usa Connect, sin tocar; a 1044 px de ancho sobra para los 280 como mucho
+ * a los que se muestra. Si algun dia aparece el SVG, se cambia aqui y ya.
+ */
+function logoPng(fichero, ancho, alto, alt) {
+  const png = readFileSync(RAIZ + "src/assets/" + fichero);
+  if (png.readUInt32BE(16) !== ancho || png.readUInt32BE(20) !== alto) {
+    throw new Error(`${fichero} no mide ${ancho}×${alto}`);
+  }
+  return { alt, ancho, alto, src: "data:image/png;base64," + png.toString("base64") };
+}
+
 const marca = {
   _nota:
     "Datos de marca del informe: logotipo, contacto, paleta y tipografías, todo " +
@@ -103,7 +119,7 @@ const marca = {
   },
 
   logo: logoDe("impausa.svg", "128 451 804 103", "IMPAUSA"),
-  logoLive: logoDe("livepausa.svg", "94 237 858 474", "LivePausa by ImPausa"),
+  logoLive: logoPng("livepausa-horizontal.png", 1044, 237, "LivePausa by ImPausa"),
 };
 
 writeFileSync(RAIZ + "src/config/marca.json", JSON.stringify(marca, null, 2) + "\n", "utf8");

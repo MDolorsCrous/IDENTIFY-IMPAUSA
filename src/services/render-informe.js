@@ -560,14 +560,14 @@ ${tipografias(opciones.marca)}
   .cabecera{text-align:center;margin-bottom:.5rem}
   .cabecera__banda{height:14px;border-radius:7px;margin-bottom:1.6rem;
     background:linear-gradient(90deg,#EF8A4D 0%,#DFAE6B 33%,#B9BC72 66%,#7FAE79 100%)}
-  /* LivePausa arriba; IMPAUSA queda abajo, en la firma, junto a este. El de
-     LivePausa es un logotipo alto —flor y dos lineas— y a los 340 px de ancho
-     del de IMPAUSA habria medido 190 de alto: media portada. */
-  .cabecera__logo{width:210px;max-width:60%;height:auto;display:block;margin:0 auto}
+  /* LivePausa arriba; IMPAUSA queda abajo, en la firma, junto a este. Es el
+     horizontal —«Live ✿ Pausa» en una linea—, 4,4 veces mas ancho que alto:
+     a 300 px de ancho mide 68 de alto, como una linea de titulo. */
+  .cabecera__logo{width:300px;max-width:80%;height:auto;display:block;margin:0 auto}
   @media print{
     .cabecera{margin-bottom:0}
     .cabecera__banda{height:10px;margin-bottom:1.1rem}
-    .cabecera__logo{width:180px}
+    .cabecera__logo{width:260px}
   }
 
   .portada{text-align:center;padding-block:clamp(.5rem,4vw,2.5rem) 0}
@@ -732,7 +732,7 @@ ${tipografias(opciones.marca)}
   .firma__logos{display:flex;align-items:center;justify-content:center;
     gap:2.4rem;flex-wrap:wrap;margin:0 auto 1.1rem}
   .firma__logo{height:34px;width:auto;max-width:100%;display:block}
-  .firma__live{height:66px;width:auto;max-width:100%;display:block}
+  .firma__live{height:48px;width:auto;max-width:100%;display:block}
   /* Los párrafos del informe llevan un ancho máximo —una regla tipográfica: las
      líneas muy largas se leen mal—, y eso los dejaba más estrechos que su bloque
      y pegados a la izquierda. Centrar el texto dentro de una caja que ya está
@@ -748,7 +748,7 @@ ${tipografias(opciones.marca)}
   /* En papel el logotipo va algo menor y el bloque nunca se parte. */
   @media print{.firma{break-inside:avoid;margin-top:1.8rem}
     .firma__logos{gap:1.6rem;margin-bottom:.8rem}
-    .firma__logo{height:22px}.firma__live{height:44px}}
+    .firma__logo{height:22px}.firma__live{height:40px}}
 
   .maqueta{position:sticky;top:0;z-index:5;background:#1A4A3A;color:#F7F2EB;
     font-size:.8rem;letter-spacing:.02em;text-align:center;padding:.5rem 1rem}

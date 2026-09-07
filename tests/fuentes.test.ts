@@ -125,7 +125,9 @@ test("el informe se firma: logotipo, contacto y copyright", () => {
   // Son SVG: vectoriales, nítidos en el papel, y los dos juntos pesan 34 KB
   // frente a los 161 del PNG que había antes.
   assert.ok(html.includes('class="firma__logo" src="data:image/svg+xml,'), "el logotipo no viaja dentro");
-  assert.ok(html.includes('class="firma__live" src="data:image/svg+xml,'), "falta LivePausa en el cierre");
+  // LivePausa viaja como PNG: el horizontal no existe en vectorial, y es el
+  // mismo fichero que usa Connect. Lo que importa es que vaya DENTRO.
+  assert.ok(html.includes('class="firma__live" src="data:image/png;base64,'), "falta LivePausa en el cierre, o no va incrustado");
   assert.ok(!html.includes('firma__logo" src="http'), "el logotipo está enlazado en vez de incrustado");
 });
 

@@ -143,7 +143,7 @@ const html = `<!doctype html>
     letter-spacing:.18em;text-transform:uppercase;color:var(--verde-texto);font-weight:700}
   /* El logotipo tambien en la pantalla de puntuaciones: es la unica que queda
      sin nada de la casa, y se ve justo despues de veinte minutos de test. */
-  .marca-sup{height:56px;width:auto;display:block;margin:0 0 1.1rem}
+  .marca-sup{height:40px;width:auto;display:block;margin:0 0 1.1rem}
   .portada p{max-width:32rem;margin:0;color:var(--ink-soft)}
   .datos{display:flex;flex-wrap:wrap;gap:.5rem;justify-content:center;margin-top:.3rem}
   .dato{background:var(--tarjeta);border:1px solid var(--borde);border-radius:999px;
@@ -174,11 +174,10 @@ const html = `<!doctype html>
     box-shadow:0 6px 14px -10px rgba(39,98,79,.35)}
   .progreso__marca{display:flex;align-items:center;gap:1rem;max-width:42rem;
     margin:0 auto .55rem}
-  /* El logotipo de LivePausa. Es casi el doble de alto que ancho —la flor mas
-     dos lineas— y a los 20 px que llevaba el de IMPAUSA quedaba en 36 px de
-     ancho: no se leia. Probado a 34: se leia «Live Pausa» pero apretado y el
-     «by ImPausa» era una mancha. A 52 mide unos 94 de ancho y se lee entero. */
-  .progreso__marca img{height:52px;width:auto;flex:none}
+  /* El logotipo de LivePausa, el horizontal: 4,4 veces mas ancho que alto. A
+     38 px de alto mide unos 167 de ancho y deja sitio al contador; a 390 px
+     de pantalla baja a 32 (141 de ancho) para que quepan los dos en la fila. */
+  .progreso__marca img{height:38px;width:auto;flex:none}
   .progreso__fila{display:flex;justify-content:space-between;align-items:baseline;
     gap:1rem;flex:1;font-family:"Montserrat",system-ui,sans-serif;font-size:.74rem;
     font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-soft);
@@ -244,7 +243,7 @@ const html = `<!doctype html>
   @media (max-width:640px){
     .ayuda{display:none}
     .progreso__marca{gap:.6rem}
-    .progreso__marca img{height:44px}
+    .progreso__marca img{height:32px}
     .progreso__fila{font-size:.66rem;letter-spacing:.03em}
     .tarjeta-preg{padding:1.2rem 1.25rem}
   }

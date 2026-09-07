@@ -316,7 +316,7 @@ export const estilosPortada = `
      texto y el otro casi cuadrado—, asi que se igualan por lo que se ve y no
      por una altura comun. */
   .pie-marca__impausa{height:26px;width:auto}
-  .pie-marca__live{height:52px;width:auto}
+  .pie-marca__live{height:40px;width:auto}
   .pie-marca__contacto{margin:0;font-size:.94rem}
   .pie-marca__contacto a{color:var(--verde-texto);text-decoration:none;
     border-bottom:1px solid var(--borde)}
