@@ -54,6 +54,12 @@ const marca = {
   producto: "Identify by Impausa",
   correo: "hola@impausa.com",
   web: "www.impausa.com",
+  // El entorno legal. Se pidio como ftp://berta%40impausa.com@ftp.impausa.com/
+  // public_html/entorn_legal_impausa.html — la ruta de SUBIDA del fichero, con
+  // el usuario del FTP dentro. Ningun navegador actual abre ftp:// (Chrome y
+  // Firefox lo quitaron en 2021) y publicaria la cuenta en cada pagina. Esta es
+  // la direccion publica del mismo fichero, comprobada: contesta 200.
+  legal: "https://www.impausa.com/entorn_legal_impausa.html",
   copyright: "© 2026 IMPAUSA POWER, S.L. Todos los derechos reservados.",
 
   // La paleta de Connect, para que los dos informes de la casa se reconozcan

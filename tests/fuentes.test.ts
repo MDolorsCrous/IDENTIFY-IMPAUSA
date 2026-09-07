@@ -108,6 +108,15 @@ test("el informe se firma: logotipo, contacto y copyright", () => {
 
   assert.ok(html.includes("hola@impausa.com"), "falta el correo");
   assert.ok(html.includes("www.impausa.com"), "falta la web");
+  // El entorno legal, en la misma línea. Con la dirección PÚBLICA: se pidió la
+  // ruta ftp:// de subida, con el usuario dentro, que ningún navegador abre y
+  // que publicaría la cuenta en cada informe.
+  assert.ok(
+    html.includes('<a href="https://www.impausa.com/entorn_legal_impausa.html">Entorno Legal</a>'),
+    "falta el enlace al entorno legal, o no lleva la dirección pública",
+  );
+  assert.ok(!html.includes("ftp://"), "el informe lleva una dirección ftp://");
+  assert.ok(!/berta/i.test(html), "el informe lleva el usuario del FTP");
   assert.ok(html.includes("IMPAUSA POWER, S.L."), "falta la razón social");
   assert.ok(html.includes("Todos los derechos reservados"), "falta la reserva de derechos");
 

@@ -166,7 +166,7 @@ function cabeceraDeMarca(marca) {
  */
 function cierreDeMarca(marca, t) {
   if (!marca) return "";
-  const { logo, logoLive, correo, web, copyright, producto } = marca;
+  const { logo, logoLive, correo, web, copyright, producto, legal } = marca;
   return `
   <footer class="firma">
     <div class="firma__logos">
@@ -182,6 +182,12 @@ function cierreDeMarca(marca, t) {
       <a href="mailto:${esc(correo)}">${esc(correo)}</a>
       <span class="firma__sep" aria-hidden="true">·</span>
       <a href="https://${esc(web)}">${esc(web)}</a>
+      ${
+        legal && t.legal
+          ? `<span class="firma__sep" aria-hidden="true">·</span>
+      <a href="${esc(legal)}">${esc(t.legal)}</a>`
+          : ""
+      }
     </p>
     <p class="firma__copy">${esc(copyright)}</p>
     <p class="firma__copy firma__quien">${rellena(t.quien, { producto: esc(producto) })}</p>

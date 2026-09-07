@@ -301,6 +301,9 @@
       "sinConexion": "Could not connect. Check your connection.",
       "pedirCodigo": "Access code\n\nYou get it from whoever sent you the link."
     },
+    "legal": {
+      "entorno": "Legal Information"
+    },
     "inicio": {
       "empezar": "Start the test now",
       "alCodigo": "Enter the access code",
@@ -533,6 +536,7 @@
       "aviso": "Facets are four-item scales: they carry less weight than the domains and should be read with more caution. This report is a self-knowledge and coaching tool; it is not a clinical or selection test, and it reflects how you described yourself on the day you answered."
     },
     "firma": {
+      "legal": "Legal Information",
       "quien": "{producto} is a tool by IMPAUSA POWER, S.L."
     },
     "atencion": {

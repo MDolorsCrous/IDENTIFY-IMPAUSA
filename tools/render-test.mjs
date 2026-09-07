@@ -364,6 +364,13 @@ const html = `<!doctype html>
      opcion normal de quien decide sobre su material, no una alarma. */
   .enlace--sobrio{color:var(--ink-soft);font-weight:400;font-size:.85rem;
     text-decoration:underline;text-underline-offset:3px}
+  /* El entorno legal, al pie de todas las pantallas. Discreto: es un enlace
+     que tiene que estar, no una llamada a nada. Mismo verde de texto que los
+     demas enlaces y con subrayado, que es lo que dice «esto se pulsa». */
+  .legal{text-align:center;padding:1.1rem 1.25rem 1.5rem;font-size:.82rem;color:var(--ink-soft)}
+  .legal a{color:var(--verde-texto);text-decoration:underline;text-underline-offset:3px;
+    display:inline-block;min-height:44px;line-height:44px}
+  @media print{.legal{display:none}}
   @media print{.guardado{display:none}}
   #marco{flex:1;width:100%;border:0;min-height:calc(100vh - 4rem);background:#fff}
   .json{width:100%;min-height:9rem;margin-top:.9rem;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;
@@ -373,6 +380,11 @@ ${estilosPortada}
 </style>
 
 <div class="marco" id="app"></div>
+<!-- El entorno legal, al final de todas las pantallas. Va fuera de #app a
+     proposito: #app se reescribe entero en cada pantalla y esto tiene que
+     estar siempre, sin que cada pantalla tenga que acordarse. El texto lo pone
+     aplicarIdioma, en la lengua que toque. -->
+<footer class="legal" id="legal"></footer>
 
 <script>
 ${paquete}
@@ -442,6 +454,13 @@ function aplicarIdioma(nuevo){
   };
   document.documentElement.lang = nuevo;
   document.title = T.titulo;
+  // El enlace legal de abajo del todo, en esta lengua. La direccion viene de
+  // marca.json, como el correo y la web: un solo sitio donde cambiarla.
+  const legal = document.getElementById("legal");
+  if (legal) {
+    legal.innerHTML = '<a href="' + esc(D.comun.marca.legal) + '" target="_blank" rel="noopener">' +
+      esc(T.legal.entorno) + '</a>';
+  }
   recuerdaIdioma.guardar(nuevo);
 }
 

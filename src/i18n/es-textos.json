@@ -301,6 +301,9 @@
       "sinConexion": "No se ha podido conectar. Comprueba la conexión.",
       "pedirCodigo": "Código de acceso\n\nTe lo da quien te ha pasado el enlace."
     },
+    "legal": {
+      "entorno": "Entorno Legal"
+    },
     "inicio": {
       "empezar": "Comenzar el test ahora",
       "alCodigo": "Introducir el código de acceso",
@@ -533,6 +536,7 @@
       "aviso": "Las facetas son escalas de cuatro ítems: sostienen menos peso que los dominios y conviene leerlas con más prudencia. Este informe es una herramienta de autoconocimiento y coaching; no es una prueba clínica ni de selección, y refleja cómo te describiste el día que lo respondiste."
     },
     "firma": {
+      "legal": "Entorno Legal",
       "quien": "{producto} es una herramienta de IMPAUSA POWER, S.L."
     },
     "atencion": {

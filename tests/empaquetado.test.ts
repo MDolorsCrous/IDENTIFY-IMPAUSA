@@ -125,6 +125,23 @@ test("el camino de copiar y pegar a mano solo sale en el fichero local", () => {
   );
 });
 
+test("el entorno legal está al final de todas las pantallas, en la lengua que toque", () => {
+  const pagina = readFileSync(join(raiz, "test-identify.html"), "utf8");
+  // Un solo pie, fuera de #app: #app se reescribe entero en cada pantalla y el
+  // enlace tiene que estar siempre sin que cada pantalla se acuerde de ponerlo.
+  assert.match(pagina, /<footer class="legal" id="legal"><\/footer>/, "falta el pie legal");
+  assert.match(pagina, /getElementById\("legal"\)/, "nadie rellena el pie legal");
+  // Las dos lenguas de la interfaz, y la dirección pública (nunca la ftp:// de
+  // subida, que no abre ningún navegador y lleva el usuario dentro).
+  assert.ok(pagina.includes('"entorno":"Entorno Legal"'), "falta el texto en castellano");
+  assert.ok(pagina.includes('"entorno":"Legal Information"'), "falta el texto en inglés");
+  assert.ok(pagina.includes("https://www.impausa.com/entorn_legal_impausa.html"), "falta la dirección");
+  assert.ok(!pagina.includes("ftp://"), "la página lleva una dirección ftp://");
+  assert.ok(!/berta/i.test(pagina), "la página lleva el usuario del FTP");
+  // Y se abre aparte: quien está a media pregunta no tiene que perder el test.
+  assert.match(pagina, /target="_blank" rel="noopener"/, "el enlace legal se abre encima del test");
+});
+
 test("los dos bloques de script de la página son JavaScript válido", () => {
   // La aplicación se escribe dentro de una plantilla de `tools/render-test.mjs`,
   // y ahí un error no se nota al generar: el fichero sale, y es la página la que
