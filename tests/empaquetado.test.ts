@@ -437,19 +437,27 @@ test("la pantalla del cuestionario no pierde el trabajo ni al teclado", () => {
   assert.match(pagina, /role="progressbar"/, "la barra no expone su valor");
   assert.match(pagina, /aria-valuenow=/, "la barra no dice cuántas van");
 
-  // Una pregunta avanza UNA vez. Dos pulsaciones dentro de la pausa de 180 ms
-  // —un doble toque impaciente, una tecla mantenida— programaban dos pasos: se
-  // saltaba una pregunta sin responder, y al llegar al final el test devolvía a
-  // la primera sin contestar. Desde fuera parecía un bucle.
-  assert.match(pagina, /if \(pasando\) return;/, "dos pulsaciones seguidas vuelven a programar dos pasos");
-  assert.match(pagina, /pasando = setTimeout\(\(\) => \{ pasando = 0; seguir\(\); \}, PAUSA\)/, "el paso no se guarda para poder cancelarlo");
-  assert.match(pagina, /if \(e\.repeat\) \{ e\.preventDefault\(\); return; \}/, "una tecla mantenida contesta en ráfaga");
-  // Y navegar a mano cancela el paso pendiente, o te devuelve hacia delante.
-  assert.equal(
-    (pagina.match(/cancelarPaso\(\);/g) ?? []).length,
-    2,
-    "«Anterior» y Backspace tienen que cancelar el paso pendiente",
+  // Se pasa de pregunta a mano, y solo con la de ahora contestada.
+  //
+  // Antes la pantalla saltaba sola tras una pausa de 180 ms, y dos pulsaciones
+  // dentro de esa pausa programaban dos pasos: una pregunta se quedaba sin
+  // responder y al final el test devolvía a la primera sin contestar, que desde
+  // fuera parece un bucle. Con el paso a mano ese fallo no puede existir.
+  assert.match(pagina, /id="siguiente"/, "no hay botón de siguiente");
+  assert.match(
+    pagina,
+    /\$\{elegido === undefined \? "disabled" : ""\}/,
+    "el botón de siguiente no se apaga hasta que hay respuesta",
   );
+  assert.match(
+    pagina,
+    /function avanzar\(\)\{\s*\n\s*if \(respuestas\[CFG\.questions\[indice\]\.id\] === undefined\) return;/,
+    "se puede avanzar sin haber contestado",
+  );
+  assert.ok(!pagina.includes("const PAUSA"), "vuelve a haber avance automático con pausa");
+  assert.match(pagina, /if \(e\.repeat\) \{ e\.preventDefault\(\); return; \}/, "una tecla mantenida contesta en ráfaga");
+  // Y el botón apagado dice por qué lo está.
+  assert.match(pagina, /id="porQueApagado"/, "un botón apagado sin explicación");
 
   // Y el verde de la elegida sale de la paleta de marca, no escrito a mano.
   const marca = cargarRecursos().marca;

@@ -93,6 +93,10 @@ const html = `<!doctype html>
        papel. En modo oscuro esa letra no se leia: 2,08 de contraste donde hacen
        falta 4,5. Por eso hay dos variables y no una. */
     --verde-texto:#27624F;
+    /* La letra de un boton apagado. El --ink-soft de siempre se queda en 4,20
+       sobre el gris del boton y hace falta leerlo: es lo que dice que va a
+       pasar cuando se encienda. */
+    --apagado-texto:#5C564F;
   }
   @media (prefers-color-scheme:dark){
     :root:not([data-theme="light"]){
@@ -100,7 +104,7 @@ const html = `<!doctype html>
       --borde:#2C4238; --track:#22382F; --titulo:#8FCBB2; --verde-medio:#5FA588;
       --naranja-claro:#2A2119; --sombra:0 1px 3px rgba(0,0,0,.35); --sombra-alta:0 6px 24px rgba(0,0,0,.4);
       --menta:#16302A; --melocoton:#2A2119; --verde-suave-borde:#2C4238;
-      --verde-texto:#8FCBB2;
+      --verde-texto:#8FCBB2; --apagado-texto:#A9B8B0;
     }
   }
   :root[data-theme="dark"]{
@@ -108,7 +112,7 @@ const html = `<!doctype html>
     --borde:#2C4238; --track:#22382F; --titulo:#8FCBB2; --verde-medio:#5FA588;
     --naranja-claro:#2A2119; --sombra:0 1px 3px rgba(0,0,0,.35); --sombra-alta:0 6px 24px rgba(0,0,0,.4);
     --menta:#16302A; --melocoton:#2A2119; --verde-suave-borde:#2C4238;
-    --verde-texto:#8FCBB2;
+    --verde-texto:#8FCBB2; --apagado-texto:#A9B8B0;
   }
   *{box-sizing:border-box}
   body{margin:0;background:var(--ground);color:var(--ink);
@@ -149,6 +153,11 @@ const html = `<!doctype html>
     transition:transform .12s ease, box-shadow .12s ease}
   .boton:hover{transform:translateY(-1px);box-shadow:var(--sombra-alta)}
   .boton:active{transform:translateY(0)}
+  /* Apagado: se ve que esta ahi y que ahora no. Ni se levanta al pasar por
+     encima —eso prometeria que se puede pulsar— ni desaparece. */
+  .boton[disabled]{background:var(--track);color:var(--apagado-texto);box-shadow:none;
+    cursor:default;opacity:1}
+  .boton[disabled]:hover{transform:none;box-shadow:none}
 
   /* ---- Progreso ----
      La cabecera del cuestionario. Lleva el logotipo porque esta pantalla se ve
@@ -215,8 +224,15 @@ const html = `<!doctype html>
   .opcion[aria-checked="true"] .opcion__marca{opacity:1}
   .opcion[aria-checked="true"] .opcion__texto{font-weight:700}
 
-  .pie-preg{display:flex;justify-content:space-between;align-items:center;gap:1rem;
+  /* El pie: volver a la izquierda, seguir a la derecha, y la ayuda en medio
+     cuando cabe. La ayuda va con flex:1 y se encoge antes que los dos botones,
+     que son lo unico que no puede estrecharse. */
+  .pie-preg{display:flex;justify-content:space-between;align-items:center;gap:.75rem;
     margin-top:.2rem}
+  .pie-preg .ayuda{flex:1;text-align:center;min-width:0}
+  .pie-preg .boton{flex:none;padding:.8rem 1.6rem}
+  /* Por que esta apagado. Solo se ve cuando lo esta, y del lado del boton. */
+  .pie-preg__pista{margin:.35rem 0 0;font-size:.82rem;color:var(--ink-soft);text-align:right}
   .enlace{background:none;border:0;color:var(--verde-texto);cursor:pointer;font-weight:600;
     padding:.5rem 0;min-height:44px}
   .enlace[disabled]{color:var(--ink-soft);opacity:.45;cursor:default}
@@ -824,7 +840,12 @@ function pregunta(){
         <div class="pie-preg">
           <button class="enlace" id="atras" \${indice === 0 ? "disabled" : ""}>\${T.pregunta.anterior}</button>
           <span class="ayuda">\${T.pregunta.teclas}</span>
+          <button class="boton" id="siguiente" \${elegido === undefined ? "disabled" : ""}
+                  aria-describedby="porQueApagado">\${indice === 59 ? T.pregunta.terminar : T.pregunta.siguiente}</button>
         </div>
+        <!-- Por que el boton esta apagado. Solo se lee cuando lo esta: un boton
+             desactivado sin explicacion es el sitio donde la gente se atasca. -->
+        <p class="pie-preg__pista" id="porQueApagado" \${elegido === undefined ? "" : "hidden"}>\${T.pregunta.eligeParaSeguir}</p>
       </div>
     </div>\`;
 
@@ -851,68 +872,65 @@ function pregunta(){
   // no decia nada.
   document.getElementById("enunciado").focus({ preventScroll: true });
 
-  // Volver atras cancela el paso pendiente: si no, el temporizador de la
-  // respuesta que se acaba de dar te devolvia hacia delante al instante.
   document.getElementById("atras").onclick = () => {
-    if (indice > 0) { cancelarPaso(); indice--; guardado.poner(); pintar(); }
+    if (indice > 0) { indice--; guardado.poner(); pintar(); }
   };
+  document.getElementById("siguiente").onclick = avanzar;
 }
-
-/** Cuanto se queda la respuesta encendida antes de pasar a la siguiente. */
-const PAUSA = 180;
 
 /**
- * El paso a la siguiente pregunta, mientras se esta dejando ver la elegida.
+ * Responder no avanza. Avanzar es del boton «Siguiente».
  *
- * **Sin esto el test se iba en bucle.** Dos pulsaciones dentro de esos 180 ms
- * —un doble toque impaciente en el movil, o una tecla mantenida— programaban
- * DOS pasos: la primera pregunta se respondia y la segunda se saltaba sin
- * responder. Al llegar al final faltaban respuestas, y el codigo hacia lo unico
- * sensato que podia hacer: mandar a la primera sin contestar. Desde fuera eso
- * es «he llegado a la 60 y me ha devuelto a la 32».
+ * Antes la pantalla saltaba sola en cuanto tocabas una opcion, con una pausa de
+ * 180 ms para que se viera la eleccion. Dos pulsaciones dentro de esa pausa
+ * programaban dos pasos y una pregunta se quedaba sin responder; al final del
+ * test faltaban respuestas y el codigo te devolvia a la primera sin contestar,
+ * que desde fuera parece un bucle. Con el paso a mano ese fallo no puede
+ * existir: nadie avanza sin haber contestado, y nadie avanza dos veces de una
+ * respuesta. Y de paso se puede cambiar de idea antes de pasar de pantalla.
  *
- * Con esto, una pregunta avanza una vez. Contestar otra vez dentro de la pausa
- * cambia la respuesta —la ultima manda— pero no programa otro paso.
+ * Solo se repinta el pie —la marca de la opcion y el boton— y no la pantalla
+ * entera: repintar moveria el foco al enunciado y quien acaba de elegir con el
+ * teclado perderia el sitio.
  */
-let pasando = 0;
-
-/** Deja quieto el paso pendiente. Lo llama quien navega a mano. */
-function cancelarPaso(){
-  if (pasando) { clearTimeout(pasando); pasando = 0; }
-}
-
 function responder(valor){
   const q = CFG.questions[indice];
   respuestas[q.id] = valor;
   guardado.poner();
 
-  // La eleccion se pinta ANTES de avanzar. Sin esto no se veia nunca hacia
-  // delante: la pantalla saltaba a la siguiente en el mismo instante y el verde
-  // no llegaba a dibujarse. Ahora se enciende, se ve que la respuesta ha
-  // entrado, y pasa. Sesenta veces son once segundos.
   for (const b of app.querySelectorAll(".opcion")) {
-    b.setAttribute("aria-checked", String(+b.dataset.v === valor));
+    const suya = +b.dataset.v === valor;
+    b.setAttribute("aria-checked", String(suya));
+    b.tabIndex = suya ? 0 : -1;
   }
+  const siguiente = document.getElementById("siguiente");
+  if (siguiente) siguiente.disabled = false;
+  const pista = document.getElementById("porQueApagado");
+  if (pista) pista.hidden = true;
 
-  // Ya hay un paso en marcha: la respuesta se cambia, pero no se programa otro.
-  if (pasando) return;
+  // La barra avanza al contestar, no al cambiar de pantalla: es la senal de que
+  // la respuesta ha entrado, y ahora que no se pasa solo hace mas falta.
+  const hechas = Object.keys(respuestas).length;
+  const barra = app.querySelector(".barra");
+  if (barra) {
+    barra.setAttribute("aria-valuenow", String(hechas));
+    barra.querySelector(".barra__relleno").style.width = Math.round(hechas / 60 * 100) + "%";
+  }
+}
 
-  const seguir = () => {
-    if (indice < 59) { indice++; pintar(); }
-    else if (Object.keys(respuestas).length === 60) {
-      guardado.olvidar();   // terminado: ya no hay nada que reanudar
-      pantalla = "resultados"; pintar();
-    }
-    // La red de seguridad: si al final faltara alguna, se va a por ella en vez
-    // de dar por bueno un test incompleto. Con el paso unico ya no deberia
-    // pasar nunca — era justo esto lo que se veia como un bucle.
-    else { indice = CFG.questions.findIndex(x => respuestas[x.id] === undefined); pintar(); }
-  };
-
-  // Quien pide menos movimiento no quiere esperas de adorno.
-  const quieto = matchMedia("(prefers-reduced-motion: reduce)").matches;
-  if (quieto) seguir();
-  else pasando = setTimeout(() => { pasando = 0; seguir(); }, PAUSA);
+/** Pasar de pregunta. Solo con la de ahora contestada. */
+function avanzar(){
+  if (respuestas[CFG.questions[indice].id] === undefined) return;
+  if (indice < 59) { indice++; pintar(); return; }
+  if (Object.keys(respuestas).length === 60) {
+    guardado.olvidar();   // terminado: ya no hay nada que reanudar
+    pantalla = "resultados"; pintar();
+    return;
+  }
+  // La red de seguridad: si al final faltara alguna, se va a por ella en vez de
+  // dar por bueno un test incompleto. Con el paso a mano ya no deberia pasar.
+  indice = CFG.questions.findIndex(x => respuestas[x.id] === undefined);
+  pintar();
 }
 
 document.addEventListener("keydown", e => {
@@ -921,11 +939,20 @@ document.addEventListener("keydown", e => {
   // el dedo puesto en el 4 contestaba en rafaga.
   if (e.repeat) { e.preventDefault(); return; }
   if (e.key >= "1" && e.key <= "5") { responder(+e.key); e.preventDefault(); }
+  // Enter hace lo que el boton, para no tener que ir a buscarlo con el raton
+  // despues de contestar con el teclado — al contestar, el foco esta en el
+  // enunciado. Si el foco ya esta en un boton, Enter lo pulsa el navegador y
+  // aqui no se toca nada. Las flechas no: en esta pantalla recorren las cinco
+  // opciones, que es lo que espera un grupo de radio.
+  if (e.key === "Enter" && !(document.activeElement instanceof HTMLButtonElement)) {
+    avanzar();
+    e.preventDefault();
+  }
   // Backspace nunca se le deja al navegador: en la pregunta 1 la guarda fallaba
   // y el preventDefault no llegaba, asi que el navegador hacia lo suyo — salir
   // de la pagina — con el test a medias.
   if (e.key === "Backspace") {
-    if (indice > 0) { cancelarPaso(); indice--; pintar(); }
+    if (indice > 0) { indice--; pintar(); }
     e.preventDefault();
   }
 });

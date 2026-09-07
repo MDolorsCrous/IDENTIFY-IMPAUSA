@@ -313,7 +313,10 @@
     "pregunta": {
       "de60": "Pregunta {n} de 60",
       "anterior": "← Anterior",
-      "teclas": "Puedes responder con las teclas 1 a 5",
+      "siguiente": "Siguiente →",
+      "terminar": "Ver mis resultados →",
+      "eligeParaSeguir": "Elige una respuesta para continuar",
+      "teclas": "Teclas 1 a 5 para responder · Enter para continuar",
       "ariaAvance": "Preguntas respondidas"
     },
     "resultados": {

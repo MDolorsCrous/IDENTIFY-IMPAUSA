@@ -313,7 +313,10 @@
     "pregunta": {
       "de60": "Question {n} of 60",
       "anterior": "← Previous",
-      "teclas": "You can answer with keys 1 to 5",
+      "siguiente": "Next →",
+      "terminar": "See my results →",
+      "eligeParaSeguir": "Choose an answer to continue",
+      "teclas": "Keys 1 to 5 to answer · Enter to continue",
       "ariaAvance": "Questions answered"
     },
     "resultados": {
