@@ -635,14 +635,10 @@ function portada(){
   const botonCierre = '<button class="cta" id="empezar2" type="button">' +
     T.inicio.empezar + ' <span aria-hidden="true">→</span></button>';
 
-  // Con la puerta puesta, la puerta va ABAJO, en el cierre, donde antes solo
-  // habia un boton que subia hasta ella: asi quien llega al final de la pagina
-  // —que es donde acaba de leer lo que es el test— tiene el codigo a mano. En
-  // el hero queda el boton que baja hasta ella, para que arriba tambien haya
-  // por donde empezar.
-  const botonALaPuerta =
-    '<button class="cta" id="alaPuerta" type="button">' + T.inicio.alCodigo +
-    ' <span aria-hidden="true">↓</span></button>';
+  // Con la puerta puesta, la puerta va ABAJO, en el cierre, y arriba no hay
+  // nada: la entrada esta al final de la pagina a proposito, para que se pase
+  // por «Antes de empezar». Un boton en el hero que bajara hasta ella seria
+  // justo el atajo que se quiere evitar.
 
   // ES y EN cambian la lengua de verdad; CAT abre la explicacion de por que no
   // hay catalan. El activo lleva aria-current y no hace nada al pulsarlo.
@@ -660,7 +656,7 @@ function portada(){
     '</nav>';
 
   app.innerHTML = PORTADA_HTML
-    .replace(HUECO_CTA_HERO, puertaCerrada ? botonALaPuerta : (tarjetaSeguir || botonHero))
+    .replace(HUECO_CTA_HERO, puertaCerrada ? "" : (tarjetaSeguir || botonHero))
     .replace(HUECO_CTA_FINAL, puertaCerrada ? laPuerta : botonCierre)
     .replace(HUECO_IDIOMAS, selectorDeIdiomas)
     .replace(HUECO_AVISO, FALLOS.length
@@ -731,12 +727,6 @@ function portada(){
   const empezar2 = document.getElementById("empezar2");
   if (empezar2) empezar2.onclick = deCero;
 
-  const alaPuerta = document.getElementById("alaPuerta");
-  if (alaPuerta) alaPuerta.onclick = () => {
-    const campo = document.getElementById("codigo");
-    campo.scrollIntoView({ behavior: "smooth", block: "center" });
-    campo.focus({ preventScroll: true });
-  };
 
   const empezar = document.getElementById("empezar");
   if (empezar) empezar.onclick = () => { pantalla = "test"; pintar(); };

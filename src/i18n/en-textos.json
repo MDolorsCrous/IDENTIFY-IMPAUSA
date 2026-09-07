@@ -4,9 +4,7 @@
     "hero": {
       "titular": "Understand how you tend to think, act, relate to others and respond to what life brings, <span class=\"realce\">and how to turn that knowledge into more conscious decisions</span>",
       "base": "Based on Big Five/OCEAN <span aria-hidden=\"true\">·</span> BFI-2 <span aria-hidden=\"true\">·</span> 60 items",
-      "texto": "Explore five broad dimensions and fifteen facets of personality. When you finish, you will receive a personalized report that turns your results into interpretations, questions and concrete actions.",
-      "rigor": "A self-knowledge tool grounded in published research. It is not a diagnosis or a prediction of behavior.",
-      "micro": "There are no right or wrong answers. Respond thinking of how you usually act."
+      "texto": "Explore five broad dimensions and fifteen facets of personality. When you finish, you will receive a personalized report that turns your results into interpretations, questions and concrete actions."
     },
     "central": {
       "ojo": "Before you start",
@@ -16,7 +14,8 @@
     "cierre": {
       "titulo": "Know yourself with more depth and fewer labels",
       "texto": "Answer the 60 statements and receive a personalized reading of your five dimensions and fifteen facets.",
-      "micro": "There are no right or wrong answers. Choose the option that best describes how you usually act."
+      "rigor": "A self-knowledge tool grounded in published research. It is not a diagnosis or a prediction of behavior.",
+      "micro": "There are no right or wrong answers. Respond thinking of how you usually act."
     },
     "ocean": {
       "oculto": "International term: ",
@@ -306,7 +305,6 @@
     },
     "inicio": {
       "empezar": "Start the test now",
-      "alCodigo": "Enter the access code",
       "avisoFallos": "Warning: the calculation self-check does not match in: {lista}. Do not use these results.",
       "seguir": "Pick up where you left off",
       "seguirDetalle": "You have {n} of 60 answers saved in this browser.",

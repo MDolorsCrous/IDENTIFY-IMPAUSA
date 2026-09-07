@@ -89,10 +89,14 @@ export const estilosPortada = `
   .hero__base{font-family:"Montserrat",system-ui,sans-serif;font-size:.78rem;font-weight:600;
     letter-spacing:.12em;text-transform:uppercase;color:var(--verde-texto);margin:0}
   .hero__texto{font-size:1.06rem;color:var(--ink-soft);margin:0}
-  .hero__rigor{display:flex;align-items:flex-start;gap:.6rem;text-align:left;
+  /* El recuadro del rigor, en el cierre, debajo del codigo. Es una tarjeta
+     clara sobre el verde; el color del texto se fija aqui porque la regla
+     general del cierre pone los parrafos en claro y lo dejaria ilegible. */
+  .rigor{display:flex;align-items:flex-start;gap:.6rem;text-align:left;
     background:var(--tarjeta);border:1px solid var(--borde);border-radius:12px;
-    padding:.85rem 1.1rem;font-size:.94rem;color:var(--ink-soft);max-width:40rem;margin:0}
-  .hero__rigor .ico{flex:none;color:var(--verde-medio);margin-top:.15rem}
+    padding:.85rem 1.1rem;font-size:.94rem;max-width:40rem;margin:0}
+  .banda--cierre .rigor{color:var(--ink-soft)}
+  .rigor .ico{flex:none;color:var(--verde-medio);margin-top:.15rem}
 
   /* ---- Botones ---- */
   .cta{display:inline-flex;align-items:center;justify-content:center;gap:.5rem;
@@ -341,7 +345,7 @@ export const estilosPortada = `
   @media (max-width:640px){
     .ancho{padding-inline:20px}
     .apartados{columns:1}
-    .hero__rigor{text-align:left}
+    .rigor{text-align:left}
     .puerta__fila{flex-direction:column}
     .puerta__fila .cta{width:100%}
     .cta{width:100%}

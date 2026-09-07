@@ -171,23 +171,41 @@ test("la cabecera de la portada es la de Connect", () => {
   assert.ok(!pagina.includes("hero__marca"), "sigue la fila antigua del logotipo en el hero");
 });
 
-test("con la puerta puesta, el código se pide abajo, en el cierre", () => {
-  // La puerta va donde acaba la página —donde se acaba de leer qué es el test—
-  // y en el hero queda un botón que baja hasta ella. Antes era al revés: la
-  // puerta arriba y un botón abajo que subía.
+test("con la puerta puesta, el código se pide abajo, en el cierre, y arriba no hay atajo", () => {
+  // La entrada al test está al final de la página a propósito, para que se
+  // pase por «Antes de empezar». Con la puerta puesta, el hero no lleva ningún
+  // botón; y lo que hay que leer justo antes de entrar —el recuadro del rigor y
+  // «no hay respuestas correctas»— va junto a la puerta, una sola vez.
   const pagina = readFileSync(join(raiz, "test-identify.html"), "utf8");
+  const plano = pagina.replace(/\\"/g, '"');
   assert.ok(
     pagina.includes(".replace(HUECO_CTA_FINAL, puertaCerrada ? laPuerta : botonCierre)"),
     "la puerta no está en el cierre",
   );
   assert.ok(
-    pagina.includes(".replace(HUECO_CTA_HERO, puertaCerrada ? botonALaPuerta : (tarjetaSeguir || botonHero))"),
-    "el hero no lleva el botón que baja a la puerta",
+    pagina.includes('.replace(HUECO_CTA_HERO, puertaCerrada ? "" : (tarjetaSeguir || botonHero))'),
+    "con la puerta puesta, el hero sigue llevando un botón",
   );
-  assert.match(pagina, /id="alaPuerta"[^<]*<\/button>|id="alaPuerta" type="button">' \+ T\.inicio\.alCodigo \+\s*\n?\s*' <span aria-hidden="true">↓<\/span>/, "el botón del hero no apunta hacia abajo");
-  // Y sobre el verde del cierre la puerta se lee: etiqueta clara, campo blanco.
+  assert.ok(!pagina.includes("alaPuerta"), "queda rastro del botón que bajaba a la puerta");
+  assert.ok(!pagina.includes("alCodigo"), "queda el texto del botón que bajaba a la puerta");
+
+  // El recuadro y la frase, en el cierre y no en el hero.
+  const hero = /<header class="hero">[\s\S]*?<\/header>/.exec(plano)?.[0] ?? "";
+  const cierre = /<section class="banda banda--cierre">[\s\S]*?<\/section>/.exec(plano)?.[0] ?? "";
+  assert.ok(!hero.includes('class="rigor"') && !hero.includes('class="micro"'), "el hero sigue llevando el recuadro o la frase");
+  assert.ok(cierre.includes('class="rigor"'), "el recuadro del rigor no está en el cierre");
+  assert.ok(cierre.indexOf("%%CTA_FINAL%%") < cierre.indexOf('class="rigor"'), "el recuadro no va debajo del código");
+  // Una sola vez: la frase de «no hay respuestas correctas» no puede estar
+  // repetida con dos redacciones distintas. Se cuenta en el marcado pintado,
+  // no en el fichero entero: la página lleva además los textos como JSON, y
+  // ahí sale otra vez sin que eso sea una repetición en pantalla.
+  const veces = (plano.match(/class="micro">No hay respuestas correctas o incorrectas/g) ?? []).length;
+  assert.equal(veces, 1, `«No hay respuestas correctas…» aparece ${veces} veces en la portada`);
+
+  // Y sobre el verde del cierre todo se lee: etiqueta clara, campo blanco, recuadro con su tinta.
   assert.ok(pagina.includes(".banda--cierre .puerta .campo{color:#FFFDFC}"), "la etiqueta de la puerta no se ve sobre el verde");
   assert.ok(pagina.includes(".banda--cierre .puerta__fila input{background:#FFFDFC"), "el campo no va en blanco sobre el verde");
+  assert.ok(pagina.includes(".banda--cierre .rigor{color:var(--ink-soft)}"), "el recuadro heredaría el texto claro del cierre y no se leería");
 });
 
 test("los dos bloques de script de la página son JavaScript válido", () => {

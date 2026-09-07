@@ -4,9 +4,7 @@
     "hero": {
       "titular": "Comprende cómo tiendes a pensar, actuar, relacionarte y responder ante lo que vives, <span class=\"realce\">y cómo convertir ese conocimiento en decisiones más conscientes</span>",
       "base": "Basado en Big Five/OCEAN <span aria-hidden=\"true\">·</span> BFI-2 <span aria-hidden=\"true\">·</span> 60 ítems",
-      "texto": "Explora cinco grandes dimensiones y quince facetas de personalidad. Al finalizar recibirás un informe personalizado que transforma tus resultados en interpretaciones, preguntas y acciones concretas.",
-      "rigor": "Una herramienta de autoconocimiento basada en investigación publicada. No es un diagnóstico ni una predicción de conducta.",
-      "micro": "No hay respuestas correctas o incorrectas. Responde pensando en cómo sueles actuar habitualmente."
+      "texto": "Explora cinco grandes dimensiones y quince facetas de personalidad. Al finalizar recibirás un informe personalizado que transforma tus resultados en interpretaciones, preguntas y acciones concretas."
     },
     "central": {
       "ojo": "Antes de empezar",
@@ -16,7 +14,8 @@
     "cierre": {
       "titulo": "Conócete con más profundidad y menos etiquetas",
       "texto": "Responde las 60 afirmaciones y recibe una lectura personalizada de tus cinco dimensiones y quince facetas.",
-      "micro": "No hay respuestas correctas o incorrectas. Elige la opción que mejor describa cómo sueles actuar habitualmente."
+      "rigor": "Una herramienta de autoconocimiento basada en investigación publicada. No es un diagnóstico ni una predicción de conducta.",
+      "micro": "No hay respuestas correctas o incorrectas. Responde pensando en cómo sueles actuar habitualmente."
     },
     "ocean": {
       "oculto": "Término internacional: ",
@@ -306,7 +305,6 @@
     },
     "inicio": {
       "empezar": "Comenzar el test ahora",
-      "alCodigo": "Introducir el código de acceso",
       "avisoFallos": "Aviso: la autocomprobación del cálculo no coincide en: {lista}. No uses estos resultados.",
       "seguir": "Continuar donde lo dejaste",
       "seguirDetalle": "Tienes {n} de 60 respuestas guardadas en este navegador.",

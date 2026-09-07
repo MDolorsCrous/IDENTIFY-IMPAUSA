@@ -396,9 +396,7 @@ export function paginaDeInicio(recursos) {
       <p class="hero__titular">${t.hero.titular}</p>
       <p class="hero__base">${t.hero.base}</p>
       <p class="hero__texto">${t.hero.texto}</p>
-      <p class="hero__rigor">${icono("balanza")}<span>${t.hero.rigor}</span></p>
       ${MARCA_CTA_HERO}
-      <p class="micro">${t.hero.micro}</p>
       ${MARCA_AVISO}
     </div>
   </header>
@@ -417,6 +415,11 @@ export function paginaDeInicio(recursos) {
       <h2>${t.cierre.titulo}</h2>
       <p>${t.cierre.texto}</p>
       ${MARCA_CTA_FINAL}
+      <!-- El recuadro del rigor y la frase de «no hay respuestas correctas»
+           viven aqui, debajo del codigo, y no arriba: la entrada al test esta
+           al final de la pagina para que se pase por «Antes de empezar», y lo
+           que hay que leer justo antes de entrar va junto a la entrada. -->
+      <p class="rigor">${icono("balanza")}<span>${t.cierre.rigor}</span></p>
       <p class="micro">${t.cierre.micro}</p>
     </div>
   </section>
