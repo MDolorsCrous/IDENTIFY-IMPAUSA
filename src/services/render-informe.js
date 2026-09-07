@@ -153,8 +153,8 @@ function cabeceraDeMarca(marca) {
   return `
   <header class="cabecera">
     <div class="cabecera__banda" aria-hidden="true"></div>
-    <img class="cabecera__logo" src="${marca.logo.src}" alt="${esc(marca.logo.alt)}"
-      width="${marca.logo.ancho}" height="${marca.logo.alto}">
+    <img class="cabecera__logo" src="${marca.logoLive.src}" alt="${esc(marca.logoLive.alt)}"
+      width="${marca.logoLive.ancho}" height="${marca.logoLive.alto}">
   </header>`;
 }
 
@@ -554,11 +554,14 @@ ${tipografias(opciones.marca)}
   .cabecera{text-align:center;margin-bottom:.5rem}
   .cabecera__banda{height:14px;border-radius:7px;margin-bottom:1.6rem;
     background:linear-gradient(90deg,#EF8A4D 0%,#DFAE6B 33%,#B9BC72 66%,#7FAE79 100%)}
-  .cabecera__logo{width:340px;max-width:80%;height:auto;display:block;margin:0 auto}
+  /* LivePausa arriba; IMPAUSA queda abajo, en la firma, junto a este. El de
+     LivePausa es un logotipo alto —flor y dos lineas— y a los 340 px de ancho
+     del de IMPAUSA habria medido 190 de alto: media portada. */
+  .cabecera__logo{width:210px;max-width:60%;height:auto;display:block;margin:0 auto}
   @media print{
     .cabecera{margin-bottom:0}
     .cabecera__banda{height:10px;margin-bottom:1.1rem}
-    .cabecera__logo{width:260px}
+    .cabecera__logo{width:180px}
   }
 
   .portada{text-align:center;padding-block:clamp(.5rem,4vw,2.5rem) 0}

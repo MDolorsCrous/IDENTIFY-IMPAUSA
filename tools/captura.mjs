@@ -57,7 +57,7 @@ function conectar(url) {
   };
 }
 
-export async function capturar(url, salida, { ancho = 1280, alto = 900, guion = "", espera = 700, oscuro = false } = {}) {
+export async function capturar(url, salida, { ancho = 1280, alto = 900, guion = "", espera = 700, oscuro = false, medio = "" } = {}) {
   const perfil = mkdtempSync(path.join(tmpdir(), "identify-captura-"));
   const chrome = spawn(
     buscarChrome(),
@@ -92,13 +92,21 @@ export async function capturar(url, salida, { ancho = 1280, alto = 900, guion = 
       mobile: ancho < 768,
     });
     if (oscuro) await cdp.manda("Emulation.setEmulatedMedia", { features: [{ name: "prefers-color-scheme", value: "dark" }] });
+    // `medio: "print"` aplica las reglas de @media print sin pasar por el PDF:
+    // sirve para ver la cabecera impresa cuando no hay con que abrir un PDF.
+    if (medio) await cdp.manda("Emulation.setEmulatedMedia", { media: medio });
     await cdp.manda("Page.navigate", { url });
     // Sin dependencias no hay `waitForLoad` fino: se da tiempo, y despues el
     // guion que deja la aplicacion en la pantalla que se quiere.
     await new Promise((r) => setTimeout(r, espera));
     if (guion) {
       const r = await cdp.manda("Runtime.evaluate", { expression: guion, awaitPromise: true });
-      if (r.exceptionDetails) throw new Error("el guion ha fallado: " + r.exceptionDetails.text);
+      // `text` solo dice «Uncaught»; lo que ha pasado esta en la excepcion.
+      if (r.exceptionDetails) {
+        const e = r.exceptionDetails;
+        throw new Error("el guion ha fallado: " + (e.exception?.description ?? e.text) +
+          (e.lineNumber != null ? ` (linea ${e.lineNumber + 1})` : ""));
+      }
       await new Promise((r) => setTimeout(r, 400));
     }
     const foto = await cdp.manda("Page.captureScreenshot", { format: "png" });
