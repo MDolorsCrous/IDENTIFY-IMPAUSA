@@ -142,6 +142,35 @@ test("el entorno legal está al final de todas las pantallas, en la lengua que t
   assert.match(pagina, /target="_blank" rel="noopener"/, "el enlace legal se abre encima del test");
 });
 
+test("la cabecera de la portada es la de Connect", () => {
+  // Banda de todo el ancho, pegada arriba, LivePausa a la izquierda y el nombre
+  // del producto con la píndola de idiomas a la derecha. Los valores son los
+  // del CSS de Connect by ImPausa, no una aproximación a ojo.
+  const pagina = readFileSync(join(raiz, "test-identify.html"), "utf8");
+  const marca = cargarRecursos().marca;
+  // La portada viaja dentro de la página como una cadena JSON, con las comillas
+  // escapadas: para leer el marcado se desescapan. El CSS va suelto y se lee tal cual.
+  const plano = pagina.replace(/\\"/g, '"');
+  assert.match(plano, /<header class="cabecera-web">/, "falta la cabecera nueva");
+  // El logotipo de arriba es el de LivePausa, incrustado, y no el de IMPAUSA.
+  const cabecera = /<header class="cabecera-web">[\s\S]*?<\/header>/.exec(plano)?.[0] ?? "";
+  assert.ok(cabecera.includes(`alt="${marca.logoLive.alt}"`), "la cabecera no lleva el logotipo de LivePausa");
+  assert.ok(!cabecera.includes(`alt="${marca.logo.alt}"`), "la cabecera sigue con el logotipo de IMPAUSA");
+  assert.ok(cabecera.includes("Identify by ImPausa"), "falta el nombre del producto");
+  assert.ok(cabecera.includes("%%IDIOMAS%%"), "la píndola de idiomas no está dentro de la cabecera");
+  // Y los valores de Connect, literales.
+  for (const regla of [
+    ".cabecera-web{position:sticky;top:0;",
+    "background:linear-gradient(90deg,#F7F1ED 0%,#FBF7F4 50%,#F7F1ED 100%)",
+    "border-bottom:1px solid #DFCEC3",
+    "color:#4D6B1D",
+  ]) {
+    assert.ok(pagina.includes(regla), `la cabecera no lleva «${regla}»`);
+  }
+  // La fila antigua del hero ya no existe: no puede haber dos logotipos arriba.
+  assert.ok(!pagina.includes("hero__marca"), "sigue la fila antigua del logotipo en el hero");
+});
+
 test("los dos bloques de script de la página son JavaScript válido", () => {
   // La aplicación se escribe dentro de una plantilla de `tools/render-test.mjs`,
   // y ahí un error no se nota al generar: el fichero sale, y es la página la que

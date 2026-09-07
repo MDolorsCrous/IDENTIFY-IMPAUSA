@@ -373,13 +373,24 @@ export function paginaDeInicio(recursos) {
   return `
 <div class="inicio">
 
+  <!-- La capçalera, calcada de la de Connect by ImPausa: banda de tot l'ample,
+       enganxosa, LivePausa a l'esquerra i el nom del producte amb la píndola
+       d'idiomes a la dreta. Els valors (fons, vora, alçades, tipografia) són
+       els del CSS de Connect, no una aproximació a ull. El nom del producte
+       va fix: Connect el deixa igual en les tres llengües. -->
+  <header class="cabecera-web">
+    <div class="cabecera-web__dins">
+      <img class="cabecera-web__logo" src="${marca.logoLive.src}" alt="${esc(marca.logoLive.alt)}"
+        width="${marca.logoLive.ancho}" height="${marca.logoLive.alto}">
+      <div class="cabecera-web__dreta">
+        <span class="cabecera-web__nom">Identify by ImPausa</span>
+        ${MARCA_IDIOMAS}
+      </div>
+    </div>
+  </header>
+
   <header class="hero">
     ${ondas}
-    <div class="ancho hero__marca">
-      <img class="hero__logo" src="${marca.logo.src}" alt="${esc(marca.logo.alt)}"
-        width="${marca.logo.ancho}" height="${marca.logo.alto}">
-      ${MARCA_IDIOMAS}
-    </div>
     <div class="ancho hero__caja">
       <h1 class="rotulo"><span id="rn">Identify</span><span class="rotulo__by" id="rb">by Impausa</span></h1>
       <p class="hero__titular">${t.hero.titular}</p>

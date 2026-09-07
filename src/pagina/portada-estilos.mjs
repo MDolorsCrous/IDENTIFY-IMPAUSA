@@ -39,21 +39,40 @@ export const estilosPortada = `
   /* El logotipo de la casa, arriba a la izquierda, como la cabecera de
      cualquier pagina suya. El hero va centrado, asi que la marca tiene su
      propia fila: si estuviera dentro de la columna centrada, se centraria. */
-  /* El logotipo a la izquierda y el selector de lengua a la derecha, arriba del
-     todo: es donde se busca, y donde estaba antes —abajo, entre el codigo de
-     acceso y la ola— habia que bajar hasta el final para encontrarlo. */
-  .hero__marca{position:relative;z-index:1;text-align:left;
-    display:flex;align-items:center;justify-content:space-between;gap:1rem;
-    margin-bottom:clamp(1.6rem,5vw,3rem)}
-  .hero__logo{height:clamp(26px,4.4vw,36px);width:auto;display:block;margin:0}
-  /* Lleva colores fijos y el verde se pierde sobre el fondo oscuro. Como no se
-     puede retocar el logotipo, se le da suelo claro. */
-  @media (prefers-color-scheme:dark){
-    :root:not([data-theme="light"]) .hero__logo{background:#F7F4EE;
-      border-radius:10px;padding:.5rem .9rem}
+  /* ---- La capçalera, com la de Connect ----
+     Els valors són els del CSS de Connect by ImPausa, literals: fons en
+     degradat càlid, vora d'un píxel a sota, 5rem d'alt (8rem a partir de 640,
+     150px a partir de 768), enganxosa a dalt. Colors FIXOS i no variables de
+     tema: és la banda de marca, el logotip porta colors fixos, i en mode fosc
+     es queda clara — com el full de mostra. Per això la píndola d'idiomes,
+     que fora d'aquí segueix el tema, aquí es força en clar. */
+  .cabecera-web{position:sticky;top:0;z-index:40;width:100%;
+    background:linear-gradient(90deg,#F7F1ED 0%,#FBF7F4 50%,#F7F1ED 100%);
+    border-bottom:1px solid #DFCEC3}
+  .cabecera-web__dins{display:flex;align-items:center;justify-content:space-between;
+    height:5rem;padding:0 1rem}
+  .cabecera-web__logo{height:2.5rem;width:auto;max-width:65vw;object-fit:contain;
+    display:block;flex:none}
+  .cabecera-web__dreta{display:flex;align-items:center;gap:.5rem;flex:none}
+  .cabecera-web__nom{display:none;font-family:"Montserrat",system-ui,sans-serif;
+    font-weight:700;font-size:1rem;line-height:1.25;letter-spacing:-.025em;
+    color:#4D6B1D;white-space:nowrap}
+  .cabecera-web .idiomas{background:#FFFDFC;border-color:#E4DDD5}
+  .cabecera-web .idioma{color:#27624F}
+  .cabecera-web .idioma:hover{background:#EAF3E5}
+  .cabecera-web .idioma[aria-current="true"]{background:#27624F;color:#F7F2EB}
+  @media (min-width:640px){
+    .cabecera-web__dins{height:8rem;padding:0 1.5rem}
+    .cabecera-web__logo{height:3.5rem}
+    .cabecera-web__dreta{gap:.75rem}
+    .cabecera-web__nom{display:inline}
   }
-  :root[data-theme="dark"] .hero__logo{background:#F7F4EE;border-radius:10px;
-    padding:.5rem .9rem}
+  @media (min-width:768px){
+    .cabecera-web__dins{height:150px}
+    .cabecera-web__logo{height:4rem}
+    .cabecera-web__nom{font-size:1.125rem}
+  }
+  @media print{.cabecera-web{display:none}}
   .hero p{max-width:46rem}
   /* El titular no debe pasar de tres lineas en pantalla grande: mas alto que
      eso y deja de leerse como un titulo. */
