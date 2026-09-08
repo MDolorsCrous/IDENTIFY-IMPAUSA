@@ -154,6 +154,12 @@ test("al salir por un enlace se apunta dónde se estaba, y con «Atrás» se vue
   assert.ok(!/localStorage\.setItem\(VUELTA/.test(pagina), "la vuelta va en localStorage");
   // Solo al volver por el historial: una recarga a mano sigue en la portada.
   assert.ok(pagina.includes('"back_forward"'), "la vuelta no distingue «Atrás» de una recarga");
+  // La página legal tiene su propio botón «Tornar», que va al referrer —y esta
+  // página no lo manda— o, si no, a la portada de impausa.com. Se le pasa la
+  // dirección de vuelta en ?return=, marcada con ?vuelta=1 para restaurar.
+  assert.ok(pagina.includes('searchParams.set("return"'), "al entorno legal no se le dice por dónde se vuelve");
+  assert.ok(pagina.includes('searchParams.set("vuelta", "1")'), "la dirección de vuelta no lleva la señal");
+  assert.ok(pagina.includes('params.get("vuelta") === "1"'), "nadie lee la señal al llegar");
   // Sin manejadores de unload: dejarían la página fuera de la caché de
   // navegación, que es la vuelta instantánea que no necesita nada de esto.
   assert.ok(!/addEventListener\("(unload|beforeunload)"/.test(pagina), "hay un manejador de unload");

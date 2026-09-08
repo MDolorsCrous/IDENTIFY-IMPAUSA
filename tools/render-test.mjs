@@ -1306,10 +1306,17 @@ const recuerdaCodigo = {
  * salir se apunta aqui donde se estaba —pantalla, pregunta, respuestas, nombre,
  * informe— y al volver por el historial se restaura (volverDondeEstaba).
  *
+ * Hay dos caminos de regreso y los dos restauran: el «Atras» del navegador
+ * (navegacion back_forward) y el boton «Tornar» de la propia pagina legal, que
+ * vuelve a la direccion que se le pasa en ?return= —se le pasa la de esta
+ * pagina con ?vuelta=1, y ese parametro es la senal—. Sin ?return= ese boton
+ * iba al referrer, que esta pagina no manda (Referrer-Policy: no-referrer en
+ * netlify.toml), y de ahi a la portada de impausa.com.
+ *
  * En sessionStorage y no en localStorage a proposito: es de esta pestana y
  * muere con ella, asi que en un ordenador compartido nadie se encuentra el
  * test de otro. Caduca a las dos horas, se borra en cuanto se usa y no vale
- * para una recarga a mano ni para teclear la direccion: solo para «Atras».
+ * para una recarga a mano ni para teclear la direccion.
  * Si el navegador trae la pagina entera de vuelta (bfcache), ni hace falta.
  */
 const VUELTA = "identify-vuelta";
@@ -1356,7 +1363,33 @@ function apuntarSiSale(e){
   if (!a || a.target === "_blank" || !/^https?:$/.test(a.protocol)) return;
   // Un ancla de esta misma pagina no se va a ninguna parte.
   if (a.origin === location.origin && a.pathname === location.pathname) return;
+  // Al entorno legal se le dice por donde se vuelve. Se pone al hacer clic y
+  // no al dibujar el enlace: la direccion de aqui cambia (#informe=...), y
+  // tocar el href dentro del manejador vale para el clic normal y para el
+  // ctrl+clic, que un location.assign romperia.
+  if (esElEntornoLegal(a)) a.href = entornoLegalConVuelta();
   vuelta.apuntar();
+}
+
+function esElEntornoLegal(a){
+  try {
+    const legal = new URL(D.comun.marca.legal);
+    return a.origin === legal.origin && a.pathname === legal.pathname;
+  } catch { return false; }
+}
+
+/**
+ * La direccion del entorno legal con ?return=<esta pagina, con ?vuelta=1>.
+ * Solo servida por http: la pagina legal no acepta un return que sea file://.
+ */
+function entornoLegalConVuelta(){
+  const legal = new URL(D.comun.marca.legal);
+  if (/^https?:$/.test(location.protocol)) {
+    const aqui = new URL(location.href);
+    aqui.searchParams.set("vuelta", "1");
+    legal.searchParams.set("return", aqui.href);
+  }
+  return legal.href;
 }
 document.addEventListener("click", apuntarSiSale);
 // Si el navegador trae la pagina entera de vuelta (bfcache) no hay nada que
@@ -1568,9 +1601,19 @@ async function recuperarInforme(){
 function volverDondeEstaba(){
   const d = vuelta.leer();
   vuelta.olvidar();
+  // ?vuelta=1 es la senal de que se llega por el boton «Tornar» de la pagina
+  // legal. Se quita de la direccion en cuanto se lee: una recarga despues no
+  // tiene que volver a restaurar nada.
+  const params = new URLSearchParams(location.search);
+  const porElBoton = params.get("vuelta") === "1";
+  if (porElBoton) {
+    params.delete("vuelta");
+    const resto = params.toString();
+    try { history.replaceState(null, "", location.pathname + (resto ? "?" + resto : "") + location.hash); } catch {}
+  }
   if (!d) return false;
   const nav = performance.getEntriesByType ? performance.getEntriesByType("navigation")[0] : null;
-  if (nav && nav.type !== "back_forward") return false;
+  if (!porElBoton && nav && nav.type !== "back_forward") return false;
   if (!["portada", "test", "resultados", "informe"].includes(d.pantalla)) return false;
 
   if (d.idioma !== idioma && D.idiomas[d.idioma]) aplicarIdioma(d.idioma);
