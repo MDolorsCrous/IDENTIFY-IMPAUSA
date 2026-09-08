@@ -115,6 +115,7 @@ La tubería `respuestas → modelo` está en `src/services/pipeline.ts`, en una 
 | Las 60 respuestas y por dónde iba | `localStorage` del navegador | Nunca | Hasta terminar o reiniciar; y **30 días** como mucho |
 | El idioma elegido | `localStorage` | Nunca | Hasta que se cambie |
 | El código de acceso | `sessionStorage` | Solo hacia `/api/entrar`, `/api/redactar`, `/api/resultado` y `/api/olvidar`, para comprobarlo | Hasta cerrar la pestaña |
+| Dónde se estaba al salir por un enlace (pantalla, respuestas, nombre, prosa) | `sessionStorage` | Nunca | Hasta volver con «Atrás», **2 horas** como mucho, o cerrar la pestaña |
 | Respuestas, nombre, idioma y prosa | Netlify Blobs, almacén `identify-informes` | **Al pedir el informe escrito** | **1 año** |
 | El recuento de informes del día | Netlify Blobs, almacén `identify-cuota` | Un número por fecha, sin nada de nadie | 35 días |
 

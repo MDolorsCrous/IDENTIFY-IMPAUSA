@@ -455,9 +455,12 @@ function aplicarIdioma(nuevo){
   document.title = T.titulo;
   // El enlace legal de abajo del todo, en esta lengua. La direccion viene de
   // marca.json, como el correo y la web: un solo sitio donde cambiarla.
+  // Se abre en la misma pestana: asi «Atras» devuelve a la aplicacion. Antes
+  // iba en una pestana nueva para no perder el test a media pregunta; ahora
+  // de eso se ocupa la vuelta (mas abajo), que apunta donde se estaba al salir.
   const legal = document.getElementById("legal");
   if (legal) {
-    legal.innerHTML = '<a href="' + esc(D.comun.marca.legal) + '" target="_blank" rel="noopener">' +
+    legal.innerHTML = '<a href="' + esc(D.comun.marca.legal) + '" target="_self">' +
       esc(T.legal.entorno) + '</a>';
   }
   recuerdaIdioma.guardar(nuevo);
@@ -530,7 +533,8 @@ const respuestas = {};
  * al servidor solo van si pide el informe escrito, igual que antes. Y no se
  * restauran solas — al volver se le pregunta si quiere seguir o empezar de
  * nuevo, porque encontrarte el test de otro a medias en un ordenador compartido
- * seria peor que perderlo.
+ * seria peor que perderlo. La excepcion es volver con «Atras» tras salir por
+ * un enlace: de eso se ocupa la vuelta, mas abajo, que es solo de esta pestana.
  */
 const CAJON = "identify-respuestas";
 /** Cuanto se ofrece reanudar un test a medias. Un mes. */
@@ -570,6 +574,8 @@ let empezoLaRedaccion = 0;
 let prosa = {};          // la redaccion, si se pega
 /** El identificador del informe ya redactado, para poder volver a el. */
 let informeGuardado = "";
+/** El encargo que se esta esperando, para retomarlo si se sale de la pagina. */
+let encargoEnCurso = "";
 /**
  * Quitar el informe de la direccion.
  *
@@ -1194,6 +1200,12 @@ function informe(){
 
   const marco = document.getElementById("marco");
   marco.srcdoc = html;
+  // Los enlaces del cierre del informe llevan target=_top: salen de la pagina
+  // entera, no solo del marco. El clic se da dentro del marco, donde el
+  // documento de fuera no lo oye, asi que se escucha ahi (ver apuntarSiSale).
+  marco.addEventListener("load", () => {
+    try { marco.contentDocument.addEventListener("click", apuntarSiSale); } catch {}
+  });
 
   // La redacción arranca sola la primera vez que se abre el informe, y solo una
   // vez: si vuelves a las puntuaciones y entras otra vez, la que ya está en
@@ -1283,6 +1295,74 @@ const recuerdaCodigo = {
   olvidar(){ try { sessionStorage.removeItem("identify-codigo"); } catch {} },
 };
 
+// ---- La vuelta ----
+/**
+ * Donde se estaba al salir de la pagina por un enlace.
+ *
+ * El enlace legal del pie —y los del cierre del informe— se abren en la misma
+ * pestana: asi «Atras» devuelve a la aplicacion, cosa que con una pestana
+ * nueva no existe. Pero al volver, el navegador puede recargar la pagina, y
+ * recargada arranca en la portada. Para que «Atras» sea de verdad atras, al
+ * salir se apunta aqui donde se estaba —pantalla, pregunta, respuestas, nombre,
+ * informe— y al volver por el historial se restaura (volverDondeEstaba).
+ *
+ * En sessionStorage y no en localStorage a proposito: es de esta pestana y
+ * muere con ella, asi que en un ordenador compartido nadie se encuentra el
+ * test de otro. Caduca a las dos horas, se borra en cuanto se usa y no vale
+ * para una recarga a mano ni para teclear la direccion: solo para «Atras».
+ * Si el navegador trae la pagina entera de vuelta (bfcache), ni hace falta.
+ */
+const VUELTA = "identify-vuelta";
+const HORAS_DE_VUELTA = 2;
+const vuelta = {
+  apuntar(){
+    try {
+      // El nombre se toma del campo si se esta en las puntuaciones: ahi aun
+      // no ha pasado a la variable, que solo se rellena al pedir el informe.
+      const campo = document.getElementById("persona");
+      sessionStorage.setItem(VUELTA, JSON.stringify({
+        pantalla, indice, respuestas, prosa, informeGuardado, yaPedida, idioma,
+        persona: campo ? campo.value.trim() : persona,
+        encargo: redactando ? encargoEnCurso : "",
+        empezoLaRedaccion,
+        scroll: window.scrollY,
+        cuando: Date.now(),
+      }));
+    } catch {}
+  },
+  leer(){
+    try {
+      const d = JSON.parse(sessionStorage.getItem(VUELTA) || "null");
+      if (!d || typeof d !== "object") return null;
+      if (!(typeof d.cuando === "number" && Date.now() - d.cuando < HORAS_DE_VUELTA * 36e5)) return null;
+      return d;
+    } catch { return null; }
+  },
+  olvidar(){ try { sessionStorage.removeItem(VUELTA); } catch {} },
+};
+
+/**
+ * Apuntar la salida si el clic se va de la pagina.
+ *
+ * Delegado en el documento, no puesto enlace a enlace: el pie legal se rehace
+ * en cada cambio de lengua y el cierre del informe en cada pintado, y asi no
+ * hay que acordarse en cada sitio. Se engancha tambien al documento del marco
+ * del informe (ver informe()). Sin instanceof: los elementos del marco son de
+ * otro ambito y no pasarian la prueba.
+ */
+function apuntarSiSale(e){
+  if (e.defaultPrevented) return;
+  const a = e.target && e.target.closest ? e.target.closest("a[href]") : null;
+  if (!a || a.target === "_blank" || !/^https?:$/.test(a.protocol)) return;
+  // Un ancla de esta misma pagina no se va a ninguna parte.
+  if (a.origin === location.origin && a.pathname === location.pathname) return;
+  vuelta.apuntar();
+}
+document.addEventListener("click", apuntarSiSale);
+// Si el navegador trae la pagina entera de vuelta (bfcache) no hay nada que
+// restaurar, y lo apuntado sobra: que no salga en una recarga posterior.
+window.addEventListener("pageshow", (e) => { if (e.persisted) vuelta.olvidar(); });
+
 /**
  * La barra de la tarjeta de espera.
  *
@@ -1325,6 +1405,9 @@ async function redactarEnElServidor(boton, modelo){
   const id = (crypto.randomUUID?.() ?? String(Date.now()) + Math.random().toString(36).slice(2));
   const fallo = (m) => { window.alert(m); return false; };
 
+  // Se apunta antes de pedirlo: si se sale de la pagina mientras se espera, al
+  // volver se retoma este mismo encargo en vez de pedir —y pagar— otro.
+  encargoEnCurso = id;
   try {
     const arranque = await fetch("/api/redactar", {
       method: "POST",
@@ -1340,9 +1423,29 @@ async function redactarEnElServidor(boton, modelo){
     if (!arranque.ok && arranque.status !== 202) {
       return fallo(T.servidor.noEmpezado);
     }
+    const llego = await esperarElInforme(id, codigo, modelo);
+    if (llego && boton) pintar(); // sin botón, quien ha llamado dibuja el informe después
+    return llego;
+  } catch {
+    return fallo(T.servidor.sinConexion);
+  } finally {
+    encargoEnCurso = "";
+    if (boton) { boton.disabled = false; boton.textContent = etiqueta; }
+  }
+}
 
-    // A buscarlo. Se pregunta cada tres segundos durante cuatro minutos: el
-    // informe suele tardar entre uno y dos.
+/**
+ * Ir a buscar un encargo. Se pregunta cada tres segundos durante cuatro
+ * minutos: el informe suele tardar entre uno y dos. Devuelve si ha llegado y,
+ * si ha llegado, deja puesta la prosa y el identificador en la direccion.
+ *
+ * Va aparte de redactarEnElServidor porque tambien se llama al volver a la
+ * pagina con una redaccion en marcha (volverDondeEstaba): el servidor ha
+ * seguido escribiendo mientras tanto y solo hay que seguir esperandolo.
+ */
+async function esperarElInforme(id, codigo, modelo){
+  const fallo = (m) => { window.alert(m); return false; };
+  try {
     const hasta = Date.now() + 4 * 60 * 1000;
     while (Date.now() < hasta) {
       await new Promise((r) => setTimeout(r, 3000));
@@ -1375,15 +1478,12 @@ async function redactarEnElServidor(boton, modelo){
         // almohadilla, que no se manda al servidor en cada peticion.
         informeGuardado = id;
         try { history.replaceState(null, "", "#informe=" + id); } catch {}
-        if (boton) pintar(); // sin botón, quien ha llamado dibuja el informe después
         return true;
       }
     }
     return fallo(T.servidor.tardaDemasiado);
   } catch {
     return fallo(T.servidor.sinConexion);
-  } finally {
-    if (boton) { boton.disabled = false; boton.textContent = etiqueta; }
   }
 }
 
@@ -1458,11 +1558,60 @@ async function recuperarInforme(){
   }
 }
 
-pintar();
-// Y si la direccion trae un informe, se abre encima de lo que se acaba de
-// pintar. Primero pintar y luego ir a buscarlo, no al reves: la pagina se ve
-// enseguida y, si no se puede recuperar, ya esta la portada delante.
-recuperarInforme();
+/**
+ * Volver donde se estaba (ver la vuelta).
+ *
+ * Solo actua si se ha vuelto por el historial del navegador: quien teclea la
+ * direccion o recarga a mano ve la portada, como siempre. Devuelve si ha
+ * restaurado algo; si no, se arranca como de costumbre.
+ */
+function volverDondeEstaba(){
+  const d = vuelta.leer();
+  vuelta.olvidar();
+  if (!d) return false;
+  const nav = performance.getEntriesByType ? performance.getEntriesByType("navigation")[0] : null;
+  if (nav && nav.type !== "back_forward") return false;
+  if (!["portada", "test", "resultados", "informe"].includes(d.pantalla)) return false;
+
+  if (d.idioma !== idioma && D.idiomas[d.idioma]) aplicarIdioma(d.idioma);
+  for (const k in respuestas) delete respuestas[k];
+  for (const k in (d.respuestas || {})) respuestas[+k] = Number(d.respuestas[k]);
+  indice = Math.min(Math.max(0, d.indice | 0), 59);
+  persona = typeof d.persona === "string" ? d.persona : "";
+  prosa = d.prosa && typeof d.prosa === "object" ? d.prosa : {};
+  informeGuardado = typeof d.informeGuardado === "string" ? d.informeGuardado : "";
+  yaPedida = !!d.yaPedida;
+  pantalla = d.pantalla;
+  // Si se salio con la redaccion en marcha, se sigue esperando el mismo
+  // encargo: el servidor no ha dejado de escribir porque esta pagina se fuera.
+  const encargo = typeof d.encargo === "string" && HAY_SERVIDOR && pantalla === "informe" ? d.encargo : "";
+  if (encargo) {
+    redactando = true;
+    encargoEnCurso = encargo; // por si se vuelve a salir antes de que llegue
+    empezoLaRedaccion = typeof d.empezoLaRedaccion === "number" ? d.empezoLaRedaccion : Date.now();
+  }
+  pintar();
+  if (encargo) {
+    const modelo = construirModelo(respuestas, RECURSOS, { persona: persona || undefined });
+    esperarElInforme(encargo, recuerdaCodigo.leer(), modelo).then((salioBien) => {
+      redactando = false;
+      encargoEnCurso = "";
+      if (pantalla === "informe" || salioBien) pintar();
+    });
+  }
+  const campo = document.getElementById("persona");
+  if (campo && persona) campo.value = persona;
+  window.scrollTo(0, d.scroll | 0);
+  return true;
+}
+
+if (!volverDondeEstaba()) {
+  pintar();
+  // Y si la direccion trae un informe, se abre encima de lo que se acaba de
+  // pintar. Primero pintar y luego ir a buscarlo, no al reves: la pagina se ve
+  // enseguida y, si no se puede recuperar, ya esta la portada delante.
+  recuperarInforme();
+}
 </script>
 `;
 

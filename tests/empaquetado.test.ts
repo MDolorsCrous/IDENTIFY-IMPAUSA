@@ -138,8 +138,39 @@ test("el entorno legal está al final de todas las pantallas, en la lengua que t
   assert.ok(pagina.includes("https://www.impausa.com/entorn_legal_impausa.html"), "falta la dirección");
   assert.ok(!pagina.includes("ftp://"), "la página lleva una dirección ftp://");
   assert.ok(!/berta/i.test(pagina), "la página lleva el usuario del FTP");
-  // Y se abre aparte: quien está a media pregunta no tiene que perder el test.
-  assert.match(pagina, /target="_blank" rel="noopener"/, "el enlace legal se abre encima del test");
+  // Y se abre en la misma pestaña, para que «Atrás» devuelva a la aplicación.
+  // Antes iba en una pestaña nueva para no perder el test a media pregunta; de
+  // eso se ocupa ahora la vuelta (la prueba siguiente).
+  const pie = /getElementById\("legal"\);[\s\S]{0,400}?<\/a>'/.exec(pagina)?.[0] ?? "";
+  assert.ok(pie.includes('target="_self"'), "el enlace legal no se abre en la misma pestaña");
+  assert.ok(!pie.includes("_blank"), "el enlace legal sigue abriendo pestaña nueva");
+});
+
+test("al salir por un enlace se apunta dónde se estaba, y con «Atrás» se vuelve ahí", () => {
+  const pagina = readFileSync(join(raiz, "test-identify.html"), "utf8");
+  // En sessionStorage: de esta pestaña, no de todo el navegador. En un
+  // ordenador compartido nadie tiene que encontrarse el test de otro.
+  assert.match(pagina, /sessionStorage\.setItem\(VUELTA/, "la vuelta no se apunta en sessionStorage");
+  assert.ok(!/localStorage\.setItem\(VUELTA/.test(pagina), "la vuelta va en localStorage");
+  // Solo al volver por el historial: una recarga a mano sigue en la portada.
+  assert.ok(pagina.includes('"back_forward"'), "la vuelta no distingue «Atrás» de una recarga");
+  // Sin manejadores de unload: dejarían la página fuera de la caché de
+  // navegación, que es la vuelta instantánea que no necesita nada de esto.
+  assert.ok(!/addEventListener\("(unload|beforeunload)"/.test(pagina), "hay un manejador de unload");
+  // Y el cierre del informe, que va dentro de un marco, sale de la página
+  // entera: sin _top, la página legal se abriría dentro del recuadro.
+  const informe = renderInforme(construirModelo(respuestas, recursos, {}), {}, recursos.labels, {
+    textos: recursos.textos.informe,
+    facetas: recursos.facetas,
+    metaforas: recursos.metaforas,
+    marca: recursos.marca,
+    fecha: "1 de enero de 2026",
+  });
+  assert.match(
+    informe,
+    /href="https:\/\/www\.impausa\.com\/entorn_legal_impausa\.html" target="_top"/,
+    "el enlace legal del informe navegaría solo el marco",
+  );
 });
 
 test("la cabecera de la portada es la de Connect", () => {

@@ -112,7 +112,7 @@ test("el informe se firma: logotipo, contacto y copyright", () => {
   // ruta ftp:// de subida, con el usuario dentro, que ningún navegador abre y
   // que publicaría la cuenta en cada informe.
   assert.ok(
-    html.includes('<a href="https://www.impausa.com/entorn_legal_impausa.html">Entorno Legal</a>'),
+    html.includes('<a href="https://www.impausa.com/entorn_legal_impausa.html" target="_top">Entorno Legal</a>'),
     "falta el enlace al entorno legal, o no lleva la dirección pública",
   );
   assert.ok(!html.includes("ftp://"), "el informe lleva una dirección ftp://");

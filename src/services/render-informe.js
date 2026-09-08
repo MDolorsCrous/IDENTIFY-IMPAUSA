@@ -167,6 +167,9 @@ function cabeceraDeMarca(marca) {
 function cierreDeMarca(marca, t) {
   if (!marca) return "";
   const { logo, logoLive, correo, web, copyright, producto, legal } = marca;
+  // Los enlaces salen con target=_top: en la web el informe va dentro de un
+  // marco, y sin esto la pagina legal se abriria dentro del recuadro. Abierto
+  // el fichero por su cuenta, _top es la misma pestana, y «Atras» vuelve.
   return `
   <footer class="firma">
     <div class="firma__logos">
@@ -181,11 +184,11 @@ function cierreDeMarca(marca, t) {
     <p class="firma__linea">
       <a href="mailto:${esc(correo)}">${esc(correo)}</a>
       <span class="firma__sep" aria-hidden="true">·</span>
-      <a href="https://${esc(web)}">${esc(web)}</a>
+      <a href="https://${esc(web)}" target="_top">${esc(web)}</a>
       ${
         legal && t.legal
           ? `<span class="firma__sep" aria-hidden="true">·</span>
-      <a href="${esc(legal)}">${esc(t.legal)}</a>`
+      <a href="${esc(legal)}" target="_top">${esc(t.legal)}</a>`
           : ""
       }
     </p>
