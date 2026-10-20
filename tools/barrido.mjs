@@ -19,6 +19,7 @@ import { fileURLToPath } from "node:url";
 import { capturar } from "./captura.mjs";
 import { construirModelo } from "../src/services/pipeline.ts";
 import { renderInforme } from "../src/services/render-informe.js";
+import { claveDeCombinacion } from "../src/services/prompt.ts";
 import { cargarRecursos, cargarEjemplo, leer } from "./recursos.mjs";
 
 const RAIZ = fileURLToPath(new URL("../", import.meta.url));
@@ -68,6 +69,30 @@ const MEDIR = `
 const prosa = leer("tests/fixtures/prosa-ejemplo.json");
 const respuestasEjemplo = JSON.stringify(cargarEjemplo().responses);
 
+// Un informe COMPLETO, con todo lo que puede llevar uno generado de verdad: un
+// perfil que dispara combinaciones (el del Excel no dispara ninguna, y la
+// seccion 5 salia vacia), un pasaje de Claude por cada una, nombre, y en la app
+// la tarjeta del enlace. Es lo que hay que medir: el informe que se entrega.
+const recursosEs = cargarRecursos();
+const respuestasCompletas = Object.fromEntries(
+  recursosEs.config.questions.map((q) => {
+    const quiero = ["sociability", "compassion"].includes(q.facet) ? 5 : q.facet === "depression" ? 1 : 3;
+    return [q.id, q.reverse ? 6 - quiero : quiero];
+  }),
+);
+const modeloCompleto = construirModelo(respuestasCompletas, recursosEs, { persona: "Marta Puigdevall i Sanç" });
+const pasaje = (n) => {
+  // Un pasaje largo, al limite del encargo (120 palabras), con parrafo.
+  const base = prosa.perfilEnUnaFrase.split(/\s+/);
+  const texto = [...base, ...base].slice(0, 118).join(" ");
+  return texto.slice(0, Math.floor(texto.length * 0.55)) + ".\n\n" + texto.slice(Math.floor(texto.length * 0.55)) + " (" + n + ")";
+};
+const prosaCompleta = {
+  ...prosa,
+  combinaciones: Object.fromEntries(modeloCompleto.fired.map((m, i) => [claveDeCombinacion(m.rule.id), pasaje(i + 1)])),
+};
+const respuestasCompletasJson = JSON.stringify(respuestasCompletas);
+
 /** Cada pantalla: como se llega a ella desde la pagina ya cargada. */
 const PANTALLAS = {
   "portada arriba": `pantalla = "portada"; pintar(); window.scrollTo(0, 0);`,
@@ -76,7 +101,7 @@ const PANTALLAS = {
   "test pregunta 60 contestada": `for (const k in respuestas) delete respuestas[k]; CFG.questions.forEach((q) => { respuestas[q.id] = 3; }); indice = 59; pantalla = "test"; pintar();`,
   "puntuaciones": `for (const k in respuestas) delete respuestas[k]; Object.assign(respuestas, ${respuestasEjemplo}); pantalla = "resultados"; pintar();`,
   "puntuaciones final": `for (const k in respuestas) delete respuestas[k]; Object.assign(respuestas, ${respuestasEjemplo}); pantalla = "resultados"; pintar(); window.scrollTo(0, document.body.scrollHeight);`,
-  "informe en la app": `for (const k in respuestas) delete respuestas[k]; Object.assign(respuestas, ${respuestasEjemplo}); prosa = ${JSON.stringify(prosa)}; informeGuardado = "11111111-2222-3333-4444-555555555555"; pantalla = "informe"; pintar();`,
+  "informe en la app": `for (const k in respuestas) delete respuestas[k]; Object.assign(respuestas, ${respuestasCompletasJson}); persona = "Marta Puigdevall i Sanç"; prosa = ${JSON.stringify(prosaCompleta)}; informeGuardado = "11111111-2222-3333-4444-555555555555"; pantalla = "informe"; pintar();`,
 };
 
 // El informe suelto, con toda la prosa, como fichero.
@@ -91,6 +116,14 @@ const informeHtml = renderInforme(modelo, prosa, recursos.labels, {
 });
 writeFileSync(SALIDA + "informe-suelto.html", informeHtml, "utf8");
 const INFORME = "file:///" + SALIDA.replace(/\\/g, "/") + "informe-suelto.html";
+
+const informeCompletoHtml = renderInforme(modeloCompleto, prosaCompleta, recursos.labels, {
+  facetas: recursos.facetas, textos: recursos.textos.informe, metaforas: recursos.metaforas,
+  fuentes: recursos.fuentes, marca: recursos.marca, fecha: "20 de octubre de 2026",
+});
+writeFileSync(SALIDA + "informe-completo.html", informeCompletoHtml, "utf8");
+const INFORME_COMPLETO = "file:///" + SALIDA.replace(/\\/g, "/") + "informe-completo.html";
+console.log(`informe completo: ${modeloCompleto.fired.length} combinaciones con pasaje, ${modeloCompleto.nearMisses.length} señales, atención ${modeloCompleto.meta.atencion?.nivel}`);
 
 const fallos = [];
 const filas = [];
@@ -130,10 +163,13 @@ async function una(nombre, url, preparar, ancho, extra = {}) {
 for (const ancho of ANCHOS) {
   for (const [nombre, preparar] of Object.entries(PANTALLAS)) await una(nombre, PAGINA, preparar, ancho);
   await una("informe suelto", INFORME, "", ancho);
+  await una("informe completo", INFORME_COMPLETO, "", ancho);
 }
-// El informe suelto tambien en oscuro y al imprimir, a un ancho representativo.
+// Los informes sueltos tambien en oscuro y al imprimir, a un ancho representativo.
 await una("informe suelto, oscuro", INFORME, "", 390, { oscuro: true });
 await una("informe suelto, impresion", INFORME, "", 794, { medio: "print" });
+await una("informe completo, oscuro", INFORME_COMPLETO, "", 390, { oscuro: true });
+await una("informe completo, impresion", INFORME_COMPLETO, "", 794, { medio: "print" });
 await una("portada arriba, oscuro", PAGINA, PANTALLAS["portada arriba"], 390, { oscuro: true });
 
 // El resumen: una linea por pantalla con los anchos en los que falla.
