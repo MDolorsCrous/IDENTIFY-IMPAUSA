@@ -244,7 +244,7 @@ const html = `<!doctype html>
     .ayuda{display:none}
     .progreso__marca{gap:.6rem}
     .progreso__marca img{height:32px}
-    .progreso__fila{font-size:.66rem;letter-spacing:.03em}
+    .progreso__fila{font-size:.72rem;letter-spacing:.03em}
     .tarjeta-preg{padding:1.2rem 1.25rem}
   }
 
@@ -267,7 +267,7 @@ const html = `<!doctype html>
     box-shadow:0 0 0 2px var(--tarjeta)}
   .fila__v{font-variant-numeric:tabular-nums;font-weight:600;min-width:2.7rem;text-align:right}
   .escala{display:grid;grid-template-columns:minmax(6.5rem,10rem) 1fr auto;gap:.8rem;
-    font-size:.72rem;color:var(--ink-soft);margin-top:.5rem}
+    font-size:.75rem;color:var(--ink-soft);margin-top:.5rem}
   .escala__e{display:flex;justify-content:space-between}
   .escala__h{min-width:2.7rem}
   .atencion{background:var(--naranja-claro);border:1px solid var(--naranja);
@@ -328,7 +328,7 @@ const html = `<!doctype html>
      enlaces sueltos, y se ve cual esta puesta sin tener que compararlos. */
   .idiomas{display:flex;align-items:center;gap:.15rem;flex:none;
     background:var(--tarjeta);border:1px solid var(--borde);border-radius:999px;padding:.15rem}
-  .idioma{background:none;border:0;min-height:36px;padding:.3rem .8rem;border-radius:999px;
+  .idioma{background:none;border:0;min-height:44px;min-width:44px;padding:.3rem .8rem;border-radius:999px;
     cursor:pointer;font-size:.78rem;color:var(--verde-texto);font-weight:600;letter-spacing:.04em}
   .idioma:hover{background:var(--menta)}
   /* La puesta, marcada de verdad. Antes se apagaba —gris y peso normal— y
@@ -349,7 +349,7 @@ const html = `<!doctype html>
   .barra-informe{display:flex;justify-content:space-between;align-items:center;gap:1rem;
     flex-wrap:wrap;padding:.7rem 1.25rem;background:var(--ground);
     border-bottom:1px solid var(--borde);position:sticky;top:0;z-index:3}
-  .barra-informe .boton{padding:.5rem 1rem;font-size:.9rem}
+  .barra-informe .boton{padding:.5rem 1rem;font-size:.9rem;min-height:44px}
   /* La direccion del informe, cuando ya esta guardado en el servidor. Va aqui
      arriba y no en una tarjeta flotante: no puede taparle el informe a nadie. */
   .guardado{display:flex;gap:.6rem 1rem;align-items:baseline;flex-wrap:wrap;
@@ -358,7 +358,7 @@ const html = `<!doctype html>
     border-left:3px solid var(--verde);border-radius:0 6px 6px 0}
   .guardado__t{margin:0;font-weight:600;color:var(--titulo)}
   .guardado__d{margin:0;flex:1;min-width:15rem;color:var(--ink-soft)}
-  .guardado .boton{padding:.45rem .9rem;font-size:.85rem}
+  .guardado .boton{padding:.45rem .9rem;font-size:.85rem;min-height:44px}
   /* Borrar es del mismo peso que copiar el enlace, no un boton rojo: es una
      opcion normal de quien decide sobre su material, no una alarma. */
   .enlace--sobrio{color:var(--ink-soft);font-weight:400;font-size:.85rem;

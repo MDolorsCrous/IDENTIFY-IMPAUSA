@@ -99,8 +99,10 @@ export async function capturar(url, salida, { ancho = 1280, alto = 900, guion = 
     // Sin dependencias no hay `waitForLoad` fino: se da tiempo, y despues el
     // guion que deja la aplicacion en la pantalla que se quiere.
     await new Promise((r) => setTimeout(r, espera));
+    let resultadoDelGuion;
     if (guion) {
-      const r = await cdp.manda("Runtime.evaluate", { expression: guion, awaitPromise: true });
+      const r = await cdp.manda("Runtime.evaluate", { expression: guion, awaitPromise: true, returnByValue: true });
+      resultadoDelGuion = r?.result?.value;
       // `text` solo dice «Uncaught»; lo que ha pasado esta en la excepcion.
       if (r.exceptionDetails) {
         const e = r.exceptionDetails;
@@ -109,10 +111,14 @@ export async function capturar(url, salida, { ancho = 1280, alto = 900, guion = 
       }
       await new Promise((r) => setTimeout(r, 400));
     }
-    const foto = await cdp.manda("Page.captureScreenshot", { format: "png" });
-    writeFileSync(salida, Buffer.from(foto.data, "base64"));
+    // Con `salida` vacia no se hace foto: sirve para medir sin guardar nada.
+    if (salida) {
+      const foto = await cdp.manda("Page.captureScreenshot", { format: "png" });
+      writeFileSync(salida, Buffer.from(foto.data, "base64"));
+    }
     cdp.cerrar();
-    return salida;
+    // Lo que devuelva el guion, para quien mida en vez de mirar.
+    return { salida, valor: resultadoDelGuion };
   } finally {
     // Esperar a que Chrome haya muerto de verdad antes de devolver: si no, la
     // siguiente captura arranca otro Chrome en el mismo puerto mientras este

@@ -61,6 +61,11 @@ export const estilosPortada = `
   .cabecera-web .idioma{color:#27624F}
   .cabecera-web .idioma:hover{background:#EAF3E5}
   .cabecera-web .idioma[aria-current="true"]{background:#27624F;color:#F7F2EB}
+  /* A 320 px el logotipo a 65vw (208 px) mas la pildora (unos 140) no caben en
+     la fila y la pildora se salia por la derecha: medido, 18 px. */
+  @media (max-width:359px){.cabecera-web__logo{max-width:38vw}}
+  /* Los enlaces del pie son lo unico que hay para tocar ahi: 44 px de alto. */
+  .pie-marca a{display:inline-block;padding:.8rem 0}
   @media (min-width:640px){
     .cabecera-web__dins{height:8rem;padding:0 1.5rem}
     .cabecera-web__logo{height:3.5rem}

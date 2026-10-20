@@ -600,8 +600,12 @@ ${tipografias(opciones.marca)}
   .indice{background:var(--menta);border:1px solid var(--menta-borde);border-radius:10px;
     padding:1.3rem 1.5rem}
   .indice ol{margin:.5rem 0 0;padding-left:1.3rem;columns:2;column-gap:2rem}
+  /* A menos de 480 px las dos columnas no caben: los titulos largos pisaban
+     la numeracion de la columna de al lado. Una sola. */
+  @media (max-width:479px){.indice ol{columns:1}}
   .indice li{margin-bottom:.3rem;break-inside:avoid}
-  .indice a{color:var(--ink);text-decoration:none;border-bottom:1px solid transparent}
+  .indice a{color:var(--ink);text-decoration:none;border-bottom:1px solid transparent;
+    display:inline-block;padding:.2rem 0}
   .indice a:hover,.indice a:focus-visible{border-bottom-color:var(--naranja)}
 
   .aviso{background:var(--naranja-claro);border-left:3px solid var(--naranja);
@@ -638,10 +642,10 @@ ${tipografias(opciones.marca)}
   .fila__dato{text-align:right;font-variant-numeric:tabular-nums;line-height:1.2;
     display:flex;flex-direction:column;min-width:4.6rem}
   .fila__dato b{font-size:1rem}
-  .fila__dato span{font-size:.73rem;color:var(--ink-soft)}
+  .fila__dato span{font-size:.75rem;color:var(--ink-soft)}
   .fila--destacada .fila__nombre{font-weight:600}
   .escala{display:grid;grid-template-columns:minmax(7rem,10.5rem) 1fr auto;gap:.85rem;
-    font-size:.71rem;color:var(--ink-soft);margin-top:.3rem;font-variant-numeric:tabular-nums}
+    font-size:.75rem;color:var(--ink-soft);margin-top:.3rem;font-variant-numeric:tabular-nums}
   .escala__eje{display:flex;justify-content:space-between}
   .escala__hueco{min-width:4.6rem}
 
@@ -721,7 +725,9 @@ ${tipografias(opciones.marca)}
   .fuentes li{margin-bottom:.7rem;break-inside:avoid}
   .fuentes__ref{display:block;color:var(--ink)}
   .fuentes__papel{display:block;margin-top:.15rem;font-style:italic}
-  .fuentes a{color:inherit}
+  /* Un DOI no tiene por donde partirse: a 320 px se salia 28 px del borde. */
+  .fuentes a{color:inherit;overflow-wrap:anywhere;display:inline-block;padding:.25rem 0}
+  @media print{.fuentes a{padding:0}}
   .fuentes__copy{margin:.2rem 0 0;font-size:.84rem}
 
   /* Cierre de marca. Centrado y con aire: es una firma, no un bloque más.
@@ -745,7 +751,9 @@ ${tipografias(opciones.marca)}
      la cabecera de portada y la firma del final. */
   .firma p,.portada p{max-width:none;text-align:center;hyphens:none}
   .firma__linea{margin:0 0 .5rem;font-size:.92rem}
-  .firma__linea a{color:var(--verde-texto);text-decoration:none;font-weight:600}
+  .firma__linea a{color:var(--verde-texto);text-decoration:none;font-weight:600;
+    display:inline-block;padding:.8rem 0}
+  @media print{.firma__linea a{padding:0}}
   .firma__linea a:hover{text-decoration:underline}
   .firma__sep{color:var(--ink-soft);margin:0 .5rem}
   .firma__copy{margin:.15rem 0 0;font-size:.8rem;color:var(--ink-soft)}
