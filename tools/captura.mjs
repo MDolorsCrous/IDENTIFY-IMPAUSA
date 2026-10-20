@@ -17,7 +17,7 @@ import { buscarChrome } from "./a-pdf.mjs";
 const PUERTO = 9333;
 
 /** Espera a que algo deje de fallar, o se rinde. */
-async function esperar(intento, veces = 60, pausa = 200) {
+async function esperar(intento, veces = 150, pausa = 200) {
   for (let i = 0; i < veces; i++) {
     try {
       return await intento();
@@ -114,7 +114,12 @@ export async function capturar(url, salida, { ancho = 1280, alto = 900, guion = 
     cdp.cerrar();
     return salida;
   } finally {
+    // Esperar a que Chrome haya muerto de verdad antes de devolver: si no, la
+    // siguiente captura arranca otro Chrome en el mismo puerto mientras este
+    // aun lo suelta, y «el navegador no ha contestado a tiempo».
+    const muerto = new Promise((r) => chrome.once("exit", r));
     chrome.kill();
+    await Promise.race([muerto, new Promise((r) => setTimeout(r, 5000))]);
     try {
       rmSync(perfil, { recursive: true, force: true });
     } catch {}

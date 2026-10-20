@@ -947,7 +947,7 @@ function filas(items, etiquetas, valores, color){
  * es de quien la abre y puede tocarla.
  */
 function sinLectura(){
-  return medirAtencion(respuestas).nivel === "nula";
+  return medirAtencion(respuestas, CFG.questions).nivel === "nula";
 }
 
 function avisoDeAtencion(a, t){
@@ -960,6 +960,7 @@ function avisoDeAtencion(a, t){
     if (m === "racha") return rellena(t.motivoRacha, { n: a.racha });
     if (m === "pocosValores") return rellena(t.motivoPocosValores, { n: a.valores });
     if (m === "sinVariacion") return t.motivoSinVariacion;
+    if (m === "contradicciones") return rellena(t.motivoContradicciones, { n: a.contradicciones, de: a.facetas });
     return "";
   }).filter(Boolean);
   return '<div class="atencion"><b>' + t.dudosaTitulo + '</b><p>' +
@@ -968,7 +969,7 @@ function avisoDeAtencion(a, t){
 
 function resultados(){
   const { facetas, dominios } = puntuar(respuestas);
-  const atencion = medirAtencion(respuestas);
+  const atencion = medirAtencion(respuestas, CFG.questions);
   const escalaTest = '<div class="escala"><div></div><div class="escala__e"><span>1</span><span>3</span><span>5</span></div><div class="escala__h"></div></div>';
   const porDominio = CFG.domains.map(d => \`
     <div class="bloque">

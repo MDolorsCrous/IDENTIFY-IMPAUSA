@@ -111,6 +111,7 @@ function avisoDeAtencion(a, t) {
       if (m === "racha") return rellena(t.motivoRacha, { n: a.racha });
       if (m === "pocosValores") return rellena(t.motivoPocosValores, { n: a.valores });
       if (m === "sinVariacion") return t.motivoSinVariacion;
+      if (m === "contradicciones") return rellena(t.motivoContradicciones, { n: a.contradicciones, de: a.facetas });
       return "";
     })
     .filter(Boolean);

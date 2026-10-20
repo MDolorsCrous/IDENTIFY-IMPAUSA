@@ -230,6 +230,24 @@ moderado de verdad— y no toca ni una puntuación.
 
 La racha no ve el alternado; la variedad no ve la racha.
 
+### Y un tercero, el único que mira el contenido: la coherencia
+
+Cada faceta tiene dos ítems directos y dos invertidos que miden lo mismo. Recodificados a
+la misma dirección, en quien lee las dos medias se parecen; en quien contesta por un
+patrón que ignora lo que pone, se separan. Se cuenta en cuántas facetas la separación
+llega a 2 puntos —un 4,5 frente a un 2,5—:
+
+| Patrón | facetas contradichas (de 15) |
+| --- | --- |
+| Una persona de verdad | 2 |
+| Al azar (200 tiradas) | 1–6 |
+| Ciclo 1, 2, 3, 4, 5 | **12** |
+| 5, 4, 5, 4… | 15 |
+| Todo 5 | 15 |
+
+El ciclo 1, 2, 3, 4, 5 era justo lo que los dos primeros no veían —desviación 1,41, racha
+1, cinco valores: como una persona real— y aquí salta con 12 facetas de 15.
+
 ### Los umbrales
 
 **Son decisiones nuestras, no cortes validados.** Están puestos con holgura sobre
@@ -238,13 +256,18 @@ descuido evidente sin acusar a quien contesta de forma moderada:
 
 - **`nula`**: un solo valor en los 60 ítems. No hay lectura posible, y el informe
   escrito no se ofrece ni se pide al servidor.
-- **`dudosa`**: racha ≥ 12, o dos valores o menos, o desviación < 0,5. Se avisa y
-  se sigue.
+- **`dudosa`**: racha ≥ 12, o dos valores o menos, o desviación < 0,5, o **8 o más
+  facetas contradichas** (más de la mitad; entre el 6 del azar y el 12 del ciclo hay
+  sitio de sobra). Se avisa al principio del informe —y en la pantalla de
+  puntuaciones— diciendo cuál de las cuatro cosas ha saltado, y se sigue.
 
 Igual que las bandas, esto se recalibra el día que haya datos de más gente.
 
 ### Lo que NO detecta
 
-Un ciclo 1, 2, 3, 4, 5 repetido da desviación 1,41, racha 1 y los cinco valores:
-**indistinguible de una persona real** con estas medidas. No hay índice sencillo
-que lo pille, y decir lo contrario sería vender humo.
+**Contestar al azar.** Pulsar sin mirar no contradice nada de forma sistemática: da
+entre 1 y 6 facetas contradichas, como una persona real, y una desviación normal.
+Tampoco a quien lee pero entiende al revés los ítems invertidos: medido, 3 facetas,
+indistinguible. No hay índice sencillo que pille ninguna de las dos cosas, y decir lo
+contrario sería vender humo. Lo que sí se pilla es el descuido *con patrón*: el mismo
+botón, dos botones alternados, o el ciclo por la escala.

@@ -380,6 +380,7 @@
       "motivoRacha": "there are {n} identical answers in a row",
       "motivoPocosValores": "only {n} of the five values on the scale were used",
       "motivoSinVariacion": "the answers barely vary",
+      "motivoContradicciones": "in {n} of the {de} facets, the direct and the reversed statements contradict each other",
       "sinInforme": "That is why the written report is not offered: there would be nothing to interpret."
     }
   },
@@ -535,6 +536,7 @@
       "motivoRacha": "there are {n} identical answers in a row",
       "motivoPocosValores": "only {n} of the five values on the scale were used",
       "motivoSinVariacion": "the answers barely vary",
+      "motivoContradicciones": "in {n} of the {de} facets, the direct and the reversed statements contradict each other",
       "sinInforme": "That is why the written report is not offered: there would be nothing to interpret."
     }
   }

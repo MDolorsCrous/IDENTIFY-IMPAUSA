@@ -57,6 +57,6 @@ export function construirModelo(
   // Si el cuestionario sostiene una lectura o lo han rellenado sin leerlo. Va
   // sobre las respuestas EN BRUTO, antes de recodificar los inversos: es lo
   // único que distingue un «5 a todo» de un perfil moderado de verdad.
-  modelo.meta.atencion = medirAtencion(responses as Record<number, number>);
+  modelo.meta.atencion = medirAtencion(responses as Record<number, number>, recursos.config.questions);
   return modelo;
 }

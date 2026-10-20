@@ -8,6 +8,7 @@ import { score, type Responses } from "../src/services/scoring.ts";
 import { bands, interpret, type Norm, type Rule } from "../src/services/interpretation.ts";
 import { buildReport, type Labels } from "../src/services/report.ts";
 import { construirModelo } from "../src/services/pipeline.ts";
+import { medirAtencion } from "../src/services/atencion.ts";
 import { renderInforme } from "../src/services/render-informe.js";
 import { cargarRecursos } from "../tools/recursos.mjs";
 
@@ -408,6 +409,69 @@ test("los dos indicadores se cubren el uno al otro", () => {
   const b = construirModelo(treintaIguales as Responses, recursos, {}).meta.atencion!;
   assert.equal(b.nivel, "dudosa", "treinta respuestas iguales seguidas no saltan");
   assert.equal(b.valores, 5, "y no salta por la variedad, que usa los cinco valores");
+});
+
+test("la coherencia pilla el ciclo 1, 2, 3, 4, 5, que la forma no veía", () => {
+  // Un ciclo por la escala da desviación 1,41, racha 1 y los cinco valores:
+  // por la forma es una persona real. Pero ignora qué ítem es cada uno, y en
+  // cada faceta los directos y los inversos acaban apuntando a sitios
+  // distintos. Medido: 12 facetas contradichas de 15; una persona real, 2; el
+  // azar, hasta 6.
+  const recursos = cargarRecursos();
+  const ids = recursos.config.questions.map((q: any) => q.id);
+
+  const ciclo = Object.fromEntries(ids.map((id: number, i: number) => [id, (i % 5) + 1]));
+  const a = construirModelo(ciclo as Responses, recursos, {}).meta.atencion!;
+  assert.equal(a.nivel, "dudosa", "el ciclo 1,2,3,4,5 no salta");
+  assert.deepEqual(a.motivos, ["contradicciones"], "salta por otra cosa que no es la coherencia");
+  assert.equal(a.facetas, 15, "no se han podido mirar las 15 facetas");
+  assert.ok(a.contradicciones >= 8, `solo ${a.contradicciones} facetas contradichas`);
+  assert.equal(a.racha, 1);
+  assert.equal(a.valores, 5);
+
+  // Una persona de verdad queda lejos del umbral.
+  const real = Object.fromEntries(
+    Object.entries(fixture.responses).map(([k, v]) => [Number(k), Number(v)]),
+  ) as Responses;
+  const r = construirModelo(real, recursos, {}).meta.atencion!;
+  assert.ok(r.contradicciones <= 3, `una persona real da ${r.contradicciones} facetas contradichas`);
+  assert.ok(!r.motivos.includes("contradicciones"));
+
+  // Y quien contesta su polo en TODO —coherente pero extremo— no contradice nada:
+  // la coherencia distingue lo extremo de lo descuidado, que la forma no puede.
+  const extremo = Object.fromEntries(
+    recursos.config.questions.map((q: any) => [q.id, q.reverse ? 1 : 5]),
+  );
+  assert.equal(construirModelo(extremo as Responses, recursos, {}).meta.atencion!.contradicciones, 0);
+
+  // Sin saber qué ítem es cada uno, no se mira: ni salta ni rompe.
+  const sinItems = medirAtencion(ciclo as Record<number, number>);
+  assert.equal(sinItems.facetas, 0);
+  assert.equal(sinItems.nivel, "ok");
+});
+
+test("el aviso de contradicciones llega a la pantalla y al informe, con los números", () => {
+  const recursos = cargarRecursos();
+  const ids = recursos.config.questions.map((q: any) => q.id);
+  const ciclo = Object.fromEntries(ids.map((id: number, i: number) => [id, (i % 5) + 1])) as Responses;
+  const modelo = construirModelo(ciclo, recursos, {});
+  const html = renderInforme(modelo, {} as any, recursos.labels, {
+    textos: recursos.textos.informe,
+    facetas: recursos.facetas,
+    metaforas: recursos.metaforas,
+    marca: recursos.marca,
+    fecha: "1 de enero de 2026",
+  });
+  const a = modelo.meta.atencion!;
+  assert.ok(html.includes(recursos.textos.informe.atencion.dudosaTitulo), "el informe no avisa");
+  assert.ok(
+    html.includes(`en ${a.contradicciones} de las ${a.facetas} facetas`),
+    "el aviso no dice cuántas facetas se contradicen",
+  );
+  // La página también lo sabe decir.
+  const pagina = readFileSync(join(raiz, "test-identify.html"), "utf8");
+  assert.match(pagina, /m === "contradicciones"/, "la pantalla de puntuaciones no conoce el motivo");
+  assert.match(pagina, /medirAtencion\(respuestas, CFG\.questions\)/, "la página mide sin saber qué ítem es cada uno");
 });
 
 test("cuando no hay lectura, el informe lo dice y no se ofrece redactarlo", () => {

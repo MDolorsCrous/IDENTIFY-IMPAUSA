@@ -380,6 +380,7 @@
       "motivoRacha": "hay {n} respuestas iguales seguidas",
       "motivoPocosValores": "solo se han usado {n} de los cinco valores de la escala",
       "motivoSinVariacion": "las respuestas apenas varían entre sí",
+      "motivoContradicciones": "en {n} de las {de} facetas, las afirmaciones directas y las invertidas se contradicen entre sí",
       "sinInforme": "Por eso no se ofrece el informe escrito: no habría nada que interpretar."
     }
   },
@@ -535,6 +536,7 @@
       "motivoRacha": "hay {n} respuestas iguales seguidas",
       "motivoPocosValores": "solo se han usado {n} de los cinco valores de la escala",
       "motivoSinVariacion": "las respuestas apenas varían entre sí",
+      "motivoContradicciones": "en {n} de las {de} facetas, las afirmaciones directas y las invertidas se contradicen entre sí",
       "sinInforme": "Por eso no se ofrece el informe escrito: no habría nada que interpretar."
     }
   }
