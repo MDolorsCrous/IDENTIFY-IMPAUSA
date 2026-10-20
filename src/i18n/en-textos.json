@@ -327,9 +327,6 @@
       "nombre": "Your name",
       "nombreOpcional": "(optional, appears on the cover)",
       "nombreEjemplo": "Marta",
-      "verJson": "View the JSON",
-      "ocultarJson": "Hide the JSON",
-      "ariaJson": "Result as JSON",
       "reiniciar": "Start over",
       "nadaGuardado": "These numbers are in your browser and have not left your device.",
       "alPedirInforme": "If you ask for the written report, your answers are sent to IMPAUSA to write it and the report is kept for a year, so you can come back to it and so your coach can read it with you. You can delete it sooner whenever you want."

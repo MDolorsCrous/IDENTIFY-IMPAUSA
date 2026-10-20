@@ -372,9 +372,6 @@ const html = `<!doctype html>
   @media print{.legal{display:none}}
   @media print{.guardado{display:none}}
   #marco{flex:1;width:100%;border:0;min-height:calc(100vh - 4rem);background:#fff}
-  .json{width:100%;min-height:9rem;margin-top:.9rem;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;
-    font-size:.8rem;line-height:1.5;background:var(--ground);color:var(--ink-soft);
-    border:1px solid var(--borde);border-radius:5px;padding:.7rem;resize:vertical}
 ${estilosPortada}
 </style>
 
@@ -1015,18 +1012,7 @@ function resultados(){
           </label>
           <div class="acciones">
             <button class="boton" id="informe">\${T.informe.nombre}</button>
-            \${
-              // El JSON solo en el fichero local, que es donde hace falta: ahi no
-              // hay servidor que redacte, y copiarlo es la unica manera de sacar
-              // las respuestas para «node generar.js». En la web sobra — el
-              // informe se pide con el boton de al lado — y una pantalla de
-              // resultados no es sitio para ensenarle a nadie su JSON.
-              HAY_SERVIDOR
-                ? ""
-                : '<button class="boton boton--claro" id="ver">' + T.resultados.verJson + "</button>"
-            }
           </div>
-          \${HAY_SERVIDOR ? "" : '<textarea id="json" class="json" readonly hidden aria-label="' + T.resultados.ariaJson + '"></textarea>'}
         </div>
         <div class="acciones">
           <button class="boton boton--claro" id="reiniciar">\${T.resultados.reiniciar}</button>
@@ -1043,25 +1029,6 @@ function resultados(){
     soltarElInforme();
     indice = 0; pantalla = "portada"; pintar();
   };
-  // Lo que se copia son las RESPUESTAS, no las puntuaciones: quien genera el
-  // informe vuelve a puntuar con el motor, y asi no hay dos calculos que puedan
-  // discrepar. La fecha se toma del dia en que se responde.
-  const paraElInforme = () => JSON.stringify({
-    test: "identify-bfi2",
-    version: 1,
-    fecha: new Date().toISOString().slice(0, 10),
-    persona: (document.getElementById("persona")?.value || "").trim(),
-    respuestas,
-  }, null, 2);
-
-  const caja = document.getElementById("json");
-  const ver = document.getElementById("ver");
-  if (ver) ver.onclick = e => {
-    caja.value = paraElInforme();
-    caja.hidden = !caja.hidden;
-    e.target.textContent = caja.hidden ? T.resultados.verJson : T.resultados.ocultarJson;
-    if (!caja.hidden) caja.select();
-  };
   document.getElementById("informe").onclick = () => {
     persona = (document.getElementById("persona")?.value || "").trim();
     // El informe se abre YA, con todo lo que calcula el código. La redacción
@@ -1074,10 +1041,12 @@ function resultados(){
 }
 
 function copiarEnBoton(boton, texto, etiqueta){
-  const caja = document.getElementById("json");
+  // Si el portapapeles no se deja (http sin https, permiso denegado), el texto
+  // se ensena en un cuadro del que se puede copiar a mano. Antes iba a una caja
+  // de la pantalla de puntuaciones que ya no existe.
   navigator.clipboard?.writeText(texto).then(
     () => { boton.textContent = T.copiar.copiado; setTimeout(() => boton.textContent = etiqueta, 1800); },
-    () => { if (caja) { caja.value = texto; caja.hidden = false; caja.select(); } boton.textContent = T.copiar.aMano; },
+    () => { window.prompt(T.copiar.aMano, texto); },
   );
 }
 

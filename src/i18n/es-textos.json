@@ -327,9 +327,6 @@
       "nombre": "Tu nombre",
       "nombreOpcional": "(opcional, sale en la portada)",
       "nombreEjemplo": "Marta",
-      "verJson": "Ver el JSON",
-      "ocultarJson": "Ocultar el JSON",
-      "ariaJson": "Resultado en JSON",
       "reiniciar": "Empezar de nuevo",
       "nadaGuardado": "Estos números están en tu navegador y no han salido de tu dispositivo.",
       "alPedirInforme": "Si pides el informe escrito, tus respuestas se envían a IMPAUSA para redactarlo y el informe queda guardado un año, para que puedas volver a él y para que tu coach pueda leerlo contigo. Puedes borrarlo antes cuando quieras."

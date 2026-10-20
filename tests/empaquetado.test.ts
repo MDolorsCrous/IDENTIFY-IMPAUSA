@@ -102,20 +102,15 @@ test("la página generada lleva el paquete y no se corta", () => {
   assert.ok((pagina.match(/<script>/g) ?? []).length >= 2);
 });
 
-test("la pantalla del informe no ofrece copiar el encargo ni pegar la redacción", () => {
-  // Ese camino a mano —copiar el encargo, llevarlo a una conversación y pegar
-  // lo que devuelve— ya no está en la pantalla: el informe se redacta solo
-  // desde la web, y quien lo quiera lo tiene en el comando. El JSON de las
-  // respuestas sigue, solo en el fichero local, que es donde sirve.
+test("ni el informe ni las puntuaciones ofrecen el camino a mano", () => {
+  // Copiar el encargo, pegar la redacción y ver el JSON de las respuestas eran
+  // las tres piezas de un camino a mano que ya no está en la pantalla: el
+  // informe se redacta solo desde la web, y quien quiera ese camino lo tiene en
+  // el comando (node generar.js).
   const pagina = readFileSync(join(raiz, "test-identify.html"), "utf8");
-  for (const id of ['id="encargo"', 'id="encargoLargo"', 'id="pegar"']) {
-    assert.ok(!pagina.includes(id), `la pantalla del informe sigue llevando ${id}`);
+  for (const id of ['id="encargo"', 'id="encargoLargo"', 'id="pegar"', 'id="ver"', 'id="json"']) {
+    assert.ok(!pagina.includes(id), `la pantalla sigue llevando ${id}`);
   }
-  assert.match(
-    pagina,
-    /HAY_SERVIDOR\s*\n?\s*\?\s*""\s*\n?\s*:\s*'<button class="boton boton--claro" id="ver">/,
-    "el botón del JSON ya no está reservado al fichero local",
-  );
 });
 
 test("el entorno legal está al final de todas las pantallas, en la lengua que toque", () => {
