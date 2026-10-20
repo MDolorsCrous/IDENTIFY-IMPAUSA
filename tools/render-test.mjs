@@ -600,30 +600,13 @@ function pintar(){
 
 function portada(){
   // La pantalla de inicio se monta al generar la pagina (src/pagina/portada.mjs)
-  // y llega aqui con dos huecos: el boton del hero y el del cierre. Lo que va
-  // dentro depende de algo que solo se sabe aqui —si hay servidor y si esta
-  // persona ya ha entrado el codigo—, y por eso no puede decidirse al generar.
+  // y llega aqui con dos huecos: el del hero y el del cierre. La entrada al test
+  // va SOLO en el cierre, al final de la pagina, para que se pase por «Antes de
+  // empezar»; en el hero solo sale la tarjeta de continuar, si hay un test a
+  // medias. No hay codigo de acceso: la aplicacion es libre.
   //
   // Sin comillas invertidas en toda la funcion: este texto viaja dentro de una
   // plantilla y una comilla suelta la parte por la mitad.
-  const puertaCerrada = HAY_SERVIDOR && !recuerdaCodigo.leer();
-  const laPuerta =
-    '<form class="puerta" id="puerta">' +
-      '<label class="campo" for="codigo">' + T.puerta.etiqueta +
-        '<span>' + T.puerta.pista + '</span>' +
-      '</label>' +
-      '<div class="puerta__fila">' +
-        '<input id="codigo" name="codigo" type="text" autocomplete="off" ' +
-               'autocapitalize="off" spellcheck="false" required>' +
-        '<button class="cta" type="submit">' + T.puerta.entrar + '</button>' +
-      '</div>' +
-      '<p class="puerta__error" id="puertaError" role="alert" hidden></p>' +
-    '</form>';
-  // Los dos botones se escriben enteros, con su id a la vista, y no se arman
-  // pegando trozos: asi quien lea este fichero —o la prueba que comprueba que el
-  // fichero local tiene por donde empezar— encuentra lo que busca.
-  const botonHero = '<button class="cta" id="empezar" type="button">' +
-    T.inicio.empezar + ' <span aria-hidden="true">→</span></button>';
 
   // Si quedo un test a medias en este navegador, se ofrece — no se restaura
   // solo. Encontrarte de golpe el test de otro por la mitad en un ordenador
@@ -662,8 +645,8 @@ function portada(){
     '</nav>';
 
   app.innerHTML = PORTADA_HTML
-    .replace(HUECO_CTA_HERO, puertaCerrada ? "" : (tarjetaSeguir || botonHero))
-    .replace(HUECO_CTA_FINAL, puertaCerrada ? laPuerta : botonCierre)
+    .replace(HUECO_CTA_HERO, tarjetaSeguir || "")
+    .replace(HUECO_CTA_FINAL, botonCierre)
     .replace(HUECO_IDIOMAS, selectorDeIdiomas)
     .replace(HUECO_AVISO, FALLOS.length
       ? '<div class="fallo">' + rellena(T.inicio.avisoFallos, { lista: FALLOS.join(", ") }) + '</div>'
@@ -734,51 +717,6 @@ function portada(){
   if (empezar2) empezar2.onclick = deCero;
 
 
-  const empezar = document.getElementById("empezar");
-  if (empezar) empezar.onclick = () => { pantalla = "test"; pintar(); };
-
-  // La puerta. El código lo comprueba el servidor: si lo comprobara esta página
-  // tendría que llevarlo dentro, y quien mirase el código fuente lo vería.
-  const puerta = document.getElementById("puerta");
-  if (puerta) puerta.onsubmit = async (e) => {
-    e.preventDefault();
-    const campo = document.getElementById("codigo");
-    const aviso = document.getElementById("puertaError");
-    const boton = puerta.querySelector("button");
-    const codigo = campo.value.trim();
-    if (!codigo) return;
-
-    aviso.hidden = true;
-    boton.disabled = true;
-    const etiqueta = boton.textContent;
-    boton.textContent = T.puerta.comprobando;
-    try {
-      const r = await fetch("/api/entrar", {
-        method: "POST",
-        headers: { "content-type": "application/json" },
-        body: JSON.stringify({ codigo }),
-      });
-      if (r.ok) {
-        recuerdaCodigo.guardar(codigo);
-        // Si venia siguiendo el enlace de su informe, no empieza un test nuevo:
-        // el codigo era justo lo que faltaba para poder abrirlo.
-        if (await recuperarInforme()) return;
-        pantalla = "test";
-        pintar();
-        return;
-      }
-      const datos = await r.json().catch(() => ({}));
-      aviso.textContent = datos.error || T.puerta.noComprobado;
-      aviso.hidden = false;
-      campo.select();
-    } catch {
-      aviso.textContent = T.puerta.sinConexion;
-      aviso.hidden = false;
-    } finally {
-      boton.disabled = false;
-      boton.textContent = etiqueta;
-    }
-  };
 
   for (const b of document.querySelectorAll("[data-idioma]")) {
     b.onclick = () => abrirPanelIdioma(b.dataset.idioma);
@@ -1244,7 +1182,7 @@ function informe(){
       const r = await fetch("/api/olvidar", {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({ id: informeGuardado, codigo: recuerdaCodigo.leer() }),
+        body: JSON.stringify({ id: informeGuardado }),
       });
       if (!r.ok) throw new Error("no");
       window.alert(T.informe.borrado);
@@ -1289,11 +1227,6 @@ function informe(){
 // encargo: son dos caminos al mismo sitio, no dos versiones del producto.
 const HAY_SERVIDOR = location.protocol === "http:" || location.protocol === "https:";
 
-const recuerdaCodigo = {
-  leer(){ try { return sessionStorage.getItem("identify-codigo") || ""; } catch { return ""; } },
-  guardar(c){ try { sessionStorage.setItem("identify-codigo", c); } catch {} },
-  olvidar(){ try { sessionStorage.removeItem("identify-codigo"); } catch {} },
-};
 
 // ---- La vuelta ----
 /**
@@ -1423,9 +1356,6 @@ async function redactarEnElServidor(boton, modelo){
   // El modelo se reconstruye aqui si no viene: cuando se llama desde el boton
   // «Informe Identify» todavia no se ha dibujado ninguna pantalla de informe.
   modelo = modelo ?? construirModelo(respuestas, RECURSOS, { persona: persona || undefined });
-  const codigo = recuerdaCodigo.leer() ||
-    window.prompt(T.puerta.pedirCodigo, "");
-  if (!codigo) return false;
 
   // Puede no haber boton: desde «Informe Identify» se llama con la pantalla de
   // espera dibujada, no con un boton que cambiar.
@@ -1449,14 +1379,14 @@ async function redactarEnElServidor(boton, modelo){
       // mismo motor. Asi no hay dos calculos que puedan discrepar, y el
       // endpoint no se puede usar para pedirle a Claude cualquier otra cosa.
       // El idioma viaja con ellas: el informe se redacta en la lengua del test.
-      body: JSON.stringify({ id, codigo, respuestas, persona, idioma }),
+      body: JSON.stringify({ id, respuestas, persona, idioma }),
     });
     // Una funcion en segundo plano contesta 202 y nada mas: que haya arrancado
-    // no dice todavia si el codigo era bueno. Eso llega con el resultado.
+    // no dice todavia si ha ido bien. Eso llega con el resultado.
     if (!arranque.ok && arranque.status !== 202) {
       return fallo(T.servidor.noEmpezado);
     }
-    const llego = await esperarElInforme(id, codigo, modelo);
+    const llego = await esperarElInforme(id, modelo);
     if (llego && boton) pintar(); // sin botón, quien ha llamado dibuja el informe después
     return llego;
   } catch {
@@ -1476,7 +1406,7 @@ async function redactarEnElServidor(boton, modelo){
  * pagina con una redaccion en marcha (volverDondeEstaba): el servidor ha
  * seguido escribiendo mientras tanto y solo hay que seguir esperandolo.
  */
-async function esperarElInforme(id, codigo, modelo){
+async function esperarElInforme(id, modelo){
   const fallo = (m) => { window.alert(m); return false; };
   try {
     const hasta = Date.now() + 4 * 60 * 1000;
@@ -1487,23 +1417,20 @@ async function esperarElInforme(id, codigo, modelo){
         const r = await fetch("/api/resultado", {
           method: "POST",
           headers: { "content-type": "application/json" },
-          body: JSON.stringify({ id, codigo }),
+          body: JSON.stringify({ id }),
         });
         datos = await r.json().catch(() => ({}));
-        if (r.status === 403) { recuerdaCodigo.olvidar(); return fallo(datos.error || T.servidor.codigoIncorrecto); }
       } catch {
         continue; // un fallo suelto de red no tiene por que tirar la espera
       }
 
       if (datos.estado === "trabajando") continue;
       if (datos.estado === "error") {
-        if (datos.que === "codigo") recuerdaCodigo.olvidar();
         return fallo(datos.error || T.servidor.noGenerado);
       }
       if (datos.estado === "listo") {
         const fallos = validarProsa(datos.prosa, modelo, idioma);
         if (fallos.length) return fallo(T.servidor.incompleta);
-        recuerdaCodigo.guardar(codigo);
         prosa = datos.prosa;
         // El identificador pasa a la direccion. Sin esto el informe quedaba
         // guardado en el servidor y era inalcanzable: quien cerraba la pestana
@@ -1549,28 +1476,24 @@ function ajustarRotulo(){
 /**
  * Volver a un informe ya redactado.
  *
- * Si la direccion trae \`#informe=<id>\`, se va a buscar al servidor con el mismo
- * codigo de acceso. Antes esto no existia: el informe quedaba guardado y era
- * inalcanzable en cuanto se cerraba la pestana.
+ * Si la direccion trae \`#informe=<id>\`, se va a buscar al servidor. Antes esto
+ * no existia: el informe quedaba guardado y era inalcanzable en cuanto se
+ * cerraba la pestana.
  *
  * Vuelven la prosa Y las respuestas, porque el informe se dibuja desde el
  * modelo: sin las respuestas no hay grafico, ni bandas, ni facetas.
  *
- * No pregunta el codigo: si no lo tiene, se rinde en silencio y quien abre el
- * enlace ve la portada con la puerta de siempre. Al entrar por ahi se vuelve a
- * llamar a esto, y entonces si. Un window.prompt sobre una pagina en blanco,
- * antes de que se vea nada, no parece la aplicacion sino un aviso del navegador.
+ * La unica llave es el identificador: un UUID que nadie va a acertar y que solo
+ * tiene quien tiene el enlace.
  */
 async function recuperarInforme(){
   const marca = /^#informe=([A-Za-z0-9-]{8,80})$/.exec(location.hash || "");
   if (!marca || !HAY_SERVIDOR) return false;
-  const codigo = recuerdaCodigo.leer();
-  if (!codigo) return false;
   try {
     const r = await fetch("/api/resultado", {
       method: "POST",
       headers: { "content-type": "application/json" },
-      body: JSON.stringify({ id: marca[1], codigo }),
+      body: JSON.stringify({ id: marca[1] }),
     });
     const datos = await r.json().catch(() => ({}));
     if (datos.estado !== "listo" || !datos.respuestas) return false;
@@ -1636,7 +1559,7 @@ function volverDondeEstaba(){
   pintar();
   if (encargo) {
     const modelo = construirModelo(respuestas, RECURSOS, { persona: persona || undefined });
-    esperarElInforme(encargo, recuerdaCodigo.leer(), modelo).then((salioBien) => {
+    esperarElInforme(encargo, modelo).then((salioBien) => {
       redactando = false;
       encargoEnCurso = "";
       if (pantalla === "informe" || salioBien) pintar();

@@ -114,7 +114,6 @@ La tubería `respuestas → modelo` está en `src/services/pipeline.ts`, en una 
 | --- | --- | --- | --- |
 | Las 60 respuestas y por dónde iba | `localStorage` del navegador | Nunca | Hasta terminar o reiniciar; y **30 días** como mucho |
 | El idioma elegido | `localStorage` | Nunca | Hasta que se cambie |
-| El código de acceso | `sessionStorage` | Solo hacia `/api/entrar`, `/api/redactar`, `/api/resultado` y `/api/olvidar`, para comprobarlo | Hasta cerrar la pestaña |
 | Dónde se estaba al salir por un enlace (pantalla, respuestas, nombre, prosa) | `sessionStorage` | Nunca | Hasta volver con «Atrás», **2 horas** como mucho, o cerrar la pestaña |
 | Respuestas, nombre, idioma y prosa | Netlify Blobs, almacén `identify-informes` | **Al pedir el informe escrito** | **1 año** |
 | El recuento de informes del día | Netlify Blobs, almacén `identify-cuota` | Un número por fecha, sin nada de nadie | 35 días |
@@ -124,10 +123,12 @@ modelo, y el modelo se monta desde las respuestas. Guardar solo el texto haría 
 informe fuese irrecuperable en cuanto se cerrara la pestaña — que es exactamente lo que
 pasaba antes.
 
-Se llega a un informe guardado por su dirección, `#informe=<id>`, y hace falta **además**
-el código de acceso: el identificador es un UUID que nadie va a acertar, pero un informe
-es material personal y no se sirve solo por conocer su nombre (`resultado.mjs` vuelve a
-comprobar el código en cada lectura).
+Se llega a un informe guardado por su dirección, `#informe=<id>`. **La única llave es el
+identificador**: un UUID que nadie va a acertar y que solo tiene quien tiene el enlace.
+No hay código de acceso —la aplicación es libre—, así que quien tenga el enlace tiene el
+informe; es lo mismo que pasa con cualquier enlace a un documento compartido. Y lo único
+que frena el gasto en redacciones es el tope diario de informes (`TOPE_DIARIO`, 25 por
+defecto): sin código, no es opcional de verdad.
 
 Desde el ordenador de quien administra, `node tools/informes.mjs` lista lo que hay y
 `node tools/informes.mjs <id>` lo saca a `salidas/` como JSON y como HTML. Lee el almacén

@@ -3,8 +3,6 @@
 // Existe porque `redactar-background.mjs` no puede contestar por la conexion
 // que lo llamo: una funcion en segundo plano devuelve 202 al instante y sigue
 // trabajando. Deja el resultado en Netlify Blobs y la pagina lo recoge aqui.
-import { timingSafeEqual } from "node:crypto";
-
 import { getStore } from "@netlify/blobs";
 
 import { ALMACEN } from "./redactar-background.mjs";
@@ -14,12 +12,6 @@ const json = (estado, cuerpo) =>
     status: estado,
     headers: { "content-type": "application/json; charset=utf-8", "cache-control": "no-store" },
   });
-
-function mismoCodigo(dado, esperado) {
-  const a = Buffer.from(String(dado ?? ""), "utf8");
-  const b = Buffer.from(String(esperado ?? ""), "utf8");
-  return a.length === b.length && a.length > 0 && timingSafeEqual(a, b);
-}
 
 export default async function handler(peticion) {
   if (peticion.method !== "POST") return json(405, { error: "Solo POST." });
@@ -31,13 +23,9 @@ export default async function handler(peticion) {
     return json(400, { error: "El cuerpo no es un JSON válido." });
   }
 
-  // Se pide el codigo tambien aqui. El identificador es un UUID y nadie lo va a
-  // acertar, pero un informe es material personal: no se sirve solo porque
-  // alguien conozca su nombre.
-  if (!mismoCodigo(cuerpo.codigo, process.env.CODIGO_ACCESO)) {
-    return json(403, { error: "El código de acceso no es correcto." });
-  }
-
+  // La unica llave es el identificador: un UUID que nadie va a acertar y que
+  // solo tiene quien tiene el enlace. No hay codigo de acceso — la aplicacion
+  // es libre— asi que quien tenga el enlace, tiene el informe.
   const id = String(cuerpo.id ?? "").slice(0, 80);
   if (!id) return json(400, { error: "Falta el identificador." });
 

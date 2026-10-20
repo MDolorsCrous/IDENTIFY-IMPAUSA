@@ -71,9 +71,9 @@ test("los contadores de cuota viejos se van, y solo ellos", () => {
 
 test("la persona puede retirar su informe, con la misma llave con la que lo abre", () => {
   const olvidar = readFileSync(join(raiz, "netlify/functions/olvidar.mjs"), "utf8");
-  // El código se comprueba en tiempo constante, igual que en las otras puertas.
-  assert.match(olvidar, /timingSafeEqual/, "el código se compara sin cuidado");
-  assert.match(olvidar, /mismoCodigo\(cuerpo\.codigo, process\.env\.CODIGO_ACCESO\)/, "no se pide el código");
+  // La única llave es el identificador, el mismo con el que se lee: no hay
+  // código de acceso en la aplicación, y aquí tampoco puede quedar uno.
+  assert.ok(!olvidar.includes("CODIGO_ACCESO"), "olvidar sigue pidiendo un código que ya no existe");
   assert.match(olvidar, /getStore\(ALMACEN\)\.delete\(id\)/, "no borra nada");
 
   // Y la página lo ofrece, preguntando antes: borrar no se deshace.

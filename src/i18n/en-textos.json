@@ -291,15 +291,6 @@
       "December"
     ],
     "fechaLarga": "{mes} {dia}, {ano}",
-    "puerta": {
-      "etiqueta": "Access code",
-      "pista": "You get it from whoever sent you the link",
-      "entrar": "Enter",
-      "comprobando": "Checking…",
-      "noComprobado": "The code could not be verified.",
-      "sinConexion": "Could not connect. Check your connection.",
-      "pedirCodigo": "Access code\n\nYou get it from whoever sent you the link."
-    },
     "legal": {
       "entorno": "Legal Information"
     },
@@ -361,7 +352,7 @@
       "jsonInvalido": "That is not valid JSON. Copy it whole, from the first brace to the last.",
       "noEncaja": "The draft does not fit the schema:\n\n· {lista}",
       "guardadoTitulo": "Keep this link",
-      "guardadoTexto": "Your report lives at this address for a year. Save it if you want to come back: it will ask for the same access code.",
+      "guardadoTexto": "Your report lives at this address for a year. Save it if you want to come back: it can only be opened with this link.",
       "copiarEnlace": "Copy the link",
       "borrar": "Delete my report",
       "borrarConfirma": "Your report is about to be deleted from the server: the answers, the name and the written text.\n\nThis cannot be undone, and this link will stop working. Anything you have already printed or saved as a PDF stays with you.\n\nDelete it?",
@@ -376,7 +367,6 @@
     "servidor": {
       "redactando": "Writing…",
       "noEmpezado": "The report could not be started. Try again.",
-      "codigoIncorrecto": "Incorrect code.",
       "noGenerado": "The report could not be generated.",
       "incompleta": "The draft arrived incomplete. Try again.",
       "tardaDemasiado": "The report is taking too long. Try again in a moment.",

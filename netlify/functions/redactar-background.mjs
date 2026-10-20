@@ -12,9 +12,11 @@
 //
 // **Que hace falta en Netlify** (Site configuration -> Environment variables):
 //   THINK_IMPAUSA      la clave de la API (o ANTHROPIC_API_KEY, ver tools/clave-api.mjs)
-//   CODIGO_ACCESO      el codigo que le das a quien vaya a probarlo
 //   TOPE_DIARIO        opcional, informes por dia (por defecto 25)
-import { timingSafeEqual } from "node:crypto";
+//
+// **No hay codigo de acceso.** La aplicacion es libre: cualquiera con la
+// direccion puede hacer el test y pedir el informe. Lo unico que frena el gasto
+// es el tope diario de informes, que por eso no es opcional de verdad.
 
 import { getStore } from "@netlify/blobs";
 
@@ -34,7 +36,6 @@ const RECURSOS = { es: cargarRecursos("es"), en: cargarRecursos("en") };
 const MENSAJES = {
   es: {
     sinConfigurar: "El servidor no está configurado.",
-    codigoIncorrecto: "El código de acceso no es correcto.",
     respuestasInvalidas: "Las respuestas no son válidas.",
     sinLectura: "Las 60 respuestas van con el mismo valor: no hay nada que interpretar.",
     tope: (n) => `Se ha llegado al tope de ${n} informes por hoy. Vuelve a probarlo mañana.`,
@@ -42,7 +43,6 @@ const MENSAJES = {
   },
   en: {
     sinConfigurar: "The server is not configured.",
-    codigoIncorrecto: "The access code is not correct.",
     respuestasInvalidas: "The answers are not valid.",
     sinLectura: "All 60 answers use the same value: there is nothing to interpret.",
     tope: (n) => `Today's limit of ${n} reports has been reached. Try again tomorrow.`,
@@ -52,13 +52,6 @@ const MENSAJES = {
 
 /** Donde se dejan los informes para que la pagina los recoja. */
 export const ALMACEN = "identify-informes";
-
-/** Comparacion de tiempo constante: que el error no diga cuanto has acertado. */
-function mismoCodigo(dado, esperado) {
-  const a = Buffer.from(String(dado ?? ""), "utf8");
-  const b = Buffer.from(String(esperado ?? ""), "utf8");
-  return a.length === b.length && a.length > 0 && timingSafeEqual(a, b);
-}
 
 /** Deja el resultado donde la pagina lo va a buscar. */
 async function guardar(id, valor) {
@@ -105,13 +98,9 @@ export default async function handler(peticion) {
   const recursos = RECURSOS[idioma];
   const dice = MENSAJES[idioma];
 
-  if (!claveDeApi() || !process.env.CODIGO_ACCESO) {
+  if (!claveDeApi()) {
     console.error("Falta configuracion. Nombres que se miran para la clave:", NOMBRES.join(", "));
     return guardar(id, { estado: "error", error: dice.sinConfigurar });
-  }
-
-  if (!mismoCodigo(cuerpo.codigo, process.env.CODIGO_ACCESO)) {
-    return guardar(id, { estado: "error", error: dice.codigoIncorrecto, que: "codigo" });
   }
 
   // El motor valida las respuestas: numero de items, escala y que no sobre

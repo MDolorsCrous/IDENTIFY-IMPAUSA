@@ -5,11 +5,9 @@
 // y de un clic, no un favor que haya que pedir por correo.
 //
 // **La misma llave que para leerlo**: el identificador, que es un UUID y solo
-// tiene quien tiene el enlace, y el codigo de acceso. Quien puede abrir el
-// informe ya lo tiene entero delante, asi que no se protege menos por poder
-// borrarlo — pero borrar no se deshace, y por eso la pagina pregunta antes.
-import { timingSafeEqual } from "node:crypto";
-
+// tiene quien tiene el enlace. Quien puede abrir el informe ya lo tiene entero
+// delante, asi que no se protege menos por poder borrarlo — pero borrar no se
+// deshace, y por eso la pagina pregunta antes.
 import { getStore } from "@netlify/blobs";
 
 import { ALMACEN } from "./redactar-background.mjs";
@@ -20,12 +18,6 @@ const json = (estado, cuerpo) =>
     headers: { "content-type": "application/json; charset=utf-8", "cache-control": "no-store" },
   });
 
-function mismoCodigo(dado, esperado) {
-  const a = Buffer.from(String(dado ?? ""), "utf8");
-  const b = Buffer.from(String(esperado ?? ""), "utf8");
-  return a.length === b.length && a.length > 0 && timingSafeEqual(a, b);
-}
-
 export default async function handler(peticion) {
   if (peticion.method !== "POST") return json(405, { error: "Solo POST." });
 
@@ -34,10 +26,6 @@ export default async function handler(peticion) {
     cuerpo = await peticion.json();
   } catch {
     return json(400, { error: "El cuerpo no es un JSON válido." });
-  }
-
-  if (!mismoCodigo(cuerpo.codigo, process.env.CODIGO_ACCESO)) {
-    return json(403, { error: "El código de acceso no es correcto." });
   }
 
   const id = String(cuerpo.id ?? "").slice(0, 80);

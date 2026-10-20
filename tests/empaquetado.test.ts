@@ -216,12 +216,12 @@ test("con la puerta puesta, el código se pide abajo, en el cierre, y arriba no 
   const pagina = readFileSync(join(raiz, "test-identify.html"), "utf8");
   const plano = pagina.replace(/\\"/g, '"');
   assert.ok(
-    pagina.includes(".replace(HUECO_CTA_FINAL, puertaCerrada ? laPuerta : botonCierre)"),
-    "la puerta no está en el cierre",
+    pagina.includes(".replace(HUECO_CTA_FINAL, botonCierre)"),
+    "el botón de empezar no está en el cierre",
   );
   assert.ok(
-    pagina.includes('.replace(HUECO_CTA_HERO, puertaCerrada ? "" : (tarjetaSeguir || botonHero))'),
-    "con la puerta puesta, el hero sigue llevando un botón",
+    pagina.includes('.replace(HUECO_CTA_HERO, tarjetaSeguir || "")'),
+    "el hero lleva algo más que la tarjeta de continuar",
   );
   assert.ok(!pagina.includes("alaPuerta"), "queda rastro del botón que bajaba a la puerta");
   assert.ok(!pagina.includes("alCodigo"), "queda el texto del botón que bajaba a la puerta");
@@ -239,9 +239,7 @@ test("con la puerta puesta, el código se pide abajo, en el cierre, y arriba no 
   const veces = (plano.match(/class="micro">No hay respuestas correctas o incorrectas/g) ?? []).length;
   assert.equal(veces, 1, `«No hay respuestas correctas…» aparece ${veces} veces en la portada`);
 
-  // Y sobre el verde del cierre todo se lee: etiqueta clara, campo blanco, recuadro con su tinta.
-  assert.ok(pagina.includes(".banda--cierre .puerta .campo{color:#FFFDFC}"), "la etiqueta de la puerta no se ve sobre el verde");
-  assert.ok(pagina.includes(".banda--cierre .puerta__fila input{background:#FFFDFC"), "el campo no va en blanco sobre el verde");
+  // Y sobre el verde del cierre el recuadro se lee con su tinta.
   assert.ok(pagina.includes(".banda--cierre .rigor{color:var(--ink-soft)}"), "el recuadro heredaría el texto claro del cierre y no se leería");
 });
 
@@ -278,7 +276,7 @@ test("la página web pide la redacción al servidor, y le manda las respuestas",
   const pagina = readFileSync(join(raiz, "test-identify.html"), "utf8");
   assert.ok(pagina.includes("/api/redactar"), "la página no llama a la función");
   assert.ok(
-    pagina.includes("JSON.stringify({ id, codigo, respuestas, persona, idioma })"),
+    pagina.includes("JSON.stringify({ id, respuestas, persona, idioma })"),
     "lo que se manda al servidor ha cambiado: revísalo, es la defensa del endpoint",
   );
   // La redacción tarda más de lo que Netlify deja vivir una función, así que va
@@ -336,17 +334,17 @@ test("la portada inglesa no repite el nombre del dominio como término internaci
   assert.ok(inicioEn.includes(">Openness</p>"), "la línea que queda no es la de Openness");
 });
 
-test("la puerta pregunta el código al servidor, nunca lo lleva dentro", () => {
-  // Si la página comprobara el código ella misma tendría que llevarlo, y quien
-  // abriera el código fuente lo vería: la puerta dejaría de ser una puerta.
-  // Por eso hay una función que lo valida y aquí solo viaja la respuesta.
+test("la aplicación es libre: no hay puerta ni código, y se entra por el cierre", () => {
+  // Hubo un código de acceso; se quitó. No puede quedar ni la puerta, ni la
+  // llamada que la comprobaba, ni el rastro del código en las peticiones.
   const pagina = readFileSync(join(raiz, "test-identify.html"), "utf8");
-  assert.ok(pagina.includes('id="puerta"'), "no hay pantalla de entrada");
-  assert.ok(pagina.includes("/api/entrar"), "la puerta no pregunta al servidor");
-  assert.ok(
-    pagina.includes('id="empezar"'),
-    "el fichero local se quedaría sin forma de empezar: ahí no hay puerta",
-  );
+  for (const resto of ['id="puerta"', "/api/entrar", "recuerdaCodigo", "identify-codigo", "pedirCodigo", "codigoIncorrecto"]) {
+    assert.ok(!pagina.includes(resto), `queda rastro del código de acceso: «${resto}»`);
+  }
+  // La entrada al test está en el cierre —al final, tras «Antes de empezar»—
+  // y es la única: en el hero no hay botón de empezar.
+  assert.ok(pagina.includes('id="empezar2"'), "no hay por dónde empezar");
+  assert.ok(!pagina.includes('id="empezar"'), "el hero vuelve a llevar un botón de empezar");
   for (const prohibido of ["CODIGO_ACCESO", "process.env"]) {
     assert.ok(!pagina.includes(prohibido), `la página lleva «${prohibido}»`);
   }
@@ -609,10 +607,8 @@ test("un informe redactado se puede volver a abrir", () => {
   // quedaba guardado en el servidor y era inalcanzable al cerrar la pestaña.
   assert.match(pagina, /history\.replaceState\(null, "", "#informe=" \+ id\)/, "el informe no deja rastro en la dirección");
   assert.match(pagina, /async function recuperarInforme/, "no hay manera de volver a un informe");
-  // Y no se recupera solo con conocer la dirección: hace falta el mismo código,
-  // que se pide por la puerta de siempre y no con un aviso del navegador.
-  assert.match(pagina, /const codigo = recuerdaCodigo\.leer\(\);\s*\n\s*if \(!codigo\) return false;/, "se recuperaría sin código");
-  assert.match(pagina, /if \(await recuperarInforme\(\)\) return;/, "entrar por la puerta no lleva al informe del enlace");
+  // La única llave es el enlace: se pide solo con el identificador.
+  assert.match(pagina, /body: JSON\.stringify\(\{ id: marca\[1\] \}\)/, "la recuperación pide algo más que el identificador");
   // La página ofrece copiar el enlace, que si no hay que sacarlo de la barra.
   assert.match(pagina, /id="copiarEnlace"/, "no se puede copiar el enlace del informe");
 

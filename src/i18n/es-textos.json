@@ -291,15 +291,6 @@
       "diciembre"
     ],
     "fechaLarga": "{dia} de {mes} de {ano}",
-    "puerta": {
-      "etiqueta": "Código de acceso",
-      "pista": "Te lo da quien te ha pasado el enlace",
-      "entrar": "Entrar",
-      "comprobando": "Comprobando…",
-      "noComprobado": "No se ha podido comprobar el código.",
-      "sinConexion": "No se ha podido conectar. Comprueba la conexión.",
-      "pedirCodigo": "Código de acceso\n\nTe lo da quien te ha pasado el enlace."
-    },
     "legal": {
       "entorno": "Entorno Legal"
     },
@@ -361,7 +352,7 @@
       "jsonInvalido": "Eso no es un JSON válido. Cópialo entero, desde la primera llave hasta la última.",
       "noEncaja": "La redacción no encaja con el esquema:\n\n· {lista}",
       "guardadoTitulo": "Guarda este enlace",
-      "guardadoTexto": "Tu informe queda en esta dirección durante un año. Guárdala si quieres volver a él: hará falta el mismo código de acceso.",
+      "guardadoTexto": "Tu informe queda en esta dirección durante un año. Guárdala si quieres volver a él: solo se puede abrir con este enlace.",
       "copiarEnlace": "Copiar el enlace",
       "borrar": "Borrar mi informe",
       "borrarConfirma": "Se va a borrar tu informe del servidor: las respuestas, el nombre y el texto redactado.\n\nNo se puede deshacer, y este enlace dejará de funcionar. Lo que ya tengas impreso o guardado en PDF se queda contigo.\n\n¿Lo borro?",
@@ -376,7 +367,6 @@
     "servidor": {
       "redactando": "Redactando…",
       "noEmpezado": "No se ha podido empezar el informe. Inténtalo de nuevo.",
-      "codigoIncorrecto": "Código incorrecto.",
       "noGenerado": "No se ha podido generar el informe.",
       "incompleta": "La redacción ha llegado incompleta. Vuelve a intentarlo.",
       "tardaDemasiado": "El informe está tardando demasiado. Vuelve a intentarlo en un momento.",

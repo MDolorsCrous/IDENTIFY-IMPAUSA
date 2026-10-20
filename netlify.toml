@@ -18,12 +18,6 @@
 [functions]
   node_bundler = "esbuild"
 
-# La puerta: comprueba el código de acceso. No cuesta nada y no llama a la API.
-[[redirects]]
-  from = "/api/entrar"
-  to = "/.netlify/functions/entrar"
-  status = 200
-
 # La redacción va en segundo plano: Netlify corta una función normal al minuto
 # y escribir el informe tarda más. Contesta 202 al instante y deja el resultado
 # en Blobs; la página lo recoge en /api/resultado.
