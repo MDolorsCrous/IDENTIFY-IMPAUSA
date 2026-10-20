@@ -27,7 +27,10 @@ mkdirSync(SALIDA, { recursive: true });
 const FOTOS = process.argv.includes("--fotos");
 
 const ANCHOS = [320, 360, 390, 414, 768, 1024, 1280, 1440];
-const PAGINA = "file:///" + RAIZ.replace(/\\/g, "/") + "test-identify.html";
+// Con --web se mide la pagina publicada, no la generada en local.
+const PAGINA = process.argv.includes("--web")
+  ? "https://identify-impausa-plus.netlify.app/"
+  : "file:///" + RAIZ.replace(/\\/g, "/") + "test-identify.html";
 
 /** Lo que se mide en un documento. Se ejecuta DENTRO de la pagina. */
 const MEDIR = `
