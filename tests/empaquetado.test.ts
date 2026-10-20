@@ -102,26 +102,19 @@ test("la página generada lleva el paquete y no se corta", () => {
   assert.ok((pagina.match(/<script>/g) ?? []).length >= 2);
 });
 
-test("el camino de copiar y pegar a mano solo sale en el fichero local", () => {
-  // Copiar el JSON, copiar el encargo y pegar la redacción son las tres piezas
-  // del mismo camino: el que hay que recorrer cuando no hay servidor que
-  // redacte. En la web sobran —el informe se pide de un clic— y una pantalla de
-  // resultados no es sitio para enseñarle a nadie su JSON.
+test("la pantalla del informe no ofrece copiar el encargo ni pegar la redacción", () => {
+  // Ese camino a mano —copiar el encargo, llevarlo a una conversación y pegar
+  // lo que devuelve— ya no está en la pantalla: el informe se redacta solo
+  // desde la web, y quien lo quiera lo tiene en el comando. El JSON de las
+  // respuestas sigue, solo en el fichero local, que es donde sirve.
   const pagina = readFileSync(join(raiz, "test-identify.html"), "utf8");
+  for (const id of ['id="encargo"', 'id="encargoLargo"', 'id="pegar"']) {
+    assert.ok(!pagina.includes(id), `la pantalla del informe sigue llevando ${id}`);
+  }
   assert.match(
     pagina,
     /HAY_SERVIDOR\s*\n?\s*\?\s*""\s*\n?\s*:\s*'<button class="boton boton--claro" id="ver">/,
     "el botón del JSON ya no está reservado al fichero local",
-  );
-  assert.match(
-    pagina,
-    /redactando \|\| HAY_SERVIDOR\s*\n?\s*\?\s*""\s*\n?\s*:\s*'<button class="boton boton--claro" id="pegar">/,
-    "el botón de pegar la redacción ya no está reservado al fichero local",
-  );
-  assert.match(
-    pagina,
-    /conProsa \|\| redactando \|\| HAY_SERVIDOR \? "" : '<button class="boton boton--claro" id="encargo">/,
-    "los botones del encargo ya no están reservados al fichero local",
   );
 });
 

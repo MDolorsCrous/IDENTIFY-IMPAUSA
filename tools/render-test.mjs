@@ -1099,19 +1099,6 @@ function informe(){
       <button class="enlace" id="volver">\${T.informe.volver}</button>
       <div class="acciones">
         \${conProsa || redactando || !HAY_SERVIDOR || sinLectura() ? "" : '<button class="boton" id="generar">' + T.informe.generar + '</button>'}
-        \${conProsa || redactando || HAY_SERVIDOR ? "" : '<button class="boton boton--claro" id="encargo">' + T.informe.encargo + '</button><button class="enlace" id="encargoLargo" title="' + T.informe.encargoLargoTitulo + '">' + T.informe.encargoLargo + '</button>'}
-        \${
-          // Pegar la redaccion a mano es la otra mitad del camino local: se
-          // copia el encargo, se lleva a una conversacion con Claude y se pega
-          // lo que devuelve. En la web ese camino no existe —la redaccion la
-          // pide el propio boton— y el JSON de la redaccion no es cosa de quien
-          // hace el test. Va con los botones del encargo, que ya son de alli.
-          redactando || HAY_SERVIDOR
-            ? ""
-            : '<button class="boton boton--claro" id="pegar">' +
-              (conProsa ? T.informe.cambiarRedaccion : T.informe.pegarRedaccion) +
-              "</button>"
-        }
         <button class="boton boton--claro" id="imprimir">\${T.informe.imprimir}</button>
       </div>
     </div>
@@ -1197,30 +1184,12 @@ function informe(){
 
   document.getElementById("volver").onclick = () => { pantalla = "resultados"; pintar(); };
   document.getElementById("imprimir").onclick = () => marco.contentWindow?.print();
-  // Dos encargos, y manda el corto: la skill identify-bfi2-knowledge ya trae el
-  // tono, el metodo y el protocolo de seguridad, asi que repetirlos seria tener
-  // las mismas reglas en dos sitios. El largo queda para una conversacion que no
-  // la tenga cargada.
-  const encargo = document.getElementById("encargo");
-  if (encargo) encargo.onclick = e => copiarEnBoton(e.target, promptCorto(modelo, RECURSOS.facetas, idioma), T.informe.encargo);
-  const encargoLargo = document.getElementById("encargoLargo");
-  if (encargoLargo) encargoLargo.onclick = e => copiarEnBoton(e.target, promptCompleto(modelo, RECURSOS.facetas, idioma), T.informe.encargoLargo);
-
+  // El camino de copiar el encargo y pegar la redaccion a mano ya no esta en
+  // la pantalla: el informe se redacta solo, desde la web. Quien quiera ese
+  // camino lo tiene en el comando (node generar.js con --prompt y --prosa),
+  // que es donde tiene sentido.
   const generar = document.getElementById("generar");
   if (generar) generar.onclick = () => redactarEnElServidor(generar, modelo);
-
-  const pegar = document.getElementById("pegar");
-  if (pegar) pegar.onclick = () => {
-    const pegado = window.prompt(T.informe.pegarInstrucciones, "");
-    if (pegado === null) return;
-    let candidata;
-    try { candidata = JSON.parse(pegado); }
-    catch { window.alert(T.informe.jsonInvalido); return; }
-    const fallos = validarProsa(candidata, modelo, idioma);
-    if (fallos.length) { window.alert(rellena(T.informe.noEncaja, { lista: fallos.join("\\n· ") })); return; }
-    prosa = candidata;
-    pintar();
-  };
 }
 
 // En la web hay una funcion que redacta con la clave del lado del servidor. En
