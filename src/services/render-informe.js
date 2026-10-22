@@ -42,8 +42,21 @@ function fila(item, destacada, color, t, nombreBanda) {
       </div>`;
 }
 
-const lineaEscala = (t) =>
-  `<div class="escala"><div></div><div class="escala__eje"><span>1</span><span>${t.medio}</span><span>5</span></div><div class="escala__hueco"></div></div>`;
+/**
+ * El eje de la escala: 1, el punto medio y 5.
+ *
+ * El punto medio lleva su nombre —«3 · punto medio»— pero en un movil la
+ * columna del eje mide unos 150 px y el nombre no cabe con el 1 y el 5: se
+ * partia en dos lineas y el «3» se pegaba al «1». Por eso el numero y las
+ * palabras van en dos spans, y las palabras desaparecen por debajo de 480 px.
+ */
+const lineaEscala = (t) => {
+  const [numero, ...palabras] = String(t.medio).split("·");
+  const medio = palabras.length
+    ? `${esc(numero.trim())}<span class="escala__palabras"> · ${esc(palabras.join("·").trim())}</span>`
+    : esc(t.medio);
+  return `<div class="escala"><div></div><div class="escala__eje"><span>1</span><span>${medio}</span><span>5</span></div><div class="escala__hueco"></div></div>`;
+};
 
 /**
  * Un pasaje de Claude, partido en parrafos.
@@ -646,7 +659,9 @@ ${tipografias(opciones.marca)}
   .fila--destacada .fila__nombre{font-weight:600}
   .escala{display:grid;grid-template-columns:minmax(7rem,10.5rem) 1fr auto;gap:.85rem;
     font-size:.75rem;color:var(--ink-soft);margin-top:.3rem;font-variant-numeric:tabular-nums}
-  .escala__eje{display:flex;justify-content:space-between}
+  .escala__eje{display:flex;justify-content:space-between;gap:.5rem}
+  .escala__eje span{white-space:nowrap}
+  @media (max-width:479px){.escala__palabras{display:none}}
   .escala__hueco{min-width:4.6rem}
 
   /* Un dominio NO lleva break-inside:avoid. Ocupa media página larga, y pedir
@@ -756,6 +771,9 @@ ${tipografias(opciones.marca)}
   @media print{.firma__linea a{padding:0}}
   .firma__linea a:hover{text-decoration:underline}
   .firma__sep{color:var(--ink-soft);margin:0 .5rem}
+  /* A 320 px la linea de contacto se partia con un «·» empezando renglon:
+     ahi, un enlace por linea y sin separadores. */
+  @media (max-width:359px){.firma__sep{display:none}.firma__linea a{display:block}}
   .firma__copy{margin:.15rem 0 0;font-size:.8rem;color:var(--ink-soft)}
   /* En papel el logotipo va algo menor y el bloque nunca se parte. */
   @media print{.firma{break-inside:avoid;margin-top:1.8rem}
