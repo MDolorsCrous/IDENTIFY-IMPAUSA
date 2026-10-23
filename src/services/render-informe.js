@@ -146,12 +146,13 @@ function avisoDeAtencion(a, t) {
 function tipografias(marca) {
   const t = marca?.tipografias;
   if (!t) return "";
-  const cara = (familia, peso, b64) => `@font-face{font-family:"${familia}";font-style:normal;
+  const cara = (familia, peso, b64, estilo = "normal") => `@font-face{font-family:"${familia}";font-style:${estilo};
     font-weight:${peso};font-display:swap;src:url(data:font/woff2;base64,${b64}) format("woff2")}`;
   return `<style>
     ${cara("Montserrat", "400 700", t.montserrat)}
     ${cara("Lato", "400", t.lato400)}
     ${cara("Lato", "700", t.lato700)}
+    ${t.ebGaramondItalic ? cara("EB Garamond", "400", t.ebGaramondItalic, "italic") : ""}
   </style>`;
 }
 
@@ -167,8 +168,8 @@ function cabeceraDeMarca(marca) {
   return `
   <header class="cabecera">
     <div class="cabecera__banda" aria-hidden="true"></div>
-    <img class="cabecera__logo" src="${marca.logoLive.src}" alt="${esc(marca.logoLive.alt)}"
-      width="${marca.logoLive.ancho}" height="${marca.logoLive.alto}">
+    <img class="cabecera__logo" src="${marca.logo.src}" alt="${esc(marca.logo.alt)}"
+      width="${marca.logo.ancho}" height="${marca.logo.alto}">
   </header>`;
 }
 
@@ -495,32 +496,37 @@ const html = `<!doctype html>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700&display=swap">
 ${tipografias(opciones.marca)}
 <style>
-  /* La paleta de Connect, para que los dos informes de la casa se reconozcan
-     como de la misma familia. Los valores vienen de src/config/marca.json. */
+  /* La imagen de IMPAUSA. Los valores son los del brand book de la casa
+     (skill impausa-brand-book, references/brand-tokens.md y la plantilla del
+     propio brand book): crema de fondo, tinta casi negra, el naranja como unico
+     acento —nunca como relleno grande—, el verde suave para bloques destacados
+     y el verde profundo solo decorativo: sobre crema da 2,9 de contraste y no
+     sirve para letra. El naranja de LETRA es la tinta de acento del brand book,
+     que si se lee (#7A431C sobre crema, 7,4). */
   :root{
-    --verde:#27624F; --verde-medio:#5F927D; --beige:#F7F4EE; --naranja:#F29A4A;
-    --naranja-claro:#FDF0E4; --dorado:#D8B34D; --menta:#E8F0EC;
-    --tarjeta:#FFFDFC; --borde:#DDD8CE; --menta-borde:#D3E2DA;
-    /* El verde de la casa de FONDO se queda oscuro siempre —lleva letra clara
-       encima—; el de LETRA se aclara en modo oscuro, donde el oscuro no llega
-       ni a 2 de contraste. */
-    --verde-texto:#27624F; --naranja-texto:#C2410C;
-    --ground:#F7F4EE; --ink:#292927; --ink-soft:#6F6B65; --track:#E9E4DA;
-    --titulo:#27624F; --sombra:0 1px 2px rgba(39,98,79,.06);
+    --ground:#FAF6F1; --tarjeta:#FFFFFF; --superficie2:#F1EBE2;
+    /* El gris del brand book (#736F68) se queda en 4,2 sobre la superficie
+       calida; un punto mas oscuro y pasa de 4,5 en los dos fondos. */
+    --ink:#2C2C2A; --ink-soft:#67635B; --borde:rgba(44,42,38,.12); --track:#EAE3D8;
+    --acento:#F2A06B; --acento-tinta:#7A431C;
+    --verde:#6E9B85; --verde-suave:#A7C6A1; --sobre-verde:#2C2C2A;
+    --oscuro:#2C2C2A; --sobre-oscuro:#F4EFE7;
+    --titulo:#2C2C2A; --sombra:0 1px 2px rgba(44,42,38,.06);
+    --radio-s:6px; --radio-m:12px; --radio-l:20px;
   }
   @media (prefers-color-scheme:dark){
     :root:not([data-theme="light"]){
-      --ground:#10201A; --tarjeta:#162C24; --ink:#EDE6DA; --ink-soft:#A9B8B0;
-      --borde:#2C4238; --track:#22382F; --titulo:#8FCBB2; --naranja-claro:#2A2119;
-      --verde-medio:#5FA588; --sombra:0 1px 2px rgba(0,0,0,.35);
-      --menta:#163026; --menta-borde:#25453A; --verde-texto:#8FCBB2; --naranja-texto:#F59E5B;
+      --ground:#232220; --tarjeta:#2E2C29; --superficie2:#38352F;
+      --ink:#F2EEE6; --ink-soft:#B6B0A5; --borde:rgba(242,238,230,.14); --track:#3E3A34;
+      --acento-tinta:#FBD9BE; --titulo:#F2EEE6; --sombra:0 1px 2px rgba(0,0,0,.35);
+      --oscuro:#1A1917; --sobre-oscuro:#F4EFE7; --verde-suave:#4F6B55; --sobre-verde:#F2EEE6;
     }
   }
   :root[data-theme="dark"]{
-    --ground:#10201A; --tarjeta:#162C24; --ink:#EDE6DA; --ink-soft:#A9B8B0;
-    --borde:#2C4238; --track:#22382F; --titulo:#8FCBB2; --naranja-claro:#2A2119;
-    --verde-medio:#5FA588; --sombra:0 1px 2px rgba(0,0,0,.35);
-    --menta:#163026; --menta-borde:#25453A; --verde-texto:#8FCBB2; --naranja-texto:#F59E5B;
+    --ground:#232220; --tarjeta:#2E2C29; --superficie2:#38352F;
+    --ink:#F2EEE6; --ink-soft:#B6B0A5; --borde:rgba(242,238,230,.14); --track:#3E3A34;
+    --acento-tinta:#FBD9BE; --titulo:#F2EEE6; --sombra:0 1px 2px rgba(0,0,0,.35);
+    --oscuro:#1A1917; --sobre-oscuro:#F4EFE7; --verde-suave:#4F6B55; --sobre-verde:#F2EEE6;
   }
   *{box-sizing:border-box}
   body{margin:0;background:var(--ground);color:var(--ink);
@@ -540,7 +546,7 @@ ${tipografias(opciones.marca)}
   .cintillo{display:flex;justify-content:space-between;align-items:baseline;gap:1rem;
     font-family:"Montserrat",system-ui,sans-serif;font-size:7.6pt;letter-spacing:.04em;
     color:var(--ink-soft);text-transform:uppercase}
-  .cintillo__marca{color:var(--verde-texto);font-weight:700;letter-spacing:.1em}
+  .cintillo__marca{color:var(--acento-tinta);font-weight:700;letter-spacing:.1em}
   .cintillo__marca i{font-style:italic;font-weight:400}
   /* El correo y el web, tal como se escriben: en minúsculas. Una dirección en
      mayúsculas se lee peor y se copia mal, y aquí no es un rótulo sino algo que
@@ -568,23 +574,21 @@ ${tipografias(opciones.marca)}
   h3{font-size:1.3rem;font-weight:700}
   h4{font-size:1.08rem;font-weight:700}
   b{font-weight:600}
-  :focus-visible{outline:2px solid var(--naranja);outline-offset:3px;border-radius:2px}
+  :focus-visible{outline:2px solid var(--acento);outline-offset:3px;border-radius:2px}
 
   /* Portada — rotulo segun la norma de marca */
-  /* Cabecera de marca: la banda de color y el logotipo, arriba del todo.
-     Misma composición que los informes de Connect, para que los documentos de
-     la casa se reconozcan como de la misma familia. */
+  /* Cabecera de marca: un filete fino con los tres colores de la casa y el
+     logotipo de IMPAUSA, arriba del todo. La banda gruesa de Connect se queda
+     en Connect: el brand book pide el naranja como acento, nunca como relleno
+     grande. LivePausa va abajo, en la firma, junto a IMPAUSA. */
   .cabecera{text-align:center;margin-bottom:.5rem}
-  .cabecera__banda{height:14px;border-radius:7px;margin-bottom:1.6rem;
-    background:linear-gradient(90deg,#EF8A4D 0%,#DFAE6B 33%,#B9BC72 66%,#7FAE79 100%)}
-  /* LivePausa arriba; IMPAUSA queda abajo, en la firma, junto a este. Es el
-     horizontal —«Live ✿ Pausa» en una linea—, 4,4 veces mas ancho que alto:
-     a 300 px de ancho mide 68 de alto, como una linea de titulo. */
-  .cabecera__logo{width:300px;max-width:80%;height:auto;display:block;margin:0 auto}
+  .cabecera__banda{height:4px;border-radius:2px;margin-bottom:1.8rem;
+    background:linear-gradient(90deg,#F2A06B 0%,#A7C6A1 60%,#6E9B85 100%)}
+  .cabecera__logo{width:280px;max-width:72%;height:auto;display:block;margin:0 auto}
   @media print{
     .cabecera{margin-bottom:0}
-    .cabecera__banda{height:10px;margin-bottom:1.1rem}
-    .cabecera__logo{width:260px}
+    .cabecera__banda{height:3px;margin-bottom:1.2rem}
+    .cabecera__logo{width:230px}
   }
 
   .portada{text-align:center;padding-block:clamp(.5rem,4vw,2.5rem) 0}
@@ -592,25 +596,27 @@ ${tipografias(opciones.marca)}
     font-size:clamp(3.2rem,14vw,5.5rem);line-height:.98;margin:0;color:var(--ink)}
   .rotulo__by{display:block;width:max-content;margin-inline:auto;font-style:italic;font-weight:700;
     font-size:clamp(1.5rem,6.6vw,2.6rem);line-height:1.1;margin-top:.06em;
-    background:linear-gradient(90deg,#EF8A4D 0%,#DFAE6B 33%,#B9BC72 66%,#7FAE79 100%);
+    background:linear-gradient(90deg,#F2A06B 0%,#A7C6A1 60%,#6E9B85 100%);
     -webkit-background-clip:text;background-clip:text;color:transparent}
   .portada__pie{margin-top:1.5rem;color:var(--ink-soft);font-size:.95rem}
 
   .eyebrow{font-family:"Montserrat",system-ui,sans-serif;font-size:.68rem;
-    letter-spacing:.18em;text-transform:uppercase;color:var(--verde-texto);font-weight:700;
+    letter-spacing:.18em;text-transform:uppercase;color:var(--acento-tinta);font-weight:700;
     margin:0 0 .5rem}
   /* Título de sección: chevrón dorado delante y línea fina debajo, como Connect.
      El chevrón es decorativo, así que se dibuja con ::before y no va en el texto:
      quien escuche el informe con un lector de pantalla no oirá «doble mayor que». */
+  /* El chevron es el motivo grafico de IMPAUSA —el del propio logotipo— y el
+     divisor de 48×2 px en naranja es el del brand book. */
   .seccion>h2{margin-bottom:.9rem;padding-bottom:.55rem;position:relative}
-  .seccion>h2::before{content:"»";color:var(--dorado);font-weight:700;margin-right:.4rem}
-  .seccion>h2::after{content:"";position:absolute;left:0;bottom:0;width:3.2rem;height:2px;
-    background:var(--dorado);border-radius:1px}
+  .seccion>h2::before{content:"»";color:var(--acento);font-weight:700;margin-right:.4rem}
+  .seccion>h2::after{content:"";position:absolute;left:0;bottom:0;width:48px;height:2px;
+    background:var(--acento);border-radius:2px}
   section{scroll-margin-top:1rem}
 
-  /* Las tarjetas de Connect: verde menta, cantonada redonda y sin borde duro.
-     El menta se apaga en modo oscuro, donde un verde claro deslumbraria. */
-  .indice{background:var(--menta);border:1px solid var(--menta-borde);border-radius:10px;
+  /* Las tarjetas del brand book: superficie calida, borde de 1 px apenas
+     visible y 12 px de radio. */
+  .indice{background:var(--superficie2);border:1px solid var(--borde);border-radius:var(--radio-m);
     padding:1.3rem 1.5rem}
   .indice ol{margin:.5rem 0 0;padding-left:1.3rem;columns:2;column-gap:2rem}
   /* A menos de 480 px las dos columnas no caben: los titulos largos pisaban
@@ -619,39 +625,42 @@ ${tipografias(opciones.marca)}
   .indice li{margin-bottom:.3rem;break-inside:avoid}
   .indice a{color:var(--ink);text-decoration:none;border-bottom:1px solid transparent;
     display:inline-block;padding:.2rem 0}
-  .indice a:hover,.indice a:focus-visible{border-bottom-color:var(--naranja)}
+  .indice a:hover,.indice a:focus-visible{border-bottom-color:var(--acento)}
 
-  .aviso{background:var(--naranja-claro);border-left:3px solid var(--naranja);
-    padding:1rem 1.2rem;font-size:.96rem;border-radius:0 3px 3px 0}
+  /* La nota del brand book: superficie calida, filete naranja a la izquierda,
+     esquinas de 6 px solo a la derecha. */
+  .aviso{background:var(--superficie2);border-left:3px solid var(--acento);
+    padding:1rem 1.2rem;font-size:.96rem;border-radius:0 var(--radio-s) var(--radio-s) 0}
   .aviso p{max-width:none}
   .aviso--atencion{margin-bottom:1.1rem}
   .aviso--atencion{margin-bottom:1.1rem}
   .aviso ul{margin:.4rem 0 0;padding-left:1.1rem}
   .aviso li{margin-bottom:.25rem}
 
-  /* El titular del resumen, dentro de una banda verde, como en Connect. Es la
-     frase que se lleva quien solo lee la primera página, así que se destaca del
-     resto del texto en vez de ser un párrafo más en negrita. */
-  .titular{font-family:"Montserrat",system-ui,sans-serif;font-weight:600;
+  /* El titular del resumen, en el bloque oscuro de la casa —el que la web usa
+     para lo que quiere que se lea—. Es la frase que se lleva quien solo lee la
+     primera página, así que se destaca del resto en vez de ser un párrafo más
+     en negrita. Crema sobre casi negro: 13 de contraste. */
+  .titular{font-family:"Montserrat",system-ui,sans-serif;font-weight:700;
     font-size:clamp(1.15rem,3vw,1.4rem);line-height:1.35;margin:0 0 1.2rem;
-    background:var(--verde);color:#FFFDFC;padding:1.1rem 1.35rem;border-radius:10px;
+    background:var(--oscuro);color:var(--sobre-oscuro);padding:1.1rem 1.35rem;border-radius:var(--radio-m);
     max-width:none;text-align:left;hyphens:none;text-wrap:balance;break-inside:avoid}
 
   .barras{display:flex;flex-direction:column;gap:.55rem;margin:.2rem 0 0}
   .fila{display:grid;grid-template-columns:minmax(7rem,10.5rem) 1fr auto;gap:.85rem;align-items:center}
   .fila__nombre{font-size:.93rem;line-height:1.3;display:flex;flex-direction:column}
-  .marca{font-size:.65rem;letter-spacing:.08em;text-transform:uppercase;color:var(--naranja-texto);font-weight:600}
+  .marca{font-size:.65rem;letter-spacing:.08em;text-transform:uppercase;color:var(--acento-tinta);font-weight:600}
   .eje{position:relative;height:9px;background:var(--track);border-radius:2px}
   .eje__medio{position:absolute;left:50%;top:-3px;bottom:-3px;width:1px;background:var(--borde)}
   /* El color de cada dominio llega por --dominio desde marca.json, así que el
      gráfico general, las barras de facetas y los títulos van siempre a juego y
      hay un solo sitio donde cambiarlo. */
   .eje__relleno{position:absolute;left:0;top:0;bottom:0;border-radius:2px;
-    background:var(--dominio,var(--verde-medio));opacity:.6}
+    background:var(--dominio,var(--verde));opacity:.6}
   .eje__punto{position:absolute;top:50%;width:9px;height:9px;border-radius:50%;
-    background:var(--dominio,var(--verde-medio));transform:translate(-50%,-50%);
+    background:var(--dominio,var(--verde));transform:translate(-50%,-50%);
     box-shadow:0 0 0 2px var(--ground)}
-  .eje--acento .eje__relleno,.eje--acento .eje__punto{background:var(--naranja)}
+  .eje--acento .eje__relleno,.eje--acento .eje__punto{background:var(--acento)}
   .fila__dato{text-align:right;font-variant-numeric:tabular-nums;line-height:1.2;
     display:flex;flex-direction:column;min-width:4.6rem}
   .fila__dato b{font-size:1rem}
@@ -675,8 +684,8 @@ ${tipografias(opciones.marca)}
   .dominio__dato em{font-style:normal;color:var(--ink-soft);font-size:.8rem}
   .dominio p{margin-top:1rem}
   .nota{font-size:.92rem;color:var(--ink-soft);border-left:2px solid var(--borde);padding-left:.9rem}
-  .pendiente{font-size:.9rem;color:var(--ink-soft);background:var(--naranja-claro);
-    border:1px dashed var(--naranja);border-radius:3px;padding:.7rem .9rem;max-width:none}
+  .pendiente{font-size:.9rem;color:var(--ink-soft);background:var(--superficie2);
+    border:1px dashed var(--acento);border-radius:var(--radio-s);padding:.7rem .9rem;max-width:none}
   .pendiente b{color:var(--ink)}
   .lecturas{display:flex;flex-direction:column;gap:1rem;margin:1.1rem 0}
   .lectura{border-left:2px solid var(--borde);padding-left:1rem;break-inside:avoid}
@@ -687,19 +696,25 @@ ${tipografias(opciones.marca)}
   .lectura__def{font-size:.86rem;color:var(--ink-soft);margin-bottom:.4rem}
   .lectura p{margin-bottom:.35rem;font-size:.97rem}
   .lectura__ref{font-size:.78rem;color:var(--ink-soft);margin-bottom:0}
-  .matiz{color:var(--naranja-texto);font-style:normal;font-weight:600;font-size:.88rem}
+  .matiz{color:var(--acento-tinta);font-style:normal;font-weight:600;font-size:.88rem}
   .imagen{margin:0 0 1.1rem;padding:0;break-inside:avoid}
-  .imagen blockquote{margin:0;padding:.9rem 0 .5rem 1.1rem;border-left:3px solid var(--naranja);
-    font-family:"Playfair Display",Georgia,serif;font-size:1.12rem;font-style:italic;
-    line-height:1.45;color:var(--titulo)}
+  /* Las metaforas van en EB Garamond cursiva: la letra que el brand book
+     reserva para los momentos editoriales y emocionales. Si la fuente no ha
+     viajado, Georgia. */
+  .imagen blockquote{margin:0;padding:.9rem 0 .5rem 1.1rem;border-left:3px solid var(--acento);
+    font-family:"EB Garamond",Georgia,serif;font-size:1.22rem;font-style:italic;
+    line-height:1.4;color:var(--ink)}
   .imagen figcaption{font-size:.84rem;color:var(--ink-soft);padding-left:1.1rem}
-  .imagen--ancla{background:var(--menta);border:1px solid var(--menta-borde);border-radius:10px;
+  /* La imagen ancla, en el bloque destacado de la casa: verde suave con tinta
+     oscura (7,5 de contraste). Es el unico relleno de color del informe. */
+  .imagen--ancla{background:var(--verde-suave);border:1px solid var(--borde);border-radius:var(--radio-m);
     padding:1.15rem 1.35rem;margin-top:1.4rem}
+  .imagen--ancla blockquote,.imagen--ancla figcaption,.imagen--ancla .imagen__etiqueta{color:var(--sobre-verde)}
   .imagen--ancla blockquote{padding-top:.2rem;font-size:1.2rem}
   .imagen__etiqueta{font-size:.71rem;letter-spacing:.15em;text-transform:uppercase;
-    color:var(--verde-texto);font-weight:600;margin:0}
+    color:var(--acento-tinta);font-weight:600;margin:0}
 
-  .vacio{border:1px solid var(--menta-borde);border-radius:10px;padding:1.3rem 1.5rem;background:var(--menta)}
+  .vacio{border:1px solid var(--borde);border-radius:var(--radio-m);padding:1.3rem 1.5rem;background:var(--superficie2)}
   .senales{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:.75rem}
   .senales li{display:flex;flex-direction:column;gap:.1rem;padding-left:.9rem;
     border-left:2px solid var(--borde)}
@@ -707,24 +722,24 @@ ${tipografias(opciones.marca)}
   .senal__falta{font-size:.84rem!important;font-style:italic;margin-top:.15rem}
   /* Las combinaciones que sí se cumplen: mismo esqueleto que las señales, pero
      con el filete en verde en vez de gris, porque estas se afirman. */
-  .combis li{border-left-color:var(--verde-medio)}
+  .combis li{border-left-color:var(--verde)}
   .combi__quien{font-size:.84rem!important;font-style:italic;margin-top:.15rem}
   /* La lectura redactada. En tinta normal y no en el gris de los datos: es el
      texto de la seccion, no un pie de linea. */
   .combi__lectura{margin:.45rem 0 .2rem}
   .combi__lectura p{margin:0 0 .5rem;color:var(--ink)}
   .combi__lectura p:last-child{margin-bottom:0}
-  .combi__aviso{font-size:.86rem!important;background:var(--naranja-claro);
-    border-radius:3px;padding:.5rem .7rem;margin-top:.4rem;color:var(--ink)!important}
+  .combi__aviso{font-size:.86rem!important;background:var(--superficie2);
+    border-radius:var(--radio-s);padding:.5rem .7rem;margin-top:.4rem;color:var(--ink)!important}
 
   .preguntas{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:.7rem;
     counter-reset:p}
   .preguntas li{padding-left:1.6rem;position:relative;max-width:62ch;counter-increment:p}
-  .preguntas li::before{content:counter(p);position:absolute;left:0;color:var(--naranja);
+  .preguntas li::before{content:counter(p);position:absolute;left:0;color:var(--acento-tinta);
     font-weight:600;font-variant-numeric:tabular-nums}
 
   .plan{display:flex;flex-direction:column;gap:1rem}
-  .paso{background:var(--tarjeta);border:1px solid var(--borde);border-radius:3px;
+  .paso{background:var(--tarjeta);border:1px solid var(--borde);border-radius:var(--radio-m);
     padding:1.05rem 1.2rem;box-shadow:var(--sombra);break-inside:avoid}
   .paso h4{margin-bottom:.25rem}
   .paso p{font-size:.97rem;margin-bottom:.5rem}
@@ -749,7 +764,7 @@ ${tipografias(opciones.marca)}
      El degradado repite el del rótulo de portada, que es el del propio logo. */
   .firma{margin-top:2.5rem;padding-top:2rem;text-align:center;
     border-top:2px solid transparent;
-    border-image:linear-gradient(90deg,#EF8A4D 0%,#DFAE6B 33%,#B9BC72 66%,#7FAE79 100%) 1}
+    border-image:linear-gradient(90deg,#F2A06B 0%,#A7C6A1 60%,#6E9B85 100%) 1}
   /* Las dos marcas de la casa, juntas: IMPAUSA firma el producto y LivePausa
      es el acompanamiento que hay detras. Tienen proporciones muy distintas
      —una es una linea de texto y la otra casi cuadrada—, asi que se igualan por
@@ -766,7 +781,7 @@ ${tipografias(opciones.marca)}
      la cabecera de portada y la firma del final. */
   .firma p,.portada p{max-width:none;text-align:center;hyphens:none}
   .firma__linea{margin:0 0 .5rem;font-size:.92rem}
-  .firma__linea a{color:var(--verde-texto);text-decoration:none;font-weight:600;
+  .firma__linea a{color:var(--acento-tinta);text-decoration:none;font-weight:600;
     display:inline-block;padding:.8rem 0}
   @media print{.firma__linea a{padding:0}}
   .firma__linea a:hover{text-decoration:underline}
@@ -780,7 +795,7 @@ ${tipografias(opciones.marca)}
     .firma__logos{gap:1.6rem;margin-bottom:.8rem}
     .firma__logo{height:22px}.firma__live{height:40px}}
 
-  .maqueta{position:sticky;top:0;z-index:5;background:#1A4A3A;color:#F7F2EB;
+  .maqueta{position:sticky;top:0;z-index:5;background:var(--oscuro);color:var(--sobre-oscuro);
     font-size:.8rem;letter-spacing:.02em;text-align:center;padding:.5rem 1rem}
 
   /* Impreso igual que en pantalla.
@@ -795,10 +810,10 @@ ${tipografias(opciones.marca)}
     /* En papel se imprime siempre la version clara, mande lo que mande el
        sistema: un informe en modo oscuro gasta tinta y se lee peor. */
     :root, :root[data-theme="dark"]{
-      --ground:#FFFFFF; --tarjeta:#FFFDFC; --ink:#292927; --ink-soft:#6F6B65;
-      --borde:#DDD8CE; --track:#E9E4DA; --titulo:#27624F; --verde:#27624F;
-      --verde-medio:#5F927D; --menta:#E8F0EC; --menta-borde:#D3E2DA;
-      --dorado:#D8B34D; --naranja:#F29A4A; --naranja-claro:#FDF0E4;
+      --ground:#FFFFFF; --tarjeta:#FFFFFF; --superficie2:#F1EBE2;
+      --ink:#2C2C2A; --ink-soft:#736F68; --borde:rgba(44,42,38,.14); --track:#EAE3D8;
+      --acento:#F2A06B; --acento-tinta:#7A431C; --verde:#6E9B85; --verde-suave:#A7C6A1;
+      --oscuro:#2C2C2A; --sobre-oscuro:#F4EFE7; --titulo:#2C2C2A;
     }
     body{background:#FFFFFF;font-size:10.4pt;line-height:1.55}
     /* En papel sí se justifica: la columna A4 es ancha y el justificado no

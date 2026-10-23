@@ -41,3 +41,7 @@ skill/*.skill
 vista-contacto.html
 vista-papel.html
 _v.pdf
+
+# notes i informes de recerca: material de treball, no del producte
+research_notes/
+reports/

@@ -116,6 +116,8 @@ const marca = {
     montserrat: leerFuente("montserrat-var"),
     lato400: leerFuente("lato-400"),
     lato700: leerFuente("lato-700"),
+    // La cursiva editorial del brand book, para las metaforas del informe.
+    ebGaramondItalic: leerFuente("ebgaramond-italic"),
   },
 
   logo: logoDe("impausa.svg", "128 451 804 103", "IMPAUSA"),
