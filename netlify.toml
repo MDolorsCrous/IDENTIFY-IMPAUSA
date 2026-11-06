@@ -53,4 +53,11 @@
   [headers.values]
     X-Content-Type-Options = "nosniff"
     Referrer-Policy = "no-referrer"
-    X-Frame-Options = "DENY"
+    # Quién puede meter la aplicación dentro de un iframe: ella misma y la web
+    # de la casa, impausa.com con sus subdominios. Nadie más. Antes iba
+    # `X-Frame-Options: DENY`, que lo prohibía todo y no sabe hacer excepciones
+    # —su variante ALLOW-FROM no la respeta ningún navegador actual—; la forma
+    # de decir «solo estos» es frame-ancestors. No se abre a todo el mundo a
+    # propósito: una página ajena podría enmarcar el test y hacer pasar por suyo
+    # un cuestionario donde la gente deja su nombre y sus respuestas.
+    Content-Security-Policy = "frame-ancestors 'self' https://impausa.com https://*.impausa.com"

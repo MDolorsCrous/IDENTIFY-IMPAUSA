@@ -322,6 +322,24 @@ test("la portada inglesa no repite el nombre del dominio como término internaci
   assert.ok(inicioEn.includes(">Openness</p>"), "la línea que queda no es la de Openness");
 });
 
+test("la aplicación se puede enmarcar desde impausa.com, y desde ningún otro sitio", () => {
+  // impausa.com la muestra dentro de un iframe. Hace falta permitirlo —antes
+  // iba X-Frame-Options: DENY— pero solo a la casa: abierto a cualquiera, una
+  // página ajena podría enmarcar el test y hacerlo pasar por suyo.
+  const toml = readFileSync(join(raiz, "netlify.toml"), "utf8");
+  const politica = /Content-Security-Policy = "(frame-ancestors [^"]*)"/.exec(toml)?.[1] ?? "";
+  assert.ok(politica, "no hay política de frame-ancestors");
+  const origenes = politica.split(/\s+/).slice(1);
+  assert.deepEqual(
+    origenes,
+    ["'self'", "https://impausa.com", "https://*.impausa.com"],
+    "la lista de quién puede enmarcar la aplicación ha cambiado",
+  );
+  // Y la cabecera vieja no puede seguir: con DENY al lado, hay navegadores
+  // que harían caso a la más estricta y el iframe no cargaría.
+  assert.ok(!/X-Frame-Options/.test(toml.replace(/^\s*#.*$/gm, "")), "sigue X-Frame-Options, que lo prohíbe todo");
+});
+
 test("la aplicación es libre: no hay puerta ni código, y se entra por el cierre", () => {
   // Hubo un código de acceso; se quitó. No puede quedar ni la puerta, ni la
   // llamada que la comprobaba, ni el rastro del código en las peticiones.
