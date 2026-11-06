@@ -126,12 +126,14 @@ test("el entorno legal está al final de todas las pantallas, en la lengua que t
   assert.ok(pagina.includes("https://www.impausa.com/entorn_legal_impausa.html"), "falta la dirección");
   assert.ok(!pagina.includes("ftp://"), "la página lleva una dirección ftp://");
   assert.ok(!/berta/i.test(pagina), "la página lleva el usuario del FTP");
-  // Y se abre en la misma pestaña, para que «Atrás» devuelva a la aplicación.
-  // Antes iba en una pestaña nueva para no perder el test a media pregunta; de
-  // eso se ocupa ahora la vuelta (la prueba siguiente).
+  // Y se abre con _top, no con _blank ni _self: fuera de un iframe se
+  // comporta como _self («Atrás» devuelve a la aplicación; de eso se ocupa
+  // la vuelta, la prueba siguiente), pero dentro del iframe de impausa.com
+  // saca la página legal del recuadro en vez de dejarla encajonada ahí.
   const pie = /getElementById\("legal"\);[\s\S]{0,400}?<\/a>'/.exec(pagina)?.[0] ?? "";
-  assert.ok(pie.includes('target="_self"'), "el enlace legal no se abre en la misma pestaña");
+  assert.ok(pie.includes('target="_top"'), "el enlace legal no sale del iframe");
   assert.ok(!pie.includes("_blank"), "el enlace legal sigue abriendo pestaña nueva");
+  assert.ok(!pie.includes('target="_self"'), "el enlace legal se queda encajonado en el iframe");
 });
 
 test("al salir por un enlace se apunta dónde se estaba, y con «Atrás» se vuelve ahí", () => {

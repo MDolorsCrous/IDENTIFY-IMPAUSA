@@ -452,12 +452,14 @@ function aplicarIdioma(nuevo){
   document.title = T.titulo;
   // El enlace legal de abajo del todo, en esta lengua. La direccion viene de
   // marca.json, como el correo y la web: un solo sitio donde cambiarla.
-  // Se abre en la misma pestana: asi «Atras» devuelve a la aplicacion. Antes
-  // iba en una pestana nueva para no perder el test a media pregunta; ahora
-  // de eso se ocupa la vuelta (mas abajo), que apunta donde se estaba al salir.
+  // Con _top en vez de _blank: fuera de un iframe, _top y _self se comportan
+  // igual, asi que «Atras» sigue devolviendo a la aplicacion (de eso se ocupa
+  // la vuelta, mas abajo, que apunta donde se estaba al salir). Dentro del
+  // iframe de impausa.com, _self dejaria la pagina legal encajonada en el
+  // mismo recuadro estrecho del test; _top la saca al documento entero.
   const legal = document.getElementById("legal");
   if (legal) {
-    legal.innerHTML = '<a href="' + esc(D.comun.marca.legal) + '" target="_self">' +
+    legal.innerHTML = '<a href="' + esc(D.comun.marca.legal) + '" target="_top">' +
       esc(T.legal.entorno) + '</a>';
   }
   recuerdaIdioma.guardar(nuevo);
